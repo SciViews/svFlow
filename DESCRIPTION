@@ -1,0 +1,22 @@
+Package: flow
+Type: Package
+Version: 1.0-0
+Date: 2018-02-16
+Title: Data analysis workflow and alternate pipeline operator
+Description: Data (work)flow analysis using proto objects and pipe operator that
+  integrate non-standard evaluation and the lazyeval mechanism.
+Authors@R: c(person("Philippe", "Grosjean", role = c("aut", "cre"),
+  email = "phgrosjean@sciviews.org"))
+Maintainer: Philippe Grosjean <phgrosjean@sciviews.org>
+Depends: R (>= 3.3.0)
+Imports: proto
+Suggests: covr, knitr, testthat
+Encoding: UTF-8
+ByteCompile: yes
+LazyData: true
+License: GPL-2
+URL: https://github.com/SciViews/flow, http://www.sciviews.org/SciViews-R
+BugReports: https://github.com/SciViews/flow/issues
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 6.0.1
+VignetteBuilder: knitr
