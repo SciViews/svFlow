@@ -2,14 +2,14 @@ Package: flow
 Type: Package
 Version: 1.0-0
 Date: 2018-02-16
-Title: Data analysis workflow and alternate pipeline operator
+Title: Data Analysis Workflow and Alternate Pipeline Operator
 Description: Data (work)flow analysis using proto objects and pipe operator that
-  integrate non-standard evaluation and the lazyeval mechanism.
+  integrates non-standard evaluation and the lazyeval mechanism.
 Authors@R: c(person("Philippe", "Grosjean", role = c("aut", "cre"),
   email = "phgrosjean@sciviews.org"))
 Maintainer: Philippe Grosjean <phgrosjean@sciviews.org>
 Depends: R (>= 3.3.0)
-Imports: proto
+Imports: proto, rlang, utils
 Suggests: covr, knitr, testthat
 Encoding: UTF-8
 ByteCompile: yes
