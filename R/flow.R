@@ -1,13 +1,13 @@
 #' Create Flow objects to better organize pipelines in R
 #'
 #' **Flow** objects, as explicitly created by `flow()`, or implicitly by the
-#' `%>+` pipe operator are **proto** objects (class-less objects with possible
-#' inheritance) that can be compbined nicely with pipelines using the
-#' specialized flow pipe opertors `%>.%` and `%>+%` (or by using `$`). They
-#' allow to encapsulated temporary variables related to the pipeline, and they
-#' automate the encapsulation of non-standard evaluations automatically with
-#' minimal changes required by the user (in comparison to the **rlang** tidy
-#' evalation mechanism).
+#' \code{\link{\%>+\%}} pipe operator are **proto** objects (class-less objects
+#' with possible inheritance) that can be compbined nicely with pipelines using
+#' the specialized flow pipe operators \code{\link{\%>.\%}} and
+#' \code{\link{\%>+\%}} (or by using `$`). They allow to encapsulated temporary
+#' variables related to the pipeline, and they automate the encapsulation of
+#' non-standard evaluations automatically with minimal changes required by the
+#' user (in comparison to the **rlang** tidy evalation mechanism).
 #'
 #' @param . If a **Flow** object is provided, herite from it, otherwise, create
 #' a new **Flow** object heritating from `.GlobalEnv` with `.` as pipe value.
@@ -37,7 +37,7 @@
 #' **proto** objects, see [proto()].
 #' @export
 #' @name flow
-#' @seealso [str.Flow()], [quos_underscore()], [%>+%]
+#' @seealso [str.Flow()], [quos_underscore()], \code{\link{\%>+\%}}
 #' @keywords utilities
 #' @concept class-less objects for better R pipelines
 #' @examples
@@ -118,7 +118,7 @@ is.flow <- is_flow
   # The difference with `$<-.proto` is that the flow version assigns a quosure
   # automatically if name ends with '_'
   if (name == '.super')
-    env_parent(x) <- value
+    parent.env(x) <- value
 
   if (is_function(value))
     environment(value) <- x
@@ -159,7 +159,7 @@ print.Flow <- function(x, ...) {
 #' @param nest.lev Used internally for pretty printing nested objects (you
 #' probably don't want to change default value).
 #' @param indent.str Idem.
-#' #' @param ... Further arguments passed to `str()` methods of **Flow** items.
+#' @param ... Further arguments passed to `str()` methods of **Flow** items.
 #'
 #' @export
 #' @seealso [flow()]

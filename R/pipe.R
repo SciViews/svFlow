@@ -1,18 +1,18 @@
 #' Flow pipeline operators and debugging function
 #'
-#' Pipe operators. The simple one with no forcing to **Flow** objects is `%>.%`.
-#' `%>+%` forces convertion to **Flow** and autoamtically manage non-standard
-#' evaluation through creation and unquoting of **quosure**s for named arguments
-#' whose name ends with `_`.
+#' Pipe operators. The simple one with no forcing to **Flow** objects is
+#' \code{\link{\%>.\%}}. \code{\link{\%>+\%}} forces convertion to **Flow** and
+#' automatically manage non-standard evaluation through creation and unquoting
+#' of **quosure**s for named arguments whose name ends with `_`.
 #'
 #' @param x Value or **Flow** object to pass to the pipeline.
 #' @param expr Expression to evaluation in the pipeline.
 #'
 #' @export
 #' @name pipe
-#' @details With `%>.%`, the value must be explicitly indicated with a `.`
-#' inside the expression. The expression is **not** modified, but the value is
-#' first assigned into the calling environment as `.` (warning! possibly
+#' @details With \code{\%>.\%}, the value must be explicitly indicated with a
+#' `.` inside the expression. The expression is **not** modified, but the value
+#' is first assigned into the calling environment as `.` (warning! possibly
 #' replacing any existing value... do **not** use `.` to name other objects).
 #' Also the expression is saved as `.call` in the calling environment so that
 #' `debug_flow()` can retrieve are rerun it easily.
@@ -20,17 +20,19 @@
 #' In the case of **Flow** objects, it is also assigned in the calling
 #' environment as `..`.
 #'
-#' For `%>+%`, the expression is reworked like this. First, `++` is interpreted
-#' as "get from the **Flow** object, or inherited environment, and unquote
-#' expression"; `..` is interpreted as "get from the **Flow** object without
-#' inheritage and unquote expression", and finally, if the expression starts by
-#' calling a regular function name, without specifying `.` as first argument, it
-#' is added. The raw expression is saved as `.call_raw`, while the reworked call
-#' is saved as `.call` for possible further inspection and debugging.
+#' For \code{\%>+\%}, the expression is reworked like this. First, `++` is
+#' interpreted as "get from the **Flow** object, or inherited environment, and
+#' unquote expression"; `..` is interpreted as "get from the **Flow** object
+#' without inheritage and unquote expression", and finally, if the expression
+#' starts by calling a regular function name, without specifying `.` as first
+#' argument, it is added. The raw expression is saved as `.call_raw`, while the
+#' reworked call is saved as `.call` for possible further inspection and
+#' debugging.
 #'
-#' Finally, for both `%>.%` and `%>+%`, if `x` is a **Flow** object, and `expr`
-#' is `.`, then, the last value from the pipe is extracted from the **Flow**
-#' object and returned. It is equivalent, thus, to `flow_obj$.value`.
+#' Finally, for both \code{\%>.\%} and \code{\%>+\%}, if `x` is a **Flow**
+#' object, and `expr` is `.`, then, the last value from the pipe is extracted
+#' from the **Flow** object and returned. It is equivalent, thus, to
+#' `flow_obj$.value`.
 #' @seealso [flow()], [quos_underscore()]
 #' @keywords utilities
 #' @concept pipeline operators and debugging

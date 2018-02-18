@@ -23,6 +23,8 @@ knitr::opts_chunk$set(
 ```{r}
 # TODO: to be reworked!
 library(dplyr)
+library(rlang)
+library(flow)
 y <- 1.5
 iris %>.%
   filter(., Sepal.Length < 5) %>.%
@@ -30,11 +32,11 @@ iris %>.%
   mutate(., logSL = log(Sepal.Length)) %>.%
   head(.) %>.% .
 
-flow(iris, var = ~Petal.Length, threshold = 1.5) %>.%
-  filter(., Sepal.Length < 5) %>.%
-  filter(., !!var < ..$threshold) %>.%
-  {..$tab <- mutate(., logSL = log(Sepal.Length))} %>.%
-  head(.) %>.% .
+#flow(iris, var = ~Petal.Length, threshold = 1.5) %>.%
+#  filter(., Sepal.Length < 5) %>.%
+#  filter(., !!var < ..$threshold) %>.%
+#  {..$tab <- mutate(., logSL = log(Sepal.Length))} %>.%
+#  head(.) %>.% .
 ```
 
 

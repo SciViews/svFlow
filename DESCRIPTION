@@ -10,7 +10,7 @@ Authors@R: c(person("Philippe", "Grosjean", role = c("aut", "cre"),
 Maintainer: Philippe Grosjean <phgrosjean@sciviews.org>
 Depends: R (>= 3.3.0)
 Imports: proto, rlang, utils
-Suggests: covr, knitr, testthat
+Suggests: covr, knitr, testthat, dplyr
 Encoding: UTF-8
 ByteCompile: yes
 LazyData: true

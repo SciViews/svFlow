@@ -3,7 +3,7 @@
 #' Quosures are defined in **rlang** package as part of the tidy evaluation of
 #' non-standard evaluations (see [quo()]). Here, we provide an alternate
 #' mechanism using `-~expr` as a synonym of `quo(expr)`, but faster. Also,
-#' `UQ(quo)` or `!!quo` in **rlang** is just here `+quo`.
+#' `UQ(quo_obj)` or `!!quo_obj` in **rlang** is just here `+quo_obj`.
 #'
 #' @param x An expression
 #' @param env An environment specified for lexical scoping of the quosure.
@@ -24,7 +24,7 @@
 #' `$` or `[`, and namespace operators `::` and `:::` have higher precedence).
 #' @export
 #' @name quosure
-#' @seealso [quos_underscore()], [%>+%]
+#' @seealso [quos_underscore()], \code{\link{\%>+\%}}
 #' @keywords utilities
 #' @concept expression encapsulation for non-standard evaluation
 #' @examples
@@ -114,7 +114,7 @@ is.bare_formula <- is_bare_formula
 #' or evaluated.
 #'
 #' @export
-#' @seealso [as_quosure()], [%>+%]
+#' @seealso [as_quosure()], \code{\link{\%>+\%}}
 #' @keywords utilities
 #' @concept automatic quosures creation for non-standard evaluation
 #' @examples

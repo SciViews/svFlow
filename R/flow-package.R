@@ -5,7 +5,7 @@
 #'
 #' @section Important functions:
 #'
-#'- [flow()] constructs a `flow` object.
+#'- [flow()] constructs a `Flow` object.
 #'
 #' - [as_quosure()], and unary `+` and `-` operators combined with **formula**
 #'   objects provide an alternate way to manipulate **quosure**s.
@@ -14,20 +14,22 @@
 #'   `_` into **quosure**s, and this mechanism is used by our pipe operators.
 #'
 #' - [debug_flow()] provides a convenient way to debug problematic pipelines
-#'   build with our own pipe operators `%>.%` and `%>+%`.
+#'   build with our own pipe operators \code{\link{\%>.\%}} and
+#'   \code{\link{\%>+\%}}.
 #' @docType package
 #' @name flow-package
 #'
 #' @import proto
-#' @importFrom rlang abort warn caller_env empty_env f_env `f_env<-` f_lhs
-#'   is_symbolic is_true, new_quosure quos `!!`
+#' @importFrom rlang abort warn caller_env empty_env f_env f_env<- f_lhs f_rhs
+#'   is_symbolic is_true new_quosure quos !!
 #' @importFrom utils capture.output str
 NULL
 
 
 # Non-exported functions --------------------------------------------------
 
-`%is%` <- inherits # This is more expressive!
+`%is%` <- function(x, what) # This is more expressive!
+  inherits(x, what)
 
 is_null <- is.null # rlang::is_null is much slower!
 
@@ -38,12 +40,14 @@ child_env <- function(.parent, ...) {
 }
 
 # rlang proposes invoke() in place of do.call(), but it is 100x slower! So:
-do_call <- do.call
+do_call <- function(what, ...)
+  do.call(what, ...)
 
 # rlang::env_parent(env, n = 1) is supposed to replace parent.env(), but it is
 # 25x time slower, and we don't need to specify something else than n = 1 here.
 # So, we redefine it simply for speed as:
-env_parent <- parent.env
+env_parent <- function(env)
+  parent.env(env)
 
 # rlang uses ctxt_frame() and call_frame() in place of base::parent.frame() but
 # it appears more complex for simple use. Hence call_frame(2)$env is the same as
