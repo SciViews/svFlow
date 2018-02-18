@@ -99,7 +99,7 @@ indent.str = paste(rep.int(" ", max(0, nest.lev + 1)), collapse = ".."), ...) {
   # Same as str.proto(), but indicate it is a Flow object
   cat("Flow", .name_flow(object), "\n")
 
-  lines <- capture.output(
+  lines <- capture_output(
     str(
       as.list(object),
       max.level = max.level,

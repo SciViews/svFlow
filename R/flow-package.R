@@ -35,6 +35,10 @@ do_call <- do.call
 # So, we redefine it simply for speed as:
 env_parent <- parent.env
 
+# rlang uses ctxt_frame() and call_frame() in place of base::parent.frame() but
+# it appears more complex for simple use. Hence call_frame(2)$env is the same as
+# parent.frame()... So, I keep parent;frame() for now!
+
 # Again, rlang::is_function is 10x slower than base::is.function(), so:
 is_function <- is.function
 
@@ -43,25 +47,36 @@ is_function <- is.function
 # as.character() does. So, it is called as_chr()
 as_chr <- as.character
 
+# Further base/utils functions rename for consistent snake_case notation...
+is_chr <- is.character
+is_env <- is.environment
+stop_if_not <- stopifnot
+capture_output <- capture.output
+
 # name.proto() is not exported from the proto package. So, this is a copy here
 .name_flow <- function(., envir = parent.frame()) {
-  stopifnot(is.environment(.) || (is.character(.) &&
-    is.environment(get(., envir))))
+  stop_if_not(is_env(.) || (is_chr(.) && is_env(get(., envir))))
 
-  if (is.environment(.)) {
-    if (exists("..Name", ., inherits = FALSE)) {
-      .$..Name
+  if (is_env(.)) {
+    if (exists('..Name', ., inherits = FALSE)) {
+      .[['..Name']]
     } else {
-      L <- unlist(eapply(envir, identical, .))
-      if (any(L))
-        names(L[L])[1]
-      else gsub("^.* |>$", "", capture.output(print.default(.))[[1]])
+      l <- unlist(eapply(envir, identical, .))
+      if (any(l)) {
+        names(l[l])[1]
+      } else {
+        gsub("^.* |>$", "",
+          capture_output(
+            print.default(.)
+          )[[1]]
+        )
+      }
     }
 
   } else {
     e <- get(., envir)
-    if (exists("..Name", e, inherits = FALSE)) {
-      e$..Name
+    if (exists('..Name', e, inherits = FALSE)) {
+      e[['..Name']]
     } else {
       .
     }
