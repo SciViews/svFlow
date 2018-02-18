@@ -1,0 +1,31 @@
+---
+title: "(Work)flow and alternate pipe operator, rationale"
+author: "Philippe Grosjean"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{(Work)flow and pipe operator rationale}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Pure, predictable, pipeable, ... and data-aware
+
+Hadley Wickham advocates for pure, predictable and pipeable functions in the tidyverse. Although non-standard evaluation (NSE) make many of those functions not referentially transparent, which makes their use in reusable contexts more difficult, this also contributes to a cleaner language, at least for beginneRs. With **flow** we want both to make tidyverse-style NSE more easily reuseable, and the data analysis workflow based on pipelines and the pipe operator (**magrittr**'s pipe operator in tidyverse) even more data-aware.
+
+### Choice of the name
+
+**flow**, because it is short. However, it is already used elsewhere in the big R ecosystem, but as is **workflow** and **workplan** anyway.
+
+The **performanceEstimation** package has **Workflow** object and a `Workflow()` function. Also, the **zoon** package has a `workflow()` function, but it creates a **zoonWorkflow** object, so no clash here. In the **drake** package, there is also a `workflow()` function, but deprecated in favor of `workplan()`. **drake** is used to organise different analyses in **data.frame**s. Hence, as we see hare, **workflow** or **workplan** names are already preatty used in the R ecosystem.
+
+There is the **flowr** package which uses (internal) `flow()`, and `is.flow()` functions, and a **flow** S3 object. This is for complex, bioinformatics (work)flows, but of course, the source of potential problems when both **flowr** and **flow** packages are used simultaneously, if both objects bear the same class name. That is why in **flow**, objects are named **Flow** with an uppercase F, to avoid such a conflict.
+

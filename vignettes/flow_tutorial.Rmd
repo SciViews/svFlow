@@ -1,0 +1,77 @@
+---
+title: "(Work)flow and alternate pipe operator, tutorial"
+author: "Philippe Grosjean"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{(Work)flow and pipe operator tutorial}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+...
+
+
+```{r}
+# TODO: to be reworked!
+library(dplyr)
+y <- 1.5
+iris %>.%
+  filter(., Sepal.Length < 5) %>.%
+  filter(., Petal.Length < y) %>.%
+  mutate(., logSL = log(Sepal.Length)) %>.%
+  head(.) %>.% .
+
+flow(iris, var = ~Petal.Length, threshold = 1.5) %>.%
+  filter(., Sepal.Length < 5) %>.%
+  filter(., !!var < ..$threshold) %>.%
+  {..$tab <- mutate(., logSL = log(Sepal.Length))} %>.%
+  head(.) %>.% .
+```
+
+
+```{r}
+# Create a flow from flow code (transform %>.% into ->.; in function body!)
+#transform1 <-
+#  flow_function(x, var = Petal.Length, y = 1.5) %.>%
+#  filter(., Sepal.Length < 5) %.>%
+#  filter(., !! var < y) %.>%
+#  mutate(., logSL = log(Sepal.Length)) %.>%
+#  head(.) %.>% .
+```
+
+# Manage branches
+
+The `flow()` objects can be compared to branches of git repositories (although with automatic updates from master branch). It could be nice to keep this comparison as close as possible and to make both logics similar, so that one can work similarly with `flow()` and with git?! We need tools to create, delete, switch to, merge (into master only?), and rebase + diff.
+
+The biggest difference is that branches in git terms do not dynamically heritate objects from parents but **proto**/**Flow** objects do (in this case, **master** branch is indeed the ancestor).
+
+```{r}
+# Create a new branch called lda
+#..$branch("lda", model = mlLda(Species ~ ., data = .))
+# Switching to a branch or referring to a branch: use one of those two syntaxes
+#..@lda(model = mlLda(Species ~ ., data = .))
+#..(lda)(model = mlLda(Species ~ ., data = .))
+```
+
+Note that refering to a branch in a **Flow** object should be using a similar syntax as refering to a function in a package with the **use** package:
+
+```{r}
+#R_@stats$median
+#R(stats)$median
+#stats_ <- R_@stats
+#stats_$median
+```
+
+
+## Visual map of Flow objects inheritance
+
+**TODO:** in an older version of the **proto** package, there was a nice `graph.proto()` function, and I made my own one with other dependencies => reimplement it for **flow** in order to show the workflow in a similar way a git repository is often depicted.

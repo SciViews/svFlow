@@ -13,16 +13,25 @@ is_bare_formula <- function(x)
 
 is.bare_formula <- is_bare_formula
 
-f_drop_lhs <- function(x)
-  if (!is_null(f_lhs(x))) x[-2]
+f_drop_lhs <- function(x) {
+  lhs <- f_lhs(x)
+  if (is_null(lhs)) {
+    x
+  } else {# Drop lhs
+    x[-2]
+  }
+}
 
 .as_quosure_formula <- function(x, env = caller_env()) {
   # A quosure does not have lhs, so, drop if if present (second term)
-  if (!is_null(f_lhs(x)))
+  lhs <- f_lhs(x)
+  if (!is_null(lhs))
     x <- x[-2]
+
   # A quosure always has an environment, so, fix it if not there
   if (!is_null(env) && is_null(f_env(x)))
     f_env(x) <- env
+
   class(x) <- c('quosure', 'formula')
   x
 }
@@ -30,10 +39,13 @@ f_drop_lhs <- function(x)
 as_quosure <- function(x, env = caller_env()) {
   if (is_quosure(x)) {
     x
+
   } else if (is_bare_formula(x)) {
     .as_quosure_formula(x, env)
+
   } else if (is_symbolic(x)) {
     new_quosure(x, env)
+
   } else {
     new_quosure(x, empty_env())
   }
@@ -41,9 +53,8 @@ as_quosure <- function(x, env = caller_env()) {
 
 as.quosure <- as_quosure
 
-
 `-.formula` <- function(e1, e2) {
-  # Same as as.quosure(), but allows a more compact notation -~expr
+  # Same as as.quosure(), but allows for a more compact notation -~expr
   # Warning: if the formula was subclassed, it is still converted. This is
   # different than as.quosure()!
   if (missing(e2)) {
@@ -70,9 +81,9 @@ quos_underscore <- function(...) {
   #
   # rlang does not export dots_capture() that we could use here, and list(...)
   # does evaluate all arguments in ... So, one (suboptimal) solution is to
-  # convert all ... arguments into quosures, and then, to evaluate those in the
-  # list whose name does not end with '_'
-  # TODO: reimplement later with something more efficient!
+  # convert all ... arguments into quosures using rlang::quos(), and then, to
+  # evaluate those in the list whose name does not end with '_'
+  # TODO: reimplement of course later with something more efficient!
   dots <- quos(...)
   dots_names <- names(dots)
   l_names <- nchar(dots_names)
