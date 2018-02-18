@@ -39,6 +39,7 @@
 #' @examples
 #' # TODO...
 debug_flow <- function() {
+  # TODO: cleanup of the calling stack on error!
   # TODO: take into account flow() environment and call reworking and report
   # these clearly to better understand what is done with the %>+% operator!
   env <- caller_env()
@@ -70,20 +71,25 @@ debug_flow <- function() {
   # assigns result of expr to .value inside .., in case of a Flow object
   expr2 <- substitute(expr)
   env <- caller_env()
-  env[[".call"]] <- expr2
 
   if (is_flow(x)) {
+    on.exit({
+      env[[".call"]] <- expr2
+      x[[".call"]] <- expr2
+    })
+
     if (expr2 == ".")
       return(x[[".value"]])
 
     env[["."]] <- x[[".value"]]
     env[[".."]] <- x
-    x[[".call"]] <- expr2
     x[[".value"]] <- expr
 
     x
 
   } else {# Not a Flow object
+    on.exit(env[[".call"]] <- expr2)
+
     env[["."]] <- x
 
     expr
@@ -107,7 +113,7 @@ debug_flow <- function() {
   env <- caller_env()
   env[["."]] <- x[[".value"]]
   env[[".."]] <- x
-  env[[".call_raw"]] <- expr2
+  on.exit(env[[".call_raw"]] <- expr2)
 
   # Need to surround ..$var_ with UQ(), and perform other "magics" arround NSE
   # TODO: do that on the parsed tree directly!
@@ -126,8 +132,10 @@ debug_flow <- function() {
     expr2)
   expr2 <- parse(text = expr2)
 
-  env[[".call"]] <- expr2
-  x[[".call"]] <- expr2
+  on.exit({
+    env[[".call"]] <- expr2
+    x[[".call"]] <- expr2
+  }, add = TRUE)
   x[[".value"]] <- eval(expr2, envir = env)
 
   x

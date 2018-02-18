@@ -1,4 +1,4 @@
-# flow
+# flow - Workflow management and alternate pipe operator.
 
 [![Linux & OSX Build Status](https://travis-ci.org/SciViews/flow.svg )](https://travis-ci.org/SciViews/flow)
 [![Win Build Status](https://ci.appveyor.com/api/projects/status/github/SciViews/flow?branch=master&svg=true)](http://ci.appveyor.com/project/phgrosjean/flow)
@@ -6,8 +6,6 @@
 ](https://codecov.io/github/SciViews/flow?branch=master)
 [![CRAN Status](http://www.r-pkg.org/badges/version/flow)](http://cran.r-project.org/package=flow)
 [![License](https://img.shields.io/badge/license-GPL-blue.svg)](http://www.gnu.org/licenses/gpl-2.0.html)
-
-flow -Workflow management and alternate pipe operator.
 
 
 ## Installation
@@ -32,7 +30,7 @@ install.packages("devtools")
 Use `install_github()` to install the **flow** package from Github (source from **master** branch will be recompiled on your machine):
 
 ```r
-devtools::install_github("SciViews/flow")
+devtools::install_github("SciViews/flow", build_vignettes = TRUE)
 ```
 
 R should install all required dependencies automatically, and then it should compile and install **flow**.

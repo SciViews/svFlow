@@ -19,13 +19,63 @@ knitr::opts_chunk$set(
 
 ## Pure, predictable, pipeable, ... and data-aware
 
-Hadley Wickham advocates for pure, predictable and pipeable functions in the tidyverse. Although non-standard evaluation (NSE) make many of those functions not referentially transparent, which makes their use in reusable contexts more difficult, this also contributes to a cleaner language, at least for beginneRs. With **flow** we want both to make tidyverse-style NSE more easily reuseable, and the data analysis workflow based on pipelines and the pipe operator (**magrittr**'s pipe operator in tidyverse) even more data-aware.
+Hadley Wickham advocates for pure, predictable and pipeable functions in the tidyverse. Although non-standard evaluation (NSE) make many of the functions in tidyverse not referentially transparent (which makes them ore difficult in reusable contexts like a function) this also contributes to a cleaner language, at least for beginneRs. With **flow** we want both to make tidyverse-style NSE more easily reuseable, and the data analysis workflow based on pipelines and the pipe operator (**magrittr**'s pipe operator in tidyverse) even more data-aware.
 
-### Choice of the name
+## Choice of the name
 
 **flow**, because it is short. However, it is already used elsewhere in the big R ecosystem, but as is **workflow** and **workplan** anyway.
 
 The **performanceEstimation** package has **Workflow** object and a `Workflow()` function. Also, the **zoon** package has a `workflow()` function, but it creates a **zoonWorkflow** object, so no clash here. In the **drake** package, there is also a `workflow()` function, but deprecated in favor of `workplan()`. **drake** is used to organise different analyses in **data.frame**s. Hence, as we see hare, **workflow** or **workplan** names are already preatty used in the R ecosystem.
 
 There is the **flowr** package which uses (internal) `flow()`, and `is.flow()` functions, and a **flow** S3 object. This is for complex, bioinformatics (work)flows, but of course, the source of potential problems when both **flowr** and **flow** packages are used simultaneously, if both objects bear the same class name. That is why in **flow**, objects are named **Flow** with an uppercase F, to avoid such a conflict.
+
+
+## A simpler and more efficient pipe operator?
+
+The **wrapr** package provides an alternate pipe operator: `%.>%`, the "dot arrow pipe". It is very simple:
+
+> "a %.>% b" is to be treated as if the user had written "{ . <- a; b };" with "%.>%" being treated as left-associative.
+
+There are three interesting points with this pipe operator:
+
+1. It does not alter the expression evaluated, and the dot can be placed everywhere is the expression. It means that _any_ expression is suitable and is "pipe-aware" with this operator.
+2. It is _explicit_, that is, you don't have to guess what will happen, the location of the dot replacement in the expression is explictly indicated. It makes it also easier to understand from a beginneR's point of view.
+3. Since the expression is not reworked, it is very, very fast in comparison to the complex-rules that must be computed eech time you cal magrittr's `%>%`.
+
+The only drawback with this pipe operator is that it is not pure, since it modifies the calling environment (it assigns `.` in it before evaluation the expression at right). However, if you never use `.` as a name for other objects, this is not much a problem. In **wrapr**, there is a synonym: `%>.%`, but that its author never uses in the examples, vignettes or on its blog. So, we decide to reuse `%>.%` as our pipe operator in `SciViews::R`. We add two things in it:
+
+1. It is also aware of **Flow** objects (see here under) and behaves accordingly,
+
+2. The expression to be evaluated is also recorded in the calling environment as `.call`. this way, it becomes easy to debug the last expression that failed during the pipeline execution (since `.` is also available, one can inspect it, or rerun `eval(.call)`, ... or use `debug_flow()` to get extra information):
+
+```{r error=TRUE}
+library(flow)
+# An example pipeline with an error in the middle:
+library(dplyr)
+iris %>.%
+  filter(., Sepal.Length < 5.1, Sepal.Width < 3.1) %>.%
+  mutate(., logS = log(Species)) %>.%
+  group_by(., Species) %>.%
+  summarise(., mean_logS = mean(logS))
+```
+
+```{r error=TRUE}
+# Both . and .call are available and can be explored
+head(.)
+.call
+eval(.call)
+```
+
+... or even more easily:
+
+```{r error=TRUE}
+debug_flow()
+```
+
+From there, you can manipulate `.`, `.call`, or both, and rerun `debug_flow()` to look for a fix of the problem.
+
+
+## Mixing Pipe() and proto(): the Flow object
+
+In **pipeR**, Kun Ren proposes several alternative pipe operators to the now traditional magrittr's one (`%>%`). `Pipe()` is interesting since it encapsulates essentially the pipeline steps inside an object. The pipe operator is then replaced by `$`. It is striking to note the similitude of the `$` operator for **Pipe** and **proto** objetcs (from the **proto** package), although they are designed for different purposes in mind. The **proto** objects are class-less prototype-based objects that support simple inheritance. They are convenient to manipulate sets of objects in a common place, and internally, tey use an environment to store these objects. **Pipe** objects also use internally an environment to store everything related to the pipeline operations. However, there is no mean to add custom objects, nor to define inheritance between **Pipe** objects. Temporary variables may be used in pipelines, and they are currently placed in the calling environment (usually `.GlobalEnv`), and they "pollute" them. There is no mean to define "local" variables like, say in function, with the pipe. Yet, if we could combine **Pipe** behaviour for pipeline operation, with **proto** objects to store locally various items and allow inheritance, this would be a wonderful way to drive analyses workflows. The **Flow** object just does that!
 
