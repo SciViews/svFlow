@@ -1,41 +1,34 @@
-is_quosure <- function(x)
-  x %is% 'quosure'
-
-is.quosure <- is_quosure
-
-is_formula <- function(x)
-  x %is% 'formula'
-
-is.formula <- is_formula
-
-is_bare_formula <- function(x)
-  is_true(class(x) == 'formula')
-
-is.bare_formula <- is_bare_formula
-
-f_drop_lhs <- function(x) {
-  lhs <- f_lhs(x)
-  if (is_null(lhs)) {
-    x
-  } else {# Drop lhs
-    x[-2]
-  }
-}
-
-.as_quosure_formula <- function(x, env = caller_env()) {
-  # A quosure does not have lhs, so, drop if if present (second term)
-  lhs <- f_lhs(x)
-  if (!is_null(lhs))
-    x <- x[-2]
-
-  # A quosure always has an environment, so, fix it if not there
-  if (!is_null(env) && is_null(f_env(x)))
-    f_env(x) <- env
-
-  class(x) <- c('quosure', 'formula')
-  x
-}
-
+#' Create and manipulate quosures easily
+#'
+#' Quosures are defined in **rlang** package as part of the tidy evaluation of
+#' non-standard evaluations (see [quo()]). Here, we provide an alternate
+#' mechanism using `-~expr` as a synonym of `quo(expr)`, but faster. Also,
+#' `UQ(quo)` or `!!quo` in **rlang** is just here `+quo`.
+#'
+#' @param x An expression
+#' @param env An environment specified for lexical scoping of the quosure.
+#' @param e1 Unary operator member, or first member of a binary operator.
+#' @param e2 Second member of a binary operator (not used here).
+#'
+#' @details `-` is defined as an unary minus operator for **formula** objects
+#' (which is *not* defined in base R, hence, not supposed to be used otherwise).
+#' Thus, `-~expr` jsut converts a formula build using the base `~expr`
+#' instruction into a quosure. `as_quosure()` does the same, when expression is
+#' provided directly.
+#'
+#' Similarly, the unary `+` operator is defined for **quosure** in order to
+#' easily "reverse" the mechanism of equosing an expression with a logical
+#' complimentary operator. It does the same as `!!` in **rlang**, but it has
+#' higher syntax precedence than `!`, and is thus less susceptible to require
+#' parentheses (only `^` for exponentiation, indexing/subsetting operators like
+#' `$` or `[`, and namespace operators `::` and `:::` have higher precedence).
+#' @export
+#' @name quosure
+#' @seealso [quos_underscore()], [%>+%]
+#' @keywords utilities
+#' @concept expression encapsulation for non-standard evaluation
+#' @examples
+#' # TODO...
 as_quosure <- function(x, env = caller_env()) {
   if (is_quosure(x)) {
     x
@@ -51,8 +44,39 @@ as_quosure <- function(x, env = caller_env()) {
   }
 }
 
+#' @export
+#' @rdname quosure
 as.quosure <- as_quosure
 
+#' @export
+#' @rdname quosure
+is_quosure <- function(x)
+  x %is% 'quosure'
+
+#' @export
+#' @rdname quosure
+is.quosure <- is_quosure
+
+#' @export
+#' @rdname quosure
+is_formula <- function(x)
+  x %is% 'formula'
+
+#' @export
+#' @rdname quosure
+is.formula <- is_formula
+
+#' @export
+#' @rdname quosure
+is_bare_formula <- function(x)
+  is_true(class(x) == 'formula')
+
+#' @export
+#' @rdname quosure
+is.bare_formula <- is_bare_formula
+
+#' @export
+#' @rdname quosure
 `-.formula` <- function(e1, e2) {
   # Same as as.quosure(), but allows for a more compact notation -~expr
   # Warning: if the formula was subclassed, it is still converted. This is
@@ -66,6 +90,8 @@ as.quosure <- as_quosure
   }
 }
 
+#' @export
+#' @rdname quosure
 `+.quosure` <- function(e1, e2) {
   # + -~expr is like UQE(quo(expr)) or UQ(quo(expr)) inside %>+% pipe
   # expressions thanks to some black magic in this operator
@@ -76,6 +102,23 @@ as.quosure <- as_quosure
   }
 }
 
+
+# Convert names_ to quosures ----------------------------------------------
+
+#' Convert names ending with _ into quosures automatically
+#'
+#' All names that end with _ are automatically converted into quosures. The
+#' other arguments are evaluated.
+#'
+#' @param ... The named arguments provided to be either converted into quosures
+#' or evaluated.
+#'
+#' @export
+#' @seealso [as_quosure()], [%>+%]
+#' @keywords utilities
+#' @concept automatic quosures creation for non-standard evaluation
+#' @examples
+#' # TODO...
 quos_underscore <- function(...) {
   # Transform into closures only those items whose name ends with _
   #

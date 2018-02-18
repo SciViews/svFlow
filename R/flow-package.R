@@ -7,6 +7,14 @@
 #'
 #'- [flow()] constructs a `flow` object.
 #'
+#' - [as_quosure()], and unary `+` and `-` operators combined with **formula**
+#'   objects provide an alternate way to manipulate **quosure**s.
+#'
+#' - [quos_underscore()] automatically convert arguments whose name ends with
+#'   `_` into **quosure**s, and this mechanism is used by our pipe operators.
+#'
+#' - [debug_flow()] provides a convenient way to debug problematic pipelines
+#'   build with our own pipe operators `%>.%` and `%>+%`.
 #' @docType package
 #' @name flow-package
 #'
@@ -16,7 +24,9 @@
 #' @importFrom utils capture.output str
 NULL
 
-# These function are not exported
+
+# Non-exported functions --------------------------------------------------
+
 `%is%` <- inherits # This is more expressive!
 
 is_null <- is.null # rlang::is_null is much slower!
@@ -37,7 +47,7 @@ env_parent <- parent.env
 
 # rlang uses ctxt_frame() and call_frame() in place of base::parent.frame() but
 # it appears more complex for simple use. Hence call_frame(2)$env is the same as
-# parent.frame()... So, I keep parent;frame() for now!
+# parent.frame()... But there is caller_env() as shortcut for the same purpose!
 
 # Again, rlang::is_function is 10x slower than base::is.function(), so:
 is_function <- is.function
@@ -47,11 +57,40 @@ is_function <- is.function
 # as.character() does. So, it is called as_chr()
 as_chr <- as.character
 
+# rlang uses env_has() and env_get() in place of exists() and get(), but with
+# the environment as first argument (and also cannot specify mode). It can
+# extract environments from objects like formulas or quosures, but then, they
+# are more than 10x slower than exists() or get() (and get0()). So, for now, I
+# stick with exists()/get() in my code...
+
 # Further base/utils functions rename for consistent snake_case notation...
 is_chr <- is.character
 is_env <- is.environment
 stop_if_not <- stopifnot
 capture_output <- capture.output
+
+#f_drop_lhs <- function(x) {
+#  lhs <- f_lhs(x)
+#  if (is_null(lhs)) {
+#    x
+#  } else {# Drop lhs
+#    x[-2]
+#  }
+#}
+
+.as_quosure_formula <- function(x, env = caller_env()) {
+  # A quosure does not have lhs, so, drop if if present (second term)
+  lhs <- f_lhs(x)
+  if (!is_null(lhs))
+    x <- x[-2]
+
+  # A quosure always has an environment, so, fix it if not there
+  if (!is_null(env) && is_null(f_env(x)))
+    f_env(x) <- env
+
+  class(x) <- c('quosure', 'formula')
+  x
+}
 
 # name.proto() is not exported from the proto package. So, this is a copy here
 .name_flow <- function(., envir = parent.frame()) {
