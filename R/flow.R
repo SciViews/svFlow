@@ -70,8 +70,8 @@ flow <- function(. = NULL, .value = NULL, ...) {
       args_list$.value <- .value
 
     structure(
-      do_call(proto, c(args_list, quos_underscore(...)),
-      class = flow_class))
+      do_call(proto, c(args_list, quos_underscore(...))),
+      class = flow_class)
   }
 }
 
@@ -169,6 +169,7 @@ print.Flow <- function(x, ...) {
 #' # TODO...
 str.Flow <- function(object, max.level = 1, nest.lev = 0,
 indent.str = paste(rep.int(" ", max(0, nest.lev + 1)), collapse = ".."), ...) {
+  # TODO: rework this and also indicate current .value (and .call)?
   # Same as str.proto(), but indicate it is a Flow object
   cat("Flow", .name_flow(object), "\n")
 

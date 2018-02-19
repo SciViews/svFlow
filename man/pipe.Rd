@@ -30,10 +30,13 @@ With \code{\%>.\%}, the value must be explicitly indicated with a
 is first assigned into the calling environment as \code{.} (warning! possibly
 replacing any existing value... do \strong{not} use \code{.} to name other objects).
 Also the expression is saved as \code{.call} in the calling environment so that
-\code{debug_flow()} can retrieve are rerun it easily.
+\code{debug_flow()} can retrieve are rerun it easily. If a \strong{Flow} object is used
+with \code{\%>.\%}, the \code{.value} is extracted from it into \code{.}first (and thus
+the \strong{Flow} object is lost).
 
-In the case of \strong{Flow} objects, it is also assigned in the calling
-environment as \code{..}.
+In the case of \code{\%>+\%} the \strong{Flow} object passed or created, it is
+also assigned in the calling environment as \code{..}. This can be used to refer
+to \strong{Flow} object content within the pipeline expressions.
 
 For \code{\%>+\%}, the expression is reworked like this. First, \code{++} is
 interpreted as "get from the \strong{Flow} object, or inherited environment, and
@@ -44,10 +47,9 @@ argument, it is added. The raw expression is saved as \code{.call_raw}, while th
 reworked call is saved as \code{.call} for possible further inspection and
 debugging.
 
-Finally, for both \code{\%>.\%} and \code{\%>+\%}, if \code{x} is a \strong{Flow}
-object, and \code{expr} is \code{.}, then, the last value from the pipe is extracted
-from the \strong{Flow} object and returned. It is equivalent, thus, to
-\code{flow_obj$.value}.
+Finally, for \code{\%>+\%}, if \code{expr} is \code{.}, then, the last value from the
+pipe is extracted from the \strong{Flow} object and returned. It is equivalent,
+thus, to \code{flow_obj$.value}.
 }
 \examples{
 # TODO...

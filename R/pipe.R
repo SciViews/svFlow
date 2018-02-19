@@ -15,10 +15,13 @@
 #' is first assigned into the calling environment as `.` (warning! possibly
 #' replacing any existing value... do **not** use `.` to name other objects).
 #' Also the expression is saved as `.call` in the calling environment so that
-#' `debug_flow()` can retrieve are rerun it easily.
+#' `debug_flow()` can retrieve are rerun it easily. If a **Flow** object is used
+#' with \code{\%>.\%}, the `.value` is extracted from it into `.`first (and thus
+#' the **Flow** object is lost).
 #'
-#' In the case of **Flow** objects, it is also assigned in the calling
-#' environment as `..`.
+#' In the case of \code{\%>+\%} the **Flow** object passed or created, it is
+#' also assigned in the calling environment as `..`. This can be used to refer
+#' to **Flow** object content within the pipeline expressions.
 #'
 #' For \code{\%>+\%}, the expression is reworked like this. First, `++` is
 #' interpreted as "get from the **Flow** object, or inherited environment, and
@@ -29,10 +32,9 @@
 #' reworked call is saved as `.call` for possible further inspection and
 #' debugging.
 #'
-#' Finally, for both \code{\%>.\%} and \code{\%>+\%}, if `x` is a **Flow**
-#' object, and `expr` is `.`, then, the last value from the pipe is extracted
-#' from the **Flow** object and returned. It is equivalent, thus, to
-#' `flow_obj$.value`.
+#' Finally, for \code{\%>+\%}, if `expr` is `.`, then, the last value from the
+#' pipe is extracted from the **Flow** object and returned. It is equivalent,
+#' thus, to `flow_obj$.value`.
 #' @seealso [flow()], [quos_underscore()]
 #' @keywords utilities
 #' @concept pipeline operators and debugging
@@ -62,38 +64,22 @@ debug_flow <- function() {
 #' @export
 #' @rdname pipe
 `%>.%` <- function(x, expr) {
-  # TODO: should it be 100% compatible with wrapr %>.%, or flow() aware?
   # Our own pipe operator, which requires explicit indication of .
-  # It is compatible with wrapr's `%>.%` operator, but slightly faster when x
-  # is *not* a Flow object, otherwise, it is flow-aware, and behaves differently
-  #
-  # Now, `$` keeps the same behaviour as with proto objects, but `%>.%` now
-  # assigns result of expr to .value inside .., in case of a Flow object
+  # It is compatible with wrapr %.>% alias %>.%, except for Flow objects
+  # where it extracts x$.value into . first.
+
   expr2 <- substitute(expr)
   env <- caller_env()
 
+  on.exit(env[[".call"]] <- expr2)
+
   if (is_flow(x)) {
-    on.exit({
-      env[[".call"]] <- expr2
-      x[[".call"]] <- expr2
-    })
-
-    if (expr2 == ".")
-      return(x[[".value"]])
-
-    env[["."]] <- x[[".value"]]
-    env[[".."]] <- x
-    x[[".value"]] <- expr
-
-    x
-
-  } else {# Not a Flow object
-    on.exit(env[[".call"]] <- expr2)
-
+    env[["."]] <- x$.value
+  } else {
     env[["."]] <- x
-
-    expr
   }
+
+  expr
 }
 
 #' @export
@@ -126,7 +112,6 @@ debug_flow <- function() {
     "(?<![._a-zA-Z0-9])(\\.\\.\\$[._a-zA-Z0-9]+_)(?![._a-zA-Z0-9])", "UQ(\\1)",
     expr2, perl = TRUE)
   # This is for the dot-allergic => allow to omit ., if expr starts with 'fun('
-  # TODO: should I keep this, or should I impose to *always* indicate '.'?
   expr2 <- sub(
     "^([.a-zA-Z][._a-zA-Z0-9]*\\s*\\()\\s*([^.]|\\.\\s*[^,])", "\\1., \\2",
     expr2)

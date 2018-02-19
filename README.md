@@ -1,4 +1,4 @@
-# flow - Workflow management and alternate pipe operator.
+# flow - Workflow management and alternate pipe operator
 
 [![Linux & OSX Build Status](https://travis-ci.org/SciViews/flow.svg )](https://travis-ci.org/SciViews/flow)
 [![Win Build Status](https://ci.appveyor.com/api/projects/status/github/SciViews/flow?branch=master&svg=true)](http://ci.appveyor.com/project/phgrosjean/flow)
