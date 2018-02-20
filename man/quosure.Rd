@@ -11,7 +11,10 @@
 \alias{is_bare_formula}
 \alias{is.bare_formula}
 \alias{-.formula}
+\alias{^.quosure}
 \alias{+.quosure}
+\alias{+.unquoted}
+\alias{print.unquoted}
 \title{Create and manipulate quosures easily}
 \usage{
 as_quosure(x, env = caller_env())
@@ -32,7 +35,13 @@ is.bare_formula(x)
 
 \method{-}{formula}(e1, e2)
 
+\method{^}{quosure}(e1, e2)
+
 \method{+}{quosure}(e1, e2)
+
+\method{+}{unquoted}(e1, e2)
+
+\method{print}{unquoted}(x, ...)
 }
 \arguments{
 \item{x}{An expression}
@@ -41,7 +50,9 @@ is.bare_formula(x)
 
 \item{e1}{Unary operator member, or first member of a binary operator.}
 
-\item{e2}{Second member of a binary operator (not used here).}
+\item{e2}{Second member of a binary operator (not used here, except for \code{^}).}
+
+\item{...}{Further arguments passed to the \code{print()} method (not used yet).}
 }
 \description{
 Quosures are defined in \strong{rlang} package as part of the tidy evaluation of

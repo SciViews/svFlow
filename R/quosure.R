@@ -8,7 +8,8 @@
 #' @param x An expression
 #' @param env An environment specified for lexical scoping of the quosure.
 #' @param e1 Unary operator member, or first member of a binary operator.
-#' @param e2 Second member of a binary operator (not used here).
+#' @param e2 Second member of a binary operator (not used here, except for `^`).
+#' @param ... Further arguments passed to the `print()` method (not used yet).
 #'
 #' @details `-` is defined as an unary minus operator for **formula** objects
 #' (which is *not* defined in base R, hence, not supposed to be used otherwise).
@@ -92,16 +93,43 @@ is.bare_formula <- is_bare_formula
 
 #' @export
 #' @rdname quosure
+`^.quosure` <- function(e1, e2)
+  eval(f_rhs(e1), envir = f_env(e1), enclos = caller_env(2))^e2
+
+#' @export
+#' @rdname quosure
 `+.quosure` <- function(e1, e2) {
-  # + -~expr is like UQE(quo(expr)) or UQ(quo(expr)) inside %>+% pipe
-  # expressions thanks to some black magic in this operator
   if (missing(e2)) {
-    f_rhs(e1)
+    expr <- f_rhs(e1)
+    # Weird things happen with names, when setting attributes to them!
+    # So, we transform them into other objects: 'name' becomes '(name)'
+    if (is.name(expr))
+      expr <- call('(', expr)
+    unquo <- structure(expr, .Environment = f_env(e1))
+    class(unquo) <- unique(c("unquoted", class(unquo)))
+    unquo
   } else {
     abort("binary + is not allowed for quosures")
   }
 }
 
+#' @export
+#' @rdname quosure
+`+.unquoted` <- function(e1, e2) {
+  if (missing(e2)) {
+    eval(e1, envir = attr(e1, ".Environment"), enclos = caller_env(2))
+  } else {
+    abort("binary + is not allowed for unquoted objects")
+  }
+}
+
+#' @export
+#' @rdname quosure
+print.unquoted <- function(x, ...) {
+  cat(deparse(x), "\n")
+  print(attr(x, ".Environment"))
+  invisible(x)
+}
 
 # Convert names_ to quosures ----------------------------------------------
 
