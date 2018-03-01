@@ -48,7 +48,7 @@ debug_flow <- function() {
   pipe_data <- env[["."]]
   pipe_call <- env[[".call"]]
 
-  if (is_null(pipe_data) || is.null(pipe_call))
+  if (is_null(pipe_data) || is_null(pipe_call))
     abort("no flow pipe context to debug")
 
   cat("Last expression run in the pipeline:\n")

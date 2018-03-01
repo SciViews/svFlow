@@ -58,8 +58,7 @@ is_quosure <- function(x)
 #' @rdname quosure
 is.quosure <- is_quosure
 
-#' @export
-#' @rdname quosure
+# Do not export this, because it mask a function of the same name in purrr
 is_formula <- function(x)
   x %is% 'formula'
 
@@ -106,7 +105,7 @@ is.bare_formula <- is_bare_formula
     if (is.name(expr))
       expr <- call('(', expr)
     unquo <- structure(expr, .Environment = f_env(e1))
-    class(unquo) <- unique(c("unquoted", class(unquo)))
+    class(unquo) <- c("unquoted", class(unquo))
     unquo
   } else {
     abort("binary + is not allowed for quosures")

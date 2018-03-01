@@ -6,7 +6,6 @@
 \alias{as.quosure}
 \alias{is_quosure}
 \alias{is.quosure}
-\alias{is_formula}
 \alias{is.formula}
 \alias{is_bare_formula}
 \alias{is.bare_formula}
@@ -24,8 +23,6 @@ as.quosure(x, env = caller_env())
 is_quosure(x)
 
 is.quosure(x)
-
-is_formula(x)
 
 is.formula(x)
 
