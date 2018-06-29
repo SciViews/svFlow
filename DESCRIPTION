@@ -1,7 +1,7 @@
 Package: flow
 Type: Package
 Version: 1.0.0
-Date: 2018-02-16
+Date: 2018-06-28
 Title: Data Analysis Work Flow and Alternate Pipeline Operator
 Description: Data work flow analysis using 'proto' objects and pipe operator
   that integrates non-standard evaluation and the 'lazyeval' mechanism.
