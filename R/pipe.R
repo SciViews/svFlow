@@ -67,18 +67,13 @@ debug_flow <- function() {
   # Our own pipe operator, which requires explicit indication of .
   # It is compatible with wrapr %.>% alias %>.%, except for Flow objects
   # where it extracts x$.value into . first.
-
-  expr2 <- substitute(expr)
   env <- caller_env()
-
-  on.exit(env[[".call"]] <- expr2)
-
   if (is_flow(x)) {
     env[["."]] <- x$.value
   } else {
     env[["."]] <- x
   }
-
+  env[[".call"]] <- substitute(expr)
   expr
 }
 

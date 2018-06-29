@@ -20,8 +20,9 @@
 #' @name flow-package
 #'
 #' @import proto
-#' @importFrom rlang abort warn caller_env empty_env f_env f_env<- f_lhs f_rhs
-#'   is_symbolic is_true new_quosure quos !!
+#' @importFrom rlang abort warn caller_env empty_env env_parent f_env f_env<-
+#'   f_lhs f_rhs is_function is_symbolic is_true new_quosure quos !!
+#'   eval_tidy get_expr quo_get_env quo_get_expr
 #' @importFrom utils capture.output str
 NULL
 
@@ -33,28 +34,19 @@ NULL
 
 is_null <- is.null # rlang::is_null is much slower!
 
-child_env <- function(.parent, ...) {
+child_env2 <- function(.parent, ...) {
   # A faster child_env() than rlang::child_env(), but that does not convert
   # .parent and ignores ...
   new.env(parent = .parent)
 }
 
-# rlang proposes invoke() in place of do.call(), but it is 100x slower! So:
+# rlang proposes invoke() in place of do.call(), but it is 20x slower! So:
 do_call <- function(what, ...)
   do.call(what, ...)
-
-# rlang::env_parent(env, n = 1) is supposed to replace parent.env(), but it is
-# 25x time slower, and we don't need to specify something else than n = 1 here.
-# So, we redefine it simply for speed as:
-env_parent <- function(env)
-  parent.env(env)
 
 # rlang uses ctxt_frame() and call_frame() in place of base::parent.frame() but
 # it appears more complex for simple use. Hence call_frame(2)$env is the same as
 # parent.frame()... But there is caller_env() as shortcut for the same purpose!
-
-# Again, rlang::is_function is 10x slower than base::is.function(), so:
-is_function <- is.function
 
 # The as_character() and as_string() in rlang are difficult to understand. Here
 # we simply want a function that (tries) to convert anything into character, as
@@ -83,7 +75,7 @@ capture_output <- capture.output
 #}
 
 .as_quosure_formula <- function(x, env = caller_env()) {
-  # A quosure does not have lhs, so, drop if if present (second term)
+  # A quosure does not have lhs, so, drop it if present (second term)
   lhs <- f_lhs(x)
   if (!is_null(lhs))
     x <- x[-2]

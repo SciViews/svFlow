@@ -92,19 +92,38 @@ is.bare_formula <- is_bare_formula
 
 #' @export
 #' @rdname quosure
+`+.formula` <- function(e1, e2) {
+  # Both unquote and eval if it is a quosure, so +~ can be the opposite to ~-
+  if (missing(e2)) {
+    eval_tidy(eval(get_expr(e1)))
+    #if (!is_quosure(quo))
+    #  abort("unary +~ only applies to quosures")
+    #expr <- f_rhs(quo)
+    ##if (is.name(expr))
+    ##  expr <- call('(', expr)
+    #eval(expr, envir = attr(quo, ".Environment"), enclos = env)
+    #eval_tidy(quo)
+  } else {
+    abort("binary + is not allowed for formulas")
+  }
+}
+
+#' @export
+#' @rdname quosure
 `^.quosure` <- function(e1, e2)
-  eval(f_rhs(e1), envir = f_env(e1), enclos = caller_env(2))^e2
+  eval_tidy(e1)^e2
+  #eval((e1), envir = f_env(e1), enclos = caller_env(2))^e2
 
 #' @export
 #' @rdname quosure
 `+.quosure` <- function(e1, e2) {
   if (missing(e2)) {
-    expr <- f_rhs(e1)
+    expr <- quo_get_expr(e1)
     # Weird things happen with names, when setting attributes to them!
     # So, we transform them into other objects: 'name' becomes '(name)'
     if (is.name(expr))
       expr <- call('(', expr)
-    unquo <- structure(expr, .Environment = f_env(e1))
+    unquo <- structure(expr, .Environment = quo_get_env(e1))
     class(unquo) <- c("unquoted", class(unquo))
     unquo
   } else {
@@ -116,7 +135,8 @@ is.bare_formula <- is_bare_formula
 #' @rdname quosure
 `+.unquoted` <- function(e1, e2) {
   if (missing(e2)) {
-    eval(e1, envir = attr(e1, ".Environment"), enclos = caller_env(2))
+    #eval(e1, envir = attr(e1, ".Environment"), enclos = caller_env(2))
+    eval_tidy(e1)
   } else {
     abort("binary + is not allowed for unquoted objects")
   }

@@ -1,3 +1,9 @@
 # flow To Do list
 
-* ...
+* flow_function()
+
+* "branches", + rebase, etc.
+
+* graph to show the hierarchy of flow objects.
+
+* Complete vignettes.

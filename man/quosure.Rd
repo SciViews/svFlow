@@ -10,6 +10,7 @@
 \alias{is_bare_formula}
 \alias{is.bare_formula}
 \alias{-.formula}
+\alias{+.formula}
 \alias{^.quosure}
 \alias{+.quosure}
 \alias{+.unquoted}
@@ -31,6 +32,8 @@ is_bare_formula(x)
 is.bare_formula(x)
 
 \method{-}{formula}(e1, e2)
+
+\method{+}{formula}(e1, e2)
 
 \method{^}{quosure}(e1, e2)
 

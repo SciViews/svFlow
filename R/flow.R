@@ -51,20 +51,20 @@ flow <- function(. = NULL, .value = NULL, ...) {
   if (!is_flow(.)) {
     root <- structure(
       proto(
-        .GlobalEnv, envir = child_env(.GlobalEnv),
+        .GlobalEnv, envir = child_env2(.GlobalEnv),
         .value = NULL, .call = NULL),
       class = flow_class)
 
     if (!missing(.value)) . <- .value
     structure(
       do_call(proto,
-        c(list(root, envir = child_env(root), .value = .),
+        c(list(root, envir = child_env2(root), .value = .),
           quos_underscore(...))
       ),
       class = flow_class)
 
   } else {# New Flow object, inheriting .value and .call from the parent
-    args_list <- list(., envir = child_env(.))
+    args_list <- list(., envir = child_env2(.))
 
     if (!missing(.value))
       args_list$.value <- .value
