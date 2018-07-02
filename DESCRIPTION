@@ -9,7 +9,7 @@ Authors@R: c(person("Philippe", "Grosjean", role = c("aut", "cre"),
   email = "phgrosjean@sciviews.org"))
 Maintainer: Philippe Grosjean <phgrosjean@sciviews.org>
 Depends: R (>= 3.3.0)
-Imports: proto, rlang, utils
+Imports: proto, rlang (>= 0.2.0), utils
 Suggests: covr, knitr, testthat, dplyr
 Encoding: UTF-8
 ByteCompile: yes

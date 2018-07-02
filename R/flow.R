@@ -1,24 +1,24 @@
 #' Create Flow objects to better organize pipelines in R
 #'
 #' **Flow** objects, as explicitly created by `flow()`, or implicitly by the
-#' \code{\link{\%>+\%}} pipe operator are **proto** objects (class-less objects
+#' \code{\link{\%>_\%}} pipe operator are **proto** objects (class-less objects
 #' with possible inheritance) that can be compbined nicely with pipelines using
 #' the specialized flow pipe operators \code{\link{\%>.\%}} and
-#' \code{\link{\%>+\%}} (or by using `$`). They allow to encapsulated temporary
+#' \code{\link{\%>_\%}} (or by using `$`). They allow to encapsulate temporary
 #' variables related to the pipeline, and they automate the encapsulation of
 #' non-standard evaluations automatically with minimal changes required by the
-#' user (in comparison to the **rlang** tidy evalation mechanism).
+#' user (in comparison to the **rlang** tidy evalution mechanism).
 #'
 #' @param . If a **Flow** object is provided, herite from it, otherwise, create
 #' a new **Flow** object heritating from `.GlobalEnv` with `.` as pipe value.
 #' @param .value The pipe value to pass to the object (used in priority to `.`,
 #' in case both are provided).
-#' @param ... For `flow()`, named arguments of other objects to create inside the
-#' **Flow**. If the name ends with `_`, then, the expression is automatically
-#' captured inside a *$quosure** (see [quos_underscore()]). For `print()`,
-#' further arguments passed to the delegated `print_proto()` function (if it
-#' exists inside the **Flow** object), or to the `print()` method of the object
-#' inside `.value`.
+#' @param ... For `flow()`, named arguments of other objects to create inside
+#' the **Flow**. If the name ends with `_`, then, the expression is
+#' automatically captured inside a *$quosure** (see [quos_underscore()]).
+#' For `print()`, further arguments passed to the delegated `print_proto()`
+#' function (if it exists inside the **Flow** object), or to the `print()`
+#' method of the object inside `.value`.
 #' @param x An object (a **Flow** object, or anyting to test if it is a **Flow**
 #' object in `is_flow()`).
 #' @param name The name of the item to get from a **Flow** object. If `name`
@@ -26,7 +26,7 @@
 #' itself without inheritance (like for **proto** objects), but _the name is
 #' stripped from its leading two dots first_! If the content is a **quosure**,
 #' it is automatically unquoted, and for the assignation version, if name ends
-#' with `_`, the extression is automatically converted into a **quosure**.
+#' with `_`, the expression is automatically converted into a **quosure**.
 #' @param value The value or expression to assign to `name` inside the **Flow**
 #' object.
 #'
@@ -37,7 +37,7 @@
 #' **proto** objects, see [proto()].
 #' @export
 #' @name flow
-#' @seealso [str.Flow()], [quos_underscore()], \code{\link{\%>+\%}}
+#' @seealso [str.Flow()], [quos_underscore()], \code{\link{\%>_\%}}
 #' @keywords utilities
 #' @concept class-less objects for better R pipelines
 #' @examples
@@ -89,7 +89,7 @@ is.flow <- is_flow
 `$.Flow` <- function(x, name) {
   # This is essentially the same as `$.proto()`, but it unquotes name. Also,
   # if you specify obj$..name, it looks at 'name' in obj WITHOUT inheritance
-  # The proto object look for '..name' without inheritance. So, you have to
+  # The proto object look for '..name' with inheritance. So, you have to
   # specify if the name will be looked for with or without inheritance when the
   # name is defined, not when the object is used, which is something odd!
   n <- nchar(name)
@@ -100,7 +100,7 @@ is.flow <- is_flow
 
   res <- get(name, envir = x, inherits = inherits)
 
-  res <- `!!`(res) # Make sure to unquote the content of 'name' now
+  res <- get_expr(res) # Make sure to unquote the content of 'name' now
 
   if (!is.function(res))
     return(res)

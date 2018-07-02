@@ -18,7 +18,7 @@ objects provide an alternate way to manipulate \strong{quosure}s.
 \code{_} into \strong{quosure}s, and this mechanism is used by our pipe operators.
 \item \code{\link[=debug_flow]{debug_flow()}} provides a convenient way to debug problematic pipelines
 build with our own pipe operators \code{\link{\%>.\%}} and
-\code{\link{\%>+\%}}.
+\code{\link{\%>_\%}}.
 }
 }
 

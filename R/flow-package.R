@@ -15,7 +15,7 @@
 #'
 #' - [debug_flow()] provides a convenient way to debug problematic pipelines
 #'   build with our own pipe operators \code{\link{\%>.\%}} and
-#'   \code{\link{\%>+\%}}.
+#'   \code{\link{\%>_\%}}.
 #' @docType package
 #' @name flow-package
 #'

@@ -28,12 +28,12 @@ a new \strong{Flow} object heritating from \code{.GlobalEnv} with \code{.} as pi
 \item{.value}{The pipe value to pass to the object (used in priority to \code{.},
 in case both are provided).}
 
-\item{...}{For \code{flow()}, named arguments of other objects to create inside the
-\strong{Flow}. If the name ends with \code{_}, then, the expression is automatically
-captured inside a \emph{$quosure}* (see \code{\link[=quos_underscore]{quos_underscore()}}). For \code{print()},
-further arguments passed to the delegated \code{print_proto()} function (if it
-exists inside the \strong{Flow} object), or to the \code{print()} method of the object
-inside \code{.value}.}
+\item{...}{For \code{flow()}, named arguments of other objects to create inside
+the \strong{Flow}. If the name ends with \code{_}, then, the expression is
+automatically captured inside a \emph{$quosure}* (see \code{\link[=quos_underscore]{quos_underscore()}}).
+For \code{print()}, further arguments passed to the delegated \code{print_proto()}
+function (if it exists inside the \strong{Flow} object), or to the \code{print()}
+method of the object inside \code{.value}.}
 
 \item{x}{An object (a \strong{Flow} object, or anyting to test if it is a \strong{Flow}
 object in \code{is_flow()}).}
@@ -43,20 +43,20 @@ starts with two dots (\code{..}), the item is searched in the \strong{Flow} obje
 itself without inheritance (like for \strong{proto} objects), but \emph{the name is
 stripped from its leading two dots first}! If the content is a \strong{quosure},
 it is automatically unquoted, and for the assignation version, if name ends
-with \code{_}, the extression is automatically converted into a \strong{quosure}.}
+with \code{_}, the expression is automatically converted into a \strong{quosure}.}
 
 \item{value}{The value or expression to assign to \code{name} inside the \strong{Flow}
 object.}
 }
 \description{
 \strong{Flow} objects, as explicitly created by \code{flow()}, or implicitly by the
-\code{\link{\%>+\%}} pipe operator are \strong{proto} objects (class-less objects
+\code{\link{\%>_\%}} pipe operator are \strong{proto} objects (class-less objects
 with possible inheritance) that can be compbined nicely with pipelines using
 the specialized flow pipe operators \code{\link{\%>.\%}} and
-\code{\link{\%>+\%}} (or by using \code{$}). They allow to encapsulated temporary
+\code{\link{\%>_\%}} (or by using \code{$}). They allow to encapsulate temporary
 variables related to the pipeline, and they automate the encapsulation of
 non-standard evaluations automatically with minimal changes required by the
-user (in comparison to the \strong{rlang} tidy evalation mechanism).
+user (in comparison to the \strong{rlang} tidy evalution mechanism).
 }
 \details{
 When a \strong{Flow} object is created from scratch, it always inherits
@@ -69,7 +69,7 @@ This is a design strategy to overcome some difficulties and limitations of
 # TODO...
 }
 \seealso{
-\code{\link[=str.Flow]{str.Flow()}}, \code{\link[=quos_underscore]{quos_underscore()}}, \code{\link{\%>+\%}}
+\code{\link[=str.Flow]{str.Flow()}}, \code{\link[=quos_underscore]{quos_underscore()}}, \code{\link{\%>_\%}}
 }
 \concept{
 class-less objects for better R pipelines

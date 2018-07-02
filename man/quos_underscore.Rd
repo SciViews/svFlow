@@ -11,14 +11,14 @@ quos_underscore(...)
 or evaluated.}
 }
 \description{
-All names that end with _ are automatically converted into quosures. The
-other arguments are evaluated.
+All names that end with _ are automatically converted into quosures, and also
+assigned to the name without training \code{_}. The other arguments are evaluated.
 }
 \examples{
 # TODO...
 }
 \seealso{
-\code{\link[=as_quosure]{as_quosure()}}, \code{\link{\%>+\%}}
+\code{\link[=as_quosure]{as_quosure()}}, \code{\link{\%>_\%}}
 }
 \concept{
 automatic quosures creation for non-standard evaluation

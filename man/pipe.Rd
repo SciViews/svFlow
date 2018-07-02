@@ -4,14 +4,14 @@
 \alias{pipe}
 \alias{debug_flow}
 \alias{\%>.\%}
-\alias{\%>+\%}
+\alias{\%>_\%}
 \title{Flow pipeline operators and debugging function}
 \usage{
 debug_flow()
 
 x \%>.\% expr
 
-x \%>+\% expr
+x \%>_\% expr
 }
 \arguments{
 \item{x}{Value or \strong{Flow} object to pass to the pipeline.}
@@ -20,7 +20,7 @@ x \%>+\% expr
 }
 \description{
 Pipe operators. The simple one with no forcing to \strong{Flow} objects is
-\code{\link{\%>.\%}}. \code{\link{\%>+\%}} forces convertion to \strong{Flow} and
+\code{\link{\%>.\%}}. \code{\link{\%>_\%}} forces convertion to \strong{Flow} and
 automatically manage non-standard evaluation through creation and unquoting
 of \strong{quosure}s for named arguments whose name ends with \code{_}.
 }
@@ -31,23 +31,25 @@ is first assigned into the calling environment as \code{.} (warning! possibly
 replacing any existing value... do \strong{not} use \code{.} to name other objects).
 Also the expression is saved as \code{.call} in the calling environment so that
 \code{debug_flow()} can retrieve are rerun it easily. If a \strong{Flow} object is used
-with \code{\%>.\%}, the \code{.value} is extracted from it into \code{.}first (and thus
+with \code{\%>.\%}, the \code{.value} is extracted from it into \code{.} first (and thus
 the \strong{Flow} object is lost).
 
-In the case of \code{\%>+\%} the \strong{Flow} object passed or created, it is
+In the case of \code{\%>_\%} the \strong{Flow} object is passed or created, it is
 also assigned in the calling environment as \code{..}. This can be used to refer
-to \strong{Flow} object content within the pipeline expressions.
+to \strong{Flow} object content within the pipeline expressions (e.g., \code{..$var}).
 
-For \code{\%>+\%}, the expression is reworked like this. First, \code{++} is
-interpreted as "get from the \strong{Flow} object, or inherited environment, and
-unquote expression"; \code{..} is interpreted as "get from the \strong{Flow} object
-without inheritage and unquote expression", and finally, if the expression
-starts by calling a regular function name, without specifying \code{.} as first
-argument, it is added. The raw expression is saved as \code{.call_raw}, while the
-reworked call is saved as \code{.call} for possible further inspection and
-debugging.
+For \code{\%>_\%}, the expression is reworked in such a way that a suitable
+lazyeval syntax is constructed for each variable whose name ends with \code{_},
+and that variable is explicitly searched starting from \code{..}. Thus, \code{x_} is
+replaced by \code{!!..$x}. For such variables appearing at left of an \code{=} sign, it
+is also replaced by \code{:=} to keep correct \R syntax (\code{var_ =} =>
+\code{!!..$var :=}). This way, you just need to follow special variables by \code{_},
+both in the \code{flow()} function arguments (to create quosures), and to the
+NSE expressions used inside the pipeline to get the job done! The raw
+expression is saved as \code{.call_raw}, while the reworked call is saved as
+\code{.call} for possible further inspection and debugging.
 
-Finally, for \code{\%>+\%}, if \code{expr} is \code{.}, then, the last value from the
+Finally, for \code{\%>_\%}, if \code{expr} is \code{.}, then, the last value from the
 pipe is extracted from the \strong{Flow} object and returned. It is equivalent,
 thus, to \code{flow_obj$.value}.
 }

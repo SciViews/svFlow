@@ -25,7 +25,7 @@
 #' `$` or `[`, and namespace operators `::` and `:::` have higher precedence).
 #' @export
 #' @name quosure
-#' @seealso [quos_underscore()], \code{\link{\%>+\%}}
+#' @seealso [quos_underscore()], \code{\link{\%>_\%}}
 #' @keywords utilities
 #' @concept expression encapsulation for non-standard evaluation
 #' @examples
@@ -154,20 +154,21 @@ print.unquoted <- function(x, ...) {
 
 #' Convert names ending with _ into quosures automatically
 #'
-#' All names that end with _ are automatically converted into quosures. The
-#' other arguments are evaluated.
+#' All names that end with _ are automatically converted into quosures, and also
+#' assigned to the name without training `_`. The other arguments are evaluated.
 #'
 #' @param ... The named arguments provided to be either converted into quosures
 #' or evaluated.
 #'
 #' @export
-#' @seealso [as_quosure()], \code{\link{\%>+\%}}
+#' @seealso [as_quosure()], \code{\link{\%>_\%}}
 #' @keywords utilities
 #' @concept automatic quosures creation for non-standard evaluation
 #' @examples
 #' # TODO...
 quos_underscore <- function(...) {
   # Transform into closures only those items whose name ends with _
+  # (and also assign them to names without the _)
   #
   # rlang does not export dots_capture() that we could use here, and list(...)
   # does evaluate all arguments in ... So, one (suboptimal) solution is to
@@ -180,6 +181,8 @@ quos_underscore <- function(...) {
   last_char <- substr(dots_names, l_names, l_names)
   env <- caller_env(2)
   for (name in dots_names[last_char != "_"])
-    dots[[name]] <- eval(`!!`(dots[[name]]), envir = env)
+    dots[[name]] <- eval_tidy(dots[[name]], env = env)
+  for (name in dots_names[last_char == "_"])
+    dots[[substring(name, 1, nchar(name) - 1)]] <- dots[[name]]
   dots
 }

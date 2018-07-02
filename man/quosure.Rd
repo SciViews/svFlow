@@ -78,7 +78,7 @@ parentheses (only \code{^} for exponentiation, indexing/subsetting operators lik
 # TODO...
 }
 \seealso{
-\code{\link[=quos_underscore]{quos_underscore()}}, \code{\link{\%>+\%}}
+\code{\link[=quos_underscore]{quos_underscore()}}, \code{\link{\%>_\%}}
 }
 \concept{
 expression encapsulation for non-standard evaluation
