@@ -182,7 +182,9 @@ quos_underscore <- function(...) {
   env <- caller_env(2)
   for (name in dots_names[last_char != "_"])
     dots[[name]] <- eval_tidy(dots[[name]], env = env)
-  for (name in dots_names[last_char == "_"])
+  for (name in dots_names[last_char == "_"]) {
     dots[[substring(name, 1, nchar(name) - 1)]] <- dots[[name]]
+    dots[[name]] <- NULL
+  }
   dots
 }

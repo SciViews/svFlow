@@ -77,6 +77,30 @@ flow <- function(. = NULL, .value = NULL, ...) {
 
 #' @export
 #' @rdname flow
+#' @param env The environment to use for populating the `Flow` object. All
+#' objects from this environment are injected into the object, with the
+#' objects not starting with a dot and ending with an underscore (`_`) converted
+#' as `quosures`. The object provided to `.value=` becomes the default value of
+#' the `Flow` object, that is, the data transferred to the pipeline.
+enflow <- function(.value = ., env = caller_env()) {
+  if (!exists(".", envir = env, inherits = FALSE))
+    stop("required object '.' not found in 'env'")
+  fl <- flow(.value)
+  for (object in ls(env, all.names = FALSE)) {
+    l <- nchar(object)
+    if (substring(object, l, l) == "_") {
+      expr <- parse(text = paste0("rlang::enquo(", object, ")"))
+      env2 <- eval(caller_env(), envir = env)
+      fl[[substring(object, 1, l - 1)]] <- eval(expr, envir = env2)
+    } else if (object != ".") {
+      fl[[object]] <- get(object, envir = env, inherits = FALSE)
+    }
+  }
+  fl
+}
+
+#' @export
+#' @rdname flow
 is_flow <- function(x)
   x %is% 'Flow'
 
@@ -87,6 +111,7 @@ is.flow <- is_flow
 #' @export
 #' @rdname flow
 `$.Flow` <- function(x, name) {
+  # TODO: unquote quosures if name ends with `_`
   # This is essentially the same as `$.proto()`, but it unquotes name. Also,
   # if you specify obj$..name, it looks at 'name' in obj WITHOUT inheritance
   # The proto object look for '..name' with inheritance. So, you have to
@@ -115,6 +140,7 @@ is.flow <- is_flow
 #' @export
 #' @rdname flow
 `$<-.Flow` <- function(x, name, value) {
+  # TODO: create a quosure if name ends with `_`
   # The difference with `$<-.proto` is that the flow version assigns a quosure
   # automatically if name ends with '_'
   if (name == '.super')
@@ -191,6 +217,9 @@ indent.str = paste(rep.int(" ", max(0, nest.lev + 1)), collapse = ".."), ...) {
   }
 }
 
+
+
+
 # TODO: for the rest, I still have to work this out!!!
 # Our pipeline is easily transformable into a function for reuse:
 #flow_function <- function(. = NULL, .value = NULL, ...) {
@@ -202,3 +231,41 @@ indent.str = paste(rep.int(" ", max(0, nest.lev + 1)), collapse = ".."), ...) {
 #    str(environment())
 #  }
 #}
+
+#flow_function <- function(. = NULL, ..., .body) {
+#  fun <- function(...) NULL
+#  dots <- quos_underscore(...)
+#  if (length(dots)) {
+#    dots[] <- names(dots)
+#    dots <- lapply(dots, as.name)
+#    formals(fun) <- c(. = as.name("."), dots, formals(fun))
+#  } else {
+#    formals(fun) <- c(. = as.name("."), formals(fun))
+#  }
+#  body(fun) <- substitute(do.call("flow", as.list(formals(fun))))
+#  fun
+#}
+
+# flow_function <- function(. = NULL, ..., .expr) {
+#   dots <- quos_underscore(...)
+#   fun <- function(., ...) {
+#     . <- flow(.)
+#     .
+#   }
+#   if (length(dots)) {
+#     dots[] <- names(dots)
+#     dots <- lapply(dots, as.name)
+#     dots$. <- as.name(".")
+#     body(fun)[[2]][[3]] <- substitute(do.call("flow", dots))
+#     body(fun)[[3]] <- substitute(.expr)
+#     #  dots[] <- names(dots)
+#     #  dots <- lapply(dots, as.name)
+#     #  formals(fun) <- c(. = as.name("."), dots, formals(fun))
+#   } else {
+#     body(fun)[[3]] <- substitute(.expr)
+#
+#     #formals(fun) <- c(. = as.name("."), formals(fun))
+#   }
+#   #body(fun) <- substitute(do.call("flow", as.list(formals(fun))))
+#   fun
+# }

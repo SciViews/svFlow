@@ -2,6 +2,7 @@
 % Please edit documentation in R/flow.R
 \name{flow}
 \alias{flow}
+\alias{enflow}
 \alias{is_flow}
 \alias{is.flow}
 \alias{$.Flow}
@@ -10,6 +11,8 @@
 \title{Create Flow objects to better organize pipelines in R}
 \usage{
 flow(. = NULL, .value = NULL, ...)
+
+enflow(.value = ., env = caller_env())
 
 is_flow(x)
 
@@ -34,6 +37,12 @@ automatically captured inside a \emph{$quosure}* (see \code{\link[=quos_undersco
 For \code{print()}, further arguments passed to the delegated \code{print_proto()}
 function (if it exists inside the \strong{Flow} object), or to the \code{print()}
 method of the object inside \code{.value}.}
+
+\item{env}{The environment to use for populating the \code{Flow} object. All
+objects from this environment are injected into the object, with the
+objects not starting with a dot and ending with an underscore (\code{_}) converted
+as \code{quosures}. The object provided to \code{.value=} becomes the default value of
+the \code{Flow} object, that is, the data transferred to the pipeline.}
 
 \item{x}{An object (a \strong{Flow} object, or anyting to test if it is a \strong{Flow}
 object in \code{is_flow()}).}
