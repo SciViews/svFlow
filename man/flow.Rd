@@ -12,7 +12,7 @@
 \usage{
 flow(. = NULL, .value = NULL, ...)
 
-enflow(.value = ., env = caller_env())
+enflow(.value, env = caller_env(), ignore = character(0))
 
 is_flow(x)
 
@@ -25,24 +25,29 @@ is.flow(x)
 \method{print}{Flow}(x, ...)
 }
 \arguments{
-\item{.}{If a \strong{Flow} object is provided, herite from it, otherwise, create
-a new \strong{Flow} object heritating from \code{.GlobalEnv} with \code{.} as pipe value.}
+\item{.}{If a \strong{Flow} object is provided, heritate from it, otherwise,
+create a new \strong{Flow} object heritating from \code{.GlobalEnv} with \code{.} as pipe
+value.}
 
-\item{.value}{The pipe value to pass to the object (used in priority to \code{.},
+\item{.value}{The pipe value to pass to the object (used instead of \code{.},
 in case both are provided).}
 
 \item{...}{For \code{flow()}, named arguments of other objects to create inside
-the \strong{Flow}. If the name ends with \code{_}, then, the expression is
-automatically captured inside a \emph{$quosure}* (see \code{\link[=quos_underscore]{quos_underscore()}}).
-For \code{print()}, further arguments passed to the delegated \code{print_proto()}
+the \strong{Flow} object. If the name ends with \code{_}, then, the expression is
+automatically captured inside a \emph{quosure}* (see \code{\link[=quos_underscore]{quos_underscore()}}).
+For \code{print()}, further arguments passed to the delegated \code{object_print()}
 function (if it exists inside the \strong{Flow} object), or to the \code{print()}
 method of the object inside \code{.value}.}
 
-\item{env}{The environment to use for populating the \code{Flow} object. All
-objects from this environment are injected into the object, with the
-objects not starting with a dot and ending with an underscore (\code{_}) converted
-as \code{quosures}. The object provided to \code{.value=} becomes the default value of
-the \code{Flow} object, that is, the data transferred to the pipeline.}
+\item{env}{The environment to use for populating the \strong{Flow} object. All
+objects from this environment are injected into it, with the objects not
+starting with a dot and ending with an underscore (\code{_}) automatically
+converted into \code{quosures}. The object provided to \code{.value=} becomes the
+default value of the \code{Flow} object, that is, the data transferred to the
+pipeline.}
+
+\item{ignore}{A character string with the name of the objects that should not
+be imported from the environment}
 
 \item{x}{An object (a \strong{Flow} object, or anyting to test if it is a \strong{Flow}
 object in \code{is_flow()}).}
@@ -61,21 +66,44 @@ object.}
 \strong{Flow} objects, as explicitly created by \code{flow()}, or implicitly by the
 \code{\link{\%>_\%}} pipe operator are \strong{proto} objects (class-less objects
 with possible inheritance) that can be compbined nicely with pipelines using
-the specialized flow pipe operators \code{\link{\%>.\%}} and
-\code{\link{\%>_\%}} (or by using \code{$}). They allow to encapsulate temporary
-variables related to the pipeline, and they automate the encapsulation of
-non-standard evaluations automatically with minimal changes required by the
-user (in comparison to the \strong{rlang} tidy evalution mechanism).
+the specialized flow pipe operator \code{\link{\%>_\%}} (or by using \code{$}).
+They allow to encapsulate satellite objects/variables related to the
+pipeline, and they automate the encapsulation of non-standard evaluations
+automatically with minimal changes required by the user (in comparison to
+the regular \strong{rlang} tidy evaluation mechanism).
 }
 \details{
 When a \strong{Flow} object is created from scratch, it always inherits
 from \code{.GlobalEnv}, no mather where the expression was executed (in fact, it
 inherits from a root \strong{proto} object itself inheriting from \code{.GlobalEnv}).
-This is a design strategy to overcome some difficulties and limitations of
-\strong{proto} objects, see \code{\link[=proto]{proto()}}.
+This is a deliberate design choice to overcome some difficulties and
+limitations of \strong{proto} objects, see \code{\link[=proto]{proto()}}.
+\code{enflow()} is used to create a \strong{flow} object and populate it automatically
+with all the abjects that are present in the calling environment. It is
+primarily intended to be used inside a function, as first instruction of the
+pipeline. Hence, it collects all function arguments inside that pipeline.
 }
 \examples{
-# TODO...
+library(flow)
+library(dplyr)
+data("urchin_bio", package = "data")
+
+foo <- function(., x_ = skeleton, y_ = log_skel, na_rm = TRUE)
+  enflow(.) \%>_\%
+  mutate(., y_ = log(x_)) \%>_\%
+  summarise(., mean = mean(y_,
+    na.rm = na_rm_)) \%>_\% .
+
+foo(urchin_bio)
+
+foo(urchin_bio, x_ = weight)
+
+foo2 <- function(., x_ = skeleton, y_ = log_skel, na_rm = TRUE)
+  enflow(.)
+
+foo2
+foo2(1:10) -> foo_obj
+ls(foo_obj)
 }
 \seealso{
 \code{\link[=str.Flow]{str.Flow()}}, \code{\link[=quos_underscore]{quos_underscore()}}, \code{\link{\%>_\%}}

@@ -1,9 +1,10 @@
 # flow To Do list
 
-* flow_function()
+* Small examples.
 
 * "branches", + rebase, etc.
 
-* graph to show the hierarchy of flow objects.
+* graph to show the hierarchy of Flow objects, as `graph.proto()` did in old
+  versions of the proto package.
 
-* Complete vignettes.
+* Complete the tutorial vignettes.

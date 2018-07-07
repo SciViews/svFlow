@@ -87,6 +87,7 @@ debug_flow <- function() {
   if (!is_flow(x))
     x <- flow(x)
 
+  # Special case to return the value out of the Flow object
   expr2 <- substitute(expr)
   if (expr2 == ".")
     return(x[[".value"]])
@@ -97,6 +98,9 @@ debug_flow <- function() {
   on.exit(env[[".call_raw"]] <- expr2)
 
   # TODO: rework expressions on the parsed tree directly!
+  # For now, we stick with regular expressions substitution on the deparsed
+  # expression: easier to implement for now. Work on the parsed tree left for
+  # when that function will be fully field-tested!
   expr2 <- deparse(expr2)
   # Whenever `var_ =` appears, replace with `!!..$var :=`
   expr2 <- gsub(

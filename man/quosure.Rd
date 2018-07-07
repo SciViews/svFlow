@@ -46,7 +46,7 @@ is.bare_formula(x)
 \arguments{
 \item{x}{An expression}
 
-\item{env}{An environment specified for lexical scoping of the quosure.}
+\item{env}{An environment specified for scoping of the quosure.}
 
 \item{e1}{Unary operator member, or first member of a binary operator.}
 
@@ -57,22 +57,27 @@ is.bare_formula(x)
 \description{
 Quosures are defined in \strong{rlang} package as part of the tidy evaluation of
 non-standard evaluations (see \code{\link[=quo]{quo()}}). Here, we provide an alternate
-mechanism using \code{-~expr} as a synonym of \code{quo(expr)}, but faster. Also,
-\code{UQ(quo_obj)} or \code{!!quo_obj} in \strong{rlang} is just here \code{+quo_obj}.
+mechanism using \code{-~expr} as a synonym of \code{quo(expr)}. Also, \code{UQ(quo_obj)} or
+\code{!!quo_obj} in \strong{rlang} is just here \code{+quo_obj}. \strong{Quosures} are both basic
+and central abjects in the tidy evaluation mechanism. So, we think they
+deserve a special concise syntax to create and manipulate them.
 }
 \details{
 \code{-} is defined as an unary minus operator for \strong{formula} objects
 (which is \emph{not} defined in base R, hence, not supposed to be used otherwise).
-Thus, \code{-~expr} jsut converts a formula build using the base \code{~expr}
+Thus, \code{-~expr} just converts a formula build using the base \code{~expr}
 instruction into a quosure. \code{as_quosure()} does the same, when expression is
 provided directly.
 
 Similarly, the unary \code{+} operator is defined for \strong{quosure} in order to
-easily "reverse" the mechanism of equosing an expression with a logical
-complimentary operator. It does the same as \code{!!} in \strong{rlang}, but it has
-higher syntax precedence than \code{!}, and is thus less susceptible to require
-parentheses (only \code{^} for exponentiation, indexing/subsetting operators like
-\code{$} or \code{[}, and namespace operators \code{::} and \code{:::} have higher precedence).
+easily "reverse" the mechanism of quoting an expression with a logical
+complementary operator. It does something similar to \code{!!} in \strong{rlang}, but
+it can be used outside of tidy eval expressions. Since it has higher syntax
+precedence than \code{!}, it is less susceptible to require parentheses (only \code{^}
+for exponentiation, indexing/subsetting operators like \code{$} or \code{[}, and
+namespace operators \code{::} and \code{:::} have higher precedence). A specific \code{^}
+operator for quosures solves the precedence issue. \code{::} or \code{:::} are very
+unlikely used in the context.
 }
 \examples{
 # TODO...

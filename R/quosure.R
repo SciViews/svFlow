@@ -2,27 +2,32 @@
 #'
 #' Quosures are defined in **rlang** package as part of the tidy evaluation of
 #' non-standard evaluations (see [quo()]). Here, we provide an alternate
-#' mechanism using `-~expr` as a synonym of `quo(expr)`, but faster. Also,
-#' `UQ(quo_obj)` or `!!quo_obj` in **rlang** is just here `+quo_obj`.
+#' mechanism using `-~expr` as a synonym of `quo(expr)`. Also, `UQ(quo_obj)` or
+#' `!!quo_obj` in **rlang** is just here `+quo_obj`. **Quosures** are both basic
+#' and central abjects in the tidy evaluation mechanism. So, we think they
+#' deserve a special concise syntax to create and manipulate them.
 #'
 #' @param x An expression
-#' @param env An environment specified for lexical scoping of the quosure.
+#' @param env An environment specified for scoping of the quosure.
 #' @param e1 Unary operator member, or first member of a binary operator.
 #' @param e2 Second member of a binary operator (not used here, except for `^`).
 #' @param ... Further arguments passed to the `print()` method (not used yet).
 #'
 #' @details `-` is defined as an unary minus operator for **formula** objects
 #' (which is *not* defined in base R, hence, not supposed to be used otherwise).
-#' Thus, `-~expr` jsut converts a formula build using the base `~expr`
+#' Thus, `-~expr` just converts a formula build using the base `~expr`
 #' instruction into a quosure. `as_quosure()` does the same, when expression is
 #' provided directly.
 #'
 #' Similarly, the unary `+` operator is defined for **quosure** in order to
-#' easily "reverse" the mechanism of equosing an expression with a logical
-#' complimentary operator. It does the same as `!!` in **rlang**, but it has
-#' higher syntax precedence than `!`, and is thus less susceptible to require
-#' parentheses (only `^` for exponentiation, indexing/subsetting operators like
-#' `$` or `[`, and namespace operators `::` and `:::` have higher precedence).
+#' easily "reverse" the mechanism of quoting an expression with a logical
+#' complementary operator. It does something similar to `!!` in **rlang**, but
+#' it can be used outside of tidy eval expressions. Since it has higher syntax
+#' precedence than `!`, it is less susceptible to require parentheses (only `^`
+#' for exponentiation, indexing/subsetting operators like `$` or `[`, and
+#' namespace operators `::` and `:::` have higher precedence). A specific `^`
+#' operator for quosures solves the precedence issue. `::` or `:::` are very
+#' unlikely used in the context.
 #' @export
 #' @name quosure
 #' @seealso [quos_underscore()], \code{\link{\%>_\%}}
@@ -59,6 +64,8 @@ is_quosure <- function(x)
 is.quosure <- is_quosure
 
 # Do not export this, because it mask a function of the same name in purrr
+# It is used for the same purpose, but I don't understand why its code must
+# be so complex (and slow!). So, I stick to my own version here
 is_formula <- function(x)
   x %is% 'formula'
 
@@ -93,16 +100,9 @@ is.bare_formula <- is_bare_formula
 #' @export
 #' @rdname quosure
 `+.formula` <- function(e1, e2) {
-  # Both unquote and eval if it is a quosure, so +~ can be the opposite to ~-
+  # Both unquote and eval if it is a quosure, so +~ can be the opposite to -~
   if (missing(e2)) {
     eval_tidy(eval(get_expr(e1)))
-    #if (!is_quosure(quo))
-    #  abort("unary +~ only applies to quosures")
-    #expr <- f_rhs(quo)
-    ##if (is.name(expr))
-    ##  expr <- call('(', expr)
-    #eval(expr, envir = attr(quo, ".Environment"), enclos = env)
-    #eval_tidy(quo)
   } else {
     abort("binary + is not allowed for formulas")
   }
@@ -112,7 +112,6 @@ is.bare_formula <- is_bare_formula
 #' @rdname quosure
 `^.quosure` <- function(e1, e2)
   eval_tidy(e1)^e2
-  #eval((e1), envir = f_env(e1), enclos = caller_env(2))^e2
 
 #' @export
 #' @rdname quosure
@@ -135,7 +134,6 @@ is.bare_formula <- is_bare_formula
 #' @rdname quosure
 `+.unquoted` <- function(e1, e2) {
   if (missing(e2)) {
-    #eval(e1, envir = attr(e1, ".Environment"), enclos = caller_env(2))
     eval_tidy(e1)
   } else {
     abort("binary + is not allowed for unquoted objects")
@@ -173,8 +171,9 @@ quos_underscore <- function(...) {
   # rlang does not export dots_capture() that we could use here, and list(...)
   # does evaluate all arguments in ... So, one (suboptimal) solution is to
   # convert all ... arguments into quosures using rlang::quos(), and then, to
-  # evaluate those in the list whose name does not end with '_'
-  # TODO: reimplement of course later with something more efficient!
+  # evaluate those in the list whose name does not end with '_'. The penalty is
+  # negligible and allows to reuse rlang::quos(), which is a larger benefit than
+  # reimplementing (and maintaining!) a slightly different version here.
   dots <- quos(...)
   dots_names <- names(dots)
   l_names <- nchar(dots_names)

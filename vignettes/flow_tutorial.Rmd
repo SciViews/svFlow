@@ -17,18 +17,17 @@ knitr::opts_chunk$set(
 )
 ```
 
+**This document still need substantial editing! It is left here because it may still be useful in its current state.**
+
 Here is a pipeline:
 
 ```{r}
-# TODO: to be reworked!
 library(dplyr)
-library(rlang)
 library(flow)
-y <- 1.5
+threshold <- 1.5
 iris %>.%
-  filter(., Sepal.Length < 5) %>.%
-  filter(., Petal.Length < y) %>.%
-  mutate(., logSL = log(Sepal.Length)) %>.%
+  filter(., Petal.Length > threshold) %>.%
+  mutate(., log_var = log(Petal.Length)) %>.%
   head(.) %>.% .
 ```
 
@@ -36,30 +35,40 @@ Use of `flow()` to add local variables inside the pipeline, and to have convenie
 
 ```{r}
 flow(iris, var_ = Petal.Length, threshold = 1.5) %>_%
-  filter(., Sepal.Length < 5) %>_%
-  filter(., var_ < threshold_) %>_%
-  {..$tab <- mutate(., logSL = log(Sepal.Length))} %>_%
+  filter(., var_ > threshold_) %>_%
+  {..$tab <- mutate(., log_var = log(var_))} %>_%
   head(.) %>_% .
 ```
 
-This is a work in progress: still needs to be done!
+Convert this into a reuseable function by replacing `flow()` by `function()` and starting the pipeline with `enflow()`:
 
 ```{r}
-# Create a flow from flow code (transform %>.% into ->.; in function body!)
-#transform1 <-
-#  flow_function(x, var = Petal.Length, y = 1.5) %.>%
-#  filter(., Sepal.Length < 5) %.>%
-#  filter(., !! var < y) %.>%
-#  mutate(., logSL = log(Sepal.Length)) %.>%
-#  head(.) %.>% .
+my_process <- function(data, var_ = Petal.Length, threshold = 1.5)
+  enflow(data) %>_%
+  filter(., var_ > threshold_) %>_%
+  {..$tab <- mutate(., log_var = log(var_))} %>_%
+  head(.) %>_% .
+
+```
+
+Then, you use it just as a plain function. The arguùents ending with `_` are also a good way to immediately spot those who are treated specially by the tidyeval mechanism! Here, we redo the analysis:
+
+```{r}
+my_process(iris)
+```
+
+Here, we change the variable and the threshold:
+
+```{r}
+my_process(iris, var_ = Sepal.Width, threshold = 0.5)
 ```
 
 
-## Manage branches
+## Flow objects to test alternate scenarii
 
-The `flow()` objects can be compared to branches of git repositories (although with automatic updates from master branch). It could be nice to keep this comparison as close as possible and to make both logics similar, so that one can work similarly with `flow()` and with git?! We need tools to create, delete, switch to, merge (into master only?), and rebase + diff.
+The **Flow** objects can be subclassed. This is a little bit similar to branches of git repositories (although with automatic updates from master branch). It could be nice to keep this comparison as close as possible and to make both logics similar, so that one can work similarly with `flow()` and with git?! We need tools to create, delete, switch to, merge (into master only?), and rebase + diff.
 
-The biggest difference is that branches in git terms do not dynamically heritate objects from parents but **proto**/**Flow** objects do (in this case, **master** branch is indeed the ancestor).
+The biggest difference is that branches in git terms do not dynamically heritate objects from parents but **proto**/**Flow** objects do (in this case, **master** branch is indeed the ancestor). So, we could create a function `branch()` that does something like this:
 
 ```{r}
 # Create a new branch called lda
@@ -69,114 +78,7 @@ The biggest difference is that branches in git terms do not dynamically heritate
 #..(lda)(model = mlLda(Species ~ ., data = .))
 ```
 
-Note that refering to a branch in a **Flow** object should be using a similar syntax as refering to a function in a package with the **use** package:
-
-```{r}
-#R_@stats$median
-#R(stats)$median
-#stats_ <- R_@stats
-#stats_$median
-```
-
 
 ## Visual map of Flow objects inheritance
 
 **TODO:** in an older version of the **proto** package, there was a nice `graph.proto()` function, and I made my own one with other dependencies => reimplement it for **flow** in order to show the workflow in a similar way a git repository is often depicted.
-
-## Another example to integrate in this tutorial
-
-```{r}
-#urchin %>%
-#  mutate(ratio = skeleton / weight) %>%
-#  group_by(origin) %>%
-#  summarise(mean = mean(ratio, na.rm = TRUE))
-```
-
-Etape 1: les variables à évaluation standard:
-
-```{r}
-#na_rm <- TRUE
-#urchin %>%
-#  mutate(ratio = skeleton / weight) %>%
-#  group_by(origin) %>%
-#  summarise(mean = mean(ratio, na.rm = !!na_rm))
-```
-
-Etape 2: les quosures.
-
-```{r}
-#x <- quo(skeleton)
-#y <- quo(weight)
-#group <- quo(origin)
-#na_rm <- TRUE
-#urchin %>%
-#  mutate(ratio = !!x / !!y) %>%
-#  group_by(!!group) %>%
-#  summarise(mean = mean(ratio, na.rm = !!na_rm))
-```
-
-Etape 3: les noms
-
-```{r}
-#x <- quo(skeleton)
-#y <- quo(weight)
-#xy_name <- "ratio"
-#group <- quo(origin)
-#na_rm <- TRUE
-#urchin %>%
-#  mutate(!!xy_name := !!x / !!y) %>%
-#  group_by(!!group) %>%
-#  summarise(mean = mean(ratio, na.rm = !!na_rm))
-```
-
-Etape 4: réutiliser le nom comme quosure plus loin dans le pipe.
-
-```{r}
-#x <- quo(skeleton)
-#y <- quo(weight)
-#xy_name <- "ratio"
-#xy <- quo(ratio)
-#group <- quo(origin)
-#na_rm <- TRUE
-#urchin %>%
-#  mutate(!!xy_name := !!x / !!y) %>%
-#  group_by(!!group) %>%
-#  summarise(mean = mean(!!xy, na.rm = !!na_rm))
-```
-
-Problème 1: nombreuses variables associées au pipeline qui trainent dans son environnement. 
-
-Problème 2: complexité de la transformation nécessaire pour lazyeval
-
-Solution 1: objet `flow` qui inclu le pipeline **et** les variables associées.
-
-Solution 2: convention: nom des variables terminé par `_` pour créer les quosures, et pour "déquosurer" dans les expressions lazyeval.
-
-Nécessite de remplacer `%>%` par un operateur dédié `%>_%`
-
-Etape 1: utiliser un objet `flow`=> operateur dédié `%>+%`
-
-```{r}
-#flow(urchin) %>+%
-#  mutate(ratio = skeleton / weight) %>+%
-#  group_by(origin) %>+%
-#  summarise(mean = mean(ratio, na.rm = TRUE))
-```
-
-Etape 2: récupérer le résultat final de l'objet `flow`: `%>_% .`
-
-```{r}
-#flow(urchin) %>+%
-#  mutate(ratio = skeleton / weight) %>+%
-#  group_by(origin) %>+%
-#  summarise(mean = mean(ratio, na.rm = TRUE)) %>+% .
-```
-
-Etape 3: ajouter les variables dans flow (les terminer par `_` pour lazyeval):
-
-```{r}
-#flow(urchin, x_ = skeleton, y_ = weight, group_ = origin, xy_ = ratio, na_rm = TRUE) %>_%
-#  mutate(xy_ = x_ / y_) %>_%
-#  group_by(group_) %>_%
-#  summarise(mean = mean(xy_, na.rm = na_rm_)) %>_% .
-```

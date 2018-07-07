@@ -13,7 +13,7 @@ integrates non-standard evaluation and the lazyeval mechanism.
 \itemize{
 \item \code{\link[=flow]{flow()}} constructs a \code{Flow} object.
 \item \code{\link[=as_quosure]{as_quosure()}}, and unary \code{+} and \code{-} operators combined with \strong{formula}
-objects provide an alternate way to manipulate \strong{quosure}s.
+objects provide an alternate way to create \strong{quosure}s.
 \item \code{\link[=quos_underscore]{quos_underscore()}} automatically convert arguments whose name ends with
 \code{_} into \strong{quosure}s, and this mechanism is used by our pipe operators.
 \item \code{\link[=debug_flow]{debug_flow()}} provides a convenient way to debug problematic pipelines

@@ -8,7 +8,7 @@
 #'- [flow()] constructs a `Flow` object.
 #'
 #' - [as_quosure()], and unary `+` and `-` operators combined with **formula**
-#'   objects provide an alternate way to manipulate **quosure**s.
+#'   objects provide an alternate way to create **quosure**s.
 #'
 #' - [quos_underscore()] automatically convert arguments whose name ends with
 #'   `_` into **quosure**s, and this mechanism is used by our pipe operators.
@@ -32,39 +32,43 @@ NULL
 `%is%` <- function(x, what) # This is more expressive!
   inherits(x, what)
 
-is_null <- is.null # rlang::is_null is much slower!
+is_null <- is.null # rlang::is_null is much slower. So, until it is optimized...
 
-child_env2 <- function(.parent, ...) {
-  # A faster child_env() than rlang::child_env(), but that does not convert
-  # .parent and ignores ...
+# A faster child_env() than rlang::child_env(), but that does not convert
+# .parent and ignores ...
+child_env2 <- function(.parent, ...)
   new.env(parent = .parent)
-}
 
-# rlang proposes invoke() in place of do.call(), but it is 20x slower! So:
+# rlang proposes invoke() in place of do.call(), but it is 20x slower!
+# So, just to stick with snake_case name convention...
 do_call <- function(what, ...)
   do.call(what, ...)
 
 # rlang uses ctxt_frame() and call_frame() in place of base::parent.frame() but
-# it appears more complex for simple use. Hence call_frame(2)$env is the same as
+# these appear complex for simple use. Hence call_frame(2)$env is the same as
 # parent.frame()... But there is caller_env() as shortcut for the same purpose!
 
-# The as_character() and as_string() in rlang are difficult to understand. Here
-# we simply want a function that (tries) to convert anything into character, as
-# as.character() does. So, it is called as_chr()
+# The as_character() and as_string() in rlang are difficult to understand fo me.
+# Here we simply want a function that (tries) to convert anything into
+# character, as as.character() does. Since we may end up with something slightly
+# different that base::as.character(), we anticipate this change here...
 as_chr <- as.character
 
 # rlang uses env_has() and env_get() in place of exists() and get(), but with
 # the environment as first argument (and also cannot specify mode). It can
 # extract environments from objects like formulas or quosures, but then, they
 # are more than 10x slower than exists() or get() (and get0()). So, for now, I
-# stick with exists()/get() in my code...
+# stick with exists()/get() in my code... to be rechecked later on.
 
 # Further base/utils functions rename for consistent snake_case notation...
 is_chr <- is.character
 is_env <- is.environment
 stop_if_not <- stopifnot
 capture_output <- capture.output
+is_name <- is.name
+is_proto <- is.proto
 
+# Not used for now, but may be useful in the future
 #f_drop_lhs <- function(x) {
 #  lhs <- f_lhs(x)
 #  if (is_null(lhs)) {
@@ -88,8 +92,8 @@ capture_output <- capture.output
   x
 }
 
-# name.proto() is not exported from the proto package. So, this is a copy here
-.name_flow <- function(., envir = parent.frame()) {
+# Adapted from name.proto()
+.name_flow <- function(., envir = caller_env()) {
   stop_if_not(is_env(.) || (is_chr(.) && is_env(get(., envir))))
 
   if (is_env(.)) {

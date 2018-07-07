@@ -3,20 +3,21 @@
 #' **Flow** objects, as explicitly created by `flow()`, or implicitly by the
 #' \code{\link{\%>_\%}} pipe operator are **proto** objects (class-less objects
 #' with possible inheritance) that can be compbined nicely with pipelines using
-#' the specialized flow pipe operators \code{\link{\%>.\%}} and
-#' \code{\link{\%>_\%}} (or by using `$`). They allow to encapsulate temporary
-#' variables related to the pipeline, and they automate the encapsulation of
-#' non-standard evaluations automatically with minimal changes required by the
-#' user (in comparison to the **rlang** tidy evalution mechanism).
+#' the specialized flow pipe operator \code{\link{\%>_\%}} (or by using `$`).
+#' They allow to encapsulate satellite objects/variables related to the
+#' pipeline, and they automate the encapsulation of non-standard evaluations
+#' automatically with minimal changes required by the user (in comparison to
+#' the regular **rlang** tidy evaluation mechanism).
 #'
-#' @param . If a **Flow** object is provided, herite from it, otherwise, create
-#' a new **Flow** object heritating from `.GlobalEnv` with `.` as pipe value.
-#' @param .value The pipe value to pass to the object (used in priority to `.`,
+#' @param . If a **Flow** object is provided, heritate from it, otherwise,
+#' create a new **Flow** object heritating from `.GlobalEnv` with `.` as pipe
+#' value.
+#' @param .value The pipe value to pass to the object (used instead of `.`,
 #' in case both are provided).
 #' @param ... For `flow()`, named arguments of other objects to create inside
-#' the **Flow**. If the name ends with `_`, then, the expression is
-#' automatically captured inside a *$quosure** (see [quos_underscore()]).
-#' For `print()`, further arguments passed to the delegated `print_proto()`
+#' the **Flow** object. If the name ends with `_`, then, the expression is
+#' automatically captured inside a *quosure** (see [quos_underscore()]).
+#' For `print()`, further arguments passed to the delegated `object_print()`
 #' function (if it exists inside the **Flow** object), or to the `print()`
 #' method of the object inside `.value`.
 #' @param x An object (a **Flow** object, or anyting to test if it is a **Flow**
@@ -33,20 +34,44 @@
 #' @details When a **Flow** object is created from scratch, it always inherits
 #' from `.GlobalEnv`, no mather where the expression was executed (in fact, it
 #' inherits from a root **proto** object itself inheriting from `.GlobalEnv`).
-#' This is a design strategy to overcome some difficulties and limitations of
-#' **proto** objects, see [proto()].
+#' This is a deliberate design choice to overcome some difficulties and
+#' limitations of **proto** objects, see [proto()].
+#' `enflow()` is used to create a **flow** object and populate it automatically
+#' with all the abjects that are present in the calling environment. It is
+#' primarily intended to be used inside a function, as first instruction of the
+#' pipeline. Hence, it collects all function arguments inside that pipeline.
 #' @export
 #' @name flow
 #' @seealso [str.Flow()], [quos_underscore()], \code{\link{\%>_\%}}
 #' @keywords utilities
 #' @concept class-less objects for better R pipelines
 #' @examples
-#' # TODO...
+#' library(flow)
+#' library(dplyr)
+#' data("urchin_bio", package = "data")
+#'
+#' foo <- function(., x_ = skeleton, y_ = log_skel, na_rm = TRUE)
+#'   enflow(.) %>_%
+#'   mutate(., y_ = log(x_)) %>_%
+#'   summarise(., mean = mean(y_,
+#'     na.rm = na_rm_)) %>_% .
+#'
+#' foo(urchin_bio)
+#'
+#' foo(urchin_bio, x_ = weight)
+#'
+#' foo2 <- function(., x_ = skeleton, y_ = log_skel, na_rm = TRUE)
+#'   enflow(.)
+#'
+#' foo2
+#' foo2(1:10) -> foo_obj
+#' ls(foo_obj)
 flow <- function(. = NULL, .value = NULL, ...) {
   # If . is a flow object, heritate from it, otherwise, create a new flow
   # object with this value as a starting point
   # Note that all our flow/proto objects are systematically rooted in .GlobalEnv
-  # no mather from where they are created (for consistency)
+  # no mather from where they are created (for consistency, and to make them
+  # more easy to save and reload).
   flow_class <- c('Flow', 'proto', 'environment')
   if (!is_flow(.)) {
     root <- structure(
@@ -77,22 +102,41 @@ flow <- function(. = NULL, .value = NULL, ...) {
 
 #' @export
 #' @rdname flow
-#' @param env The environment to use for populating the `Flow` object. All
-#' objects from this environment are injected into the object, with the
-#' objects not starting with a dot and ending with an underscore (`_`) converted
-#' as `quosures`. The object provided to `.value=` becomes the default value of
-#' the `Flow` object, that is, the data transferred to the pipeline.
-enflow <- function(.value = ., env = caller_env()) {
-  if (!exists(".", envir = env, inherits = FALSE))
-    stop("required object '.' not found in 'env'")
+#' @param env The environment to use for populating the **Flow** object. All
+#' objects from this environment are injected into it, with the objects not
+#' starting with a dot and ending with an underscore (`_`) automatically
+#' converted into `quosures`. The object provided to `.value=` becomes the
+#' default value of the `Flow` object, that is, the data transferred to the
+#' pipeline.
+#' @param ignore A character string with the name of the objects that should not
+#' be imported from the environment
+enflow <- function(.value, env = caller_env(), ignore = character(0)) {
+  objects <- ls(env, all.names = FALSE)
+
+  # If env is the calling environment and .value is a name, then, the default
+  # value of the Flow object is one of the objects in the imported environment.
+  # So, do not import it twice and add it to the list of ignored items.
+  value_expr <- substitute(x)
+  if (identical(env, caller_env()) && is_name(value_expr) &&
+    exists(as_chr(value_expr), envir = env, inherits = FALSE)) {
+    ignore <- c(ignore, as_chr(value_expr))
+  }
+
+  # Eliminate ignored objects from the list
+  ignored_items <- objects %in% ignore
+  objects <- objects[!ignored_items]
+
+  # Create and populate the Flow object
   fl <- flow(.value)
-  for (object in ls(env, all.names = FALSE)) {
+  for (object in objects) {
     l <- nchar(object)
     if (substring(object, l, l) == "_") {
+      # Usually not good to parse and evaluate this way, ... but object is
+      # already a string, and it appears to be a robust and safe approach here
       expr <- parse(text = paste0("rlang::enquo(", object, ")"))
       env2 <- eval(caller_env(), envir = env)
       fl[[substring(object, 1, l - 1)]] <- eval(expr, envir = env2)
-    } else if (object != ".") {
+    } else {
       fl[[object]] <- get(object, envir = env, inherits = FALSE)
     }
   }
@@ -111,7 +155,6 @@ is.flow <- is_flow
 #' @export
 #' @rdname flow
 `$.Flow` <- function(x, name) {
-  # TODO: unquote quosures if name ends with `_`
   # This is essentially the same as `$.proto()`, but it unquotes name. Also,
   # if you specify obj$..name, it looks at 'name' in obj WITHOUT inheritance
   # The proto object look for '..name' with inheritance. So, you have to
@@ -124,23 +167,19 @@ is.flow <- is_flow
   } else inherits <- TRUE
 
   res <- get(name, envir = x, inherits = inherits)
-
   res <- get_expr(res) # Make sure to unquote the content of 'name' now
 
-  if (!is.function(res))
-    return(res)
-
-  if (deparse(substitute(x)) %in% c('.that', '.super'))
-    return(res)
-
-  # Construct a protoMethod compatible with proto package
-  structure(function(...) res(x, ...), class = 'protoMethod', method = res)
+  if (!is_function(res) || deparse(substitute(x)) %in% c('.that', '.super')) {
+    res
+  } else {
+    # Construct a protoMethod compatible with proto package
+    structure(function(...) res(x, ...), class = 'protoMethod', method = res)
+  }
 }
 
 #' @export
 #' @rdname flow
 `$<-.Flow` <- function(x, name, value) {
-  # TODO: create a quosure if name ends with `_`
   # The difference with `$<-.proto` is that the flow version assigns a quosure
   # automatically if name ends with '_'
   if (name == '.super')
@@ -152,8 +191,8 @@ is.flow <- is_flow
   name <- as_chr(substitute(name))
   l <- nchar(name)
 
-  if (substr(name, l, l) == "_") {
-    x[[name]] <- as_quosure(value, env = caller_env())
+  if (substring(name, l, l) == "_") {
+    x[[substring(name, 1, l - 1)]] <- as_quosure(value, env = caller_env())
   } else {
     x[[name]] <- value
   }
@@ -165,8 +204,8 @@ is.flow <- is_flow
 #' @rdname flow
 print.Flow <- function(x, ...) {
   # Similar to print.proto(), but indicate it is a Flow object
-  if (exists('proto_print', envir = x, inherits = TRUE)) {
-    x$proto_print(...)
+  if (exists('object_print', envir = x, inherits = TRUE)) {
+    x$object_print(...)
   } else {
     cat("<Flow object with $.value being>\n")
     print(x$.value, ...)
@@ -195,77 +234,18 @@ print.Flow <- function(x, ...) {
 #' # TODO...
 str.Flow <- function(object, max.level = 1, nest.lev = 0,
 indent.str = paste(rep.int(" ", max(0, nest.lev + 1)), collapse = ".."), ...) {
-  # TODO: rework this and also indicate current .value (and .call)?
   # Same as str.proto(), but indicate it is a Flow object
   cat("Flow", .name_flow(object), "\n")
 
   lines <- capture_output(
-    str(
-      as.list(object),
-      max.level = max.level,
-      nest.lev  = nest.lev,
-      ...)
-    )[-1]
-
+    str(as.list(object), max.level = max.level, nest.lev  = nest.lev, ...)
+  )[-1]
   for (line in lines)
     cat(line, "\n")
 
-  if (is.proto(parent.env(object))) {
+  p_env <- env_parent((object))
+  if (is_proto(p_env)) {
     cat(indent.str, "parent: ", sep = "")
-
-    str(parent.env(object), nest.lev = nest.lev + 1, ...)
+    str(p_env, nest.lev = nest.lev + 1, ...)
   }
 }
-
-
-
-
-# TODO: for the rest, I still have to work this out!!!
-# Our pipeline is easily transformable into a function for reuse:
-#flow_function <- function(. = NULL, .value = NULL, ...) {
-#  # Create a flow function instead of a Flow/proto object
-#  # . if provided, is ignored! First argument is replaced by .data
-#  function(.data, ...) {
-#    # Create quosures with all variables ending with _
-#    list2env(quos_underscore(...), envir = environment())
-#    str(environment())
-#  }
-#}
-
-#flow_function <- function(. = NULL, ..., .body) {
-#  fun <- function(...) NULL
-#  dots <- quos_underscore(...)
-#  if (length(dots)) {
-#    dots[] <- names(dots)
-#    dots <- lapply(dots, as.name)
-#    formals(fun) <- c(. = as.name("."), dots, formals(fun))
-#  } else {
-#    formals(fun) <- c(. = as.name("."), formals(fun))
-#  }
-#  body(fun) <- substitute(do.call("flow", as.list(formals(fun))))
-#  fun
-#}
-
-# flow_function <- function(. = NULL, ..., .expr) {
-#   dots <- quos_underscore(...)
-#   fun <- function(., ...) {
-#     . <- flow(.)
-#     .
-#   }
-#   if (length(dots)) {
-#     dots[] <- names(dots)
-#     dots <- lapply(dots, as.name)
-#     dots$. <- as.name(".")
-#     body(fun)[[2]][[3]] <- substitute(do.call("flow", dots))
-#     body(fun)[[3]] <- substitute(.expr)
-#     #  dots[] <- names(dots)
-#     #  dots <- lapply(dots, as.name)
-#     #  formals(fun) <- c(. = as.name("."), dots, formals(fun))
-#   } else {
-#     body(fun)[[3]] <- substitute(.expr)
-#
-#     #formals(fun) <- c(. = as.name("."), formals(fun))
-#   }
-#   #body(fun) <- substitute(do.call("flow", as.list(formals(fun))))
-#   fun
-# }
