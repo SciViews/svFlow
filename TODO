@@ -2,9 +2,11 @@
 
 * Small examples.
 
+* More tests.
+
 * "branches", + rebase, etc.
 
-* graph to show the hierarchy of Flow objects, as `graph.proto()` did in old
+* Graph to show the hierarchy of Flow objects, as `graph.proto()` did in old
   versions of the proto package.
 
 * Complete the tutorial vignettes.

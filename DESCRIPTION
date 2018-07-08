@@ -14,7 +14,7 @@ Suggests: covr, knitr, testthat, dplyr
 Encoding: UTF-8
 ByteCompile: yes
 LazyData: true
-License: GPL-2
+License: MIT
 URL: https://github.com/SciViews/flow, http://www.sciviews.org/SciViews-R
 BugReports: https://github.com/SciViews/flow/issues
 Roxygen: list(markdown = TRUE)
