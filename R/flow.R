@@ -2,12 +2,16 @@
 #'
 #' **Flow** objects, as explicitly created by `flow()`, or implicitly by the
 #' \code{\link{\%>_\%}} pipe operator are **proto** objects (class-less objects
-#' with possible inheritance) that can be compbined nicely with pipelines using
+#' with possible inheritance) that can be combined nicely with pipelines using
 #' the specialized flow pipe operator \code{\link{\%>_\%}} (or by using `$`).
-#' They allow to encapsulate satellite objects/variables related to the
-#' pipeline, and they automate the encapsulation of non-standard evaluations
-#' automatically with minimal changes required by the user (in comparison to
-#' the regular **rlang** tidy evaluation mechanism).
+#' They allow for encapsulating satellite objects/variables related to the
+#' pipeline, and they deal with non-standard evaluations using the tidyeval
+#' mechanism automatically with minimal changes required by the user.
+#'
+#' `enflow()` creates a **Flow** object in the head of a "flow pipeline" in the
+#' context of a functional sequence, that is a function that converts an
+#' _ad hoc_, single use pipeline into a function reuseable in a different
+#' context. Satellite data become arguments of the function.
 #'
 #' @param . If a **Flow** object is provided, heritate from it, otherwise,
 #' create a new **Flow** object heritating from `.GlobalEnv` with `.` as pipe
@@ -24,43 +28,44 @@
 #' object in `is_flow()`).
 #' @param name The name of the item to get from a **Flow** object. If `name`
 #' starts with two dots (`..`), the item is searched in the **Flow** object
-#' itself without inheritance (like for **proto** objects), but _the name is
-#' stripped from its leading two dots first_! If the content is a **quosure**,
-#' it is automatically unquoted, and for the assignation version, if name ends
-#' with `_`, the expression is automatically converted into a **quosure**.
+#' itself without inheritance, but the name is stripped of its leading two dots
+#' first! If the content is a **quosure**, it is automatically unquoted, and for
+#' the assignation version, if name ends with `_`, the expression is
+#' automatically converted into a **quosure**.
 #' @param value The value or expression to assign to `name` inside the **Flow**
 #' object.
 #'
 #' @details When a **Flow** object is created from scratch, it always inherits
 #' from `.GlobalEnv`, no mather where the expression was executed (in fact, it
-#' inherits from a root **proto** object itself inheriting from `.GlobalEnv`).
-#' This is a deliberate design choice to overcome some difficulties and
-#' limitations of **proto** objects, see [proto()].
-#' `enflow()` is used to create a **flow** object and populate it automatically
-#' with all the abjects that are present in the calling environment. It is
-#' primarily intended to be used inside a function, as first instruction of the
-#' pipeline. Hence, it collects all function arguments inside that pipeline.
+#' inherits from an empty root **Flow** object itself inheriting from
+#' `.GlobalEnv`). This is a deliberate design choice to overcome some
+#' difficulties and limitations of **proto** objects, see [proto()].
+#' `enflow()` creates a **Flow** object and populates it automatically with all
+#' the objects that are present in `env=` (by default, the calling environment).
+#' It is primarily intended to be used inside a function, as first instruction
+#' of a "flow pipeline". Hence, it collects all function arguments inside that
+#' pipeline in a most convenient way.
 #' @export
 #' @name flow
-#' @seealso [str.Flow()], [quos_underscore()], \code{\link{\%>_\%}}
+#' @seealso [str.Flow], [quos_underscore], \code{\link{\%>_\%}}
 #' @keywords utilities
 #' @concept class-less objects for better R pipelines
 #' @examples
 #' library(flow)
 #' library(dplyr)
-#' data("urchin_bio", package = "data")
+#' data(iris)
 #'
-#' foo <- function(., x_ = skeleton, y_ = log_skel, na_rm = TRUE)
-#'   enflow(.) %>_%
+#' foo <- function(data, x_ = Sepal.Length, y_ = log_SL, na_rm = TRUE)
+#'   enflow(data) %>_%
 #'   mutate(., y_ = log(x_)) %>_%
 #'   summarise(., mean = mean(y_,
 #'     na.rm = na_rm_)) %>_% .
 #'
-#' foo(urchin_bio)
+#' foo(iris)
 #'
-#' foo(urchin_bio, x_ = weight)
+#' foo(iris, x_ = Petal.Width)
 #'
-#' foo2 <- function(., x_ = skeleton, y_ = log_skel, na_rm = TRUE)
+#' foo2 <- function(., x_ = Sepal.Length, y_ = log_SL, na_rm = TRUE)
 #'   enflow(.)
 #'
 #' foo2
@@ -210,42 +215,5 @@ print.Flow <- function(x, ...) {
     cat("<Flow object with $.value being>\n")
     print(x$.value, ...)
     invisible(x)
-  }
-}
-
-#' Compactly display the content of a Flow object
-#'
-#' Print short informative strings about the **Flow** object and all it
-#' containts, plus possibly, inheritage information.
-#'
-#' @param object A **Flow** object.
-#' @param max.level The maximum nesting level to use for displaying nested
-#' structures.
-#' @param nest.lev Used internally for pretty printing nested objects (you
-#' probably don't want to change default value).
-#' @param indent.str Idem.
-#' @param ... Further arguments passed to `str()` methods of **Flow** items.
-#'
-#' @export
-#' @seealso [flow()]
-#' @keywords utilities
-#' @concept compactly inform about an object
-#' @examples
-#' # TODO...
-str.Flow <- function(object, max.level = 1, nest.lev = 0,
-indent.str = paste(rep.int(" ", max(0, nest.lev + 1)), collapse = ".."), ...) {
-  # Same as str.proto(), but indicate it is a Flow object
-  cat("Flow", .name_flow(object), "\n")
-
-  lines <- capture_output(
-    str(as.list(object), max.level = max.level, nest.lev  = nest.lev, ...)
-  )[-1]
-  for (line in lines)
-    cat(line, "\n")
-
-  p_env <- env_parent((object))
-  if (is_proto(p_env)) {
-    cat(indent.str, "parent: ", sep = "")
-    str(p_env, nest.lev = nest.lev + 1, ...)
   }
 }

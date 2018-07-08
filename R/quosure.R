@@ -1,11 +1,15 @@
 #' Create and manipulate quosures easily
 #'
-#' Quosures are defined in **rlang** package as part of the tidy evaluation of
-#' non-standard evaluations (see [quo()]). Here, we provide an alternate
-#' mechanism using `-~expr` as a synonym of `quo(expr)`. Also, `UQ(quo_obj)` or
-#' `!!quo_obj` in **rlang** is just here `+quo_obj`. **Quosures** are both basic
-#' and central abjects in the tidy evaluation mechanism. So, we think they
-#' deserve a special concise syntax to create and manipulate them.
+#' @description  Quosures are defined in **rlang** package as part of the tidy
+#' evaluation of non-standard expressions (see [quo()]). Here, we provide an
+#' alternate mechanism using `-~expr` as a synonym of `quo(expr)`. Also,
+#' `+quo_obj` is equivalent to `!!quo_obj` in **rlang**, and ++quo_obj both
+#' unquotes and evaluates it in the right environment. Quosures are keystone
+#' objects in the tidy evaluation mechanism. So, they deserve a special, clean
+#' and concise syntax to create and manipulate them.
+#'
+#' The `as_xxx()` and `is_xxx()` further ease the manipulation of **quosure**s
+#' or related objects.
 #'
 #' @param x An expression
 #' @param env An environment specified for scoping of the quosure.
@@ -13,77 +17,60 @@
 #' @param e2 Second member of a binary operator (not used here, except for `^`).
 #' @param ... Further arguments passed to the `print()` method (not used yet).
 #'
+#' @return These functions build or manipulated **quosure**s and return such
+#' objects. `+quosure` creates an **unquoted** object. The `+` unary operator
+#' applied to **unquoted** objects evaluate the expression contained in the
+#' **quosure** in the right environment.
+#'
 #' @details `-` is defined as an unary minus operator for **formula** objects
 #' (which is *not* defined in base R, hence, not supposed to be used otherwise).
 #' Thus, `-~expr` just converts a formula build using the base `~expr`
-#' instruction into a quosure. `as_quosure()` does the same, when expression is
-#' provided directly.
+#' instruction into a **quosure**. `as_quosure()` does the same, when the
+#' expression is provided directly, and allows also to define the enclosing
+#' environment (by default, it is the environment where the code is evaluated,
+#' and it is also the case when using `-~expr`).
 #'
 #' Similarly, the unary `+` operator is defined for **quosure** in order to
 #' easily "reverse" the mechanism of quoting an expression with a logical
 #' complementary operator. It does something similar to `!!` in **rlang**, but
-#' it can be used outside of tidy eval expressions. Since it has higher syntax
-#' precedence than `!`, it is less susceptible to require parentheses (only `^`
-#' for exponentiation, indexing/subsetting operators like `$` or `[`, and
-#' namespace operators `::` and `:::` have higher precedence). A specific `^`
-#' operator for quosures solves the precedence issue. `::` or `:::` are very
-#' unlikely used in the context.
+#' it can be used outside of tidy eval expressions. Since unary `+` has higher
+#' syntax precedence than `!` in R, it is less susceptible to require
+#' parentheses (only `^` for exponentiation, indexing/subsetting operators like
+#' `$` or `[`, and namespace operators `::` and `:::` have higher precedence). A
+#' specific `^` operator for quosures solves the precedence issue. `::` or `:::`
+#' are very unlikely used in the context.
+#'
+#' `++quosure` is indeed a two-steps operation (`+(+quosure)`). It first
+#' unquotes the quosure, returning an **unquoted** object. Then, the second `+`
+#' evaluates the **unquoted** object. This allows for fine-graded manipulation
+#' of **quosure**s: you can unquote at one place, and evaluate the **unquoted**
+#' object elsewhere (and, of course, the contained expression is always
+#' evaluated in the _right_ environment, despite all these manipulations).
 #' @export
 #' @name quosure
-#' @seealso [quos_underscore()], \code{\link{\%>_\%}}
+#' @seealso [quos_underscore], \code{\link{\%>_\%}}
 #' @keywords utilities
 #' @concept expression encapsulation for non-standard evaluation
 #' @examples
-#' # TODO...
-as_quosure <- function(x, env = caller_env()) {
-  if (is_quosure(x)) {
-    x
-
-  } else if (is_bare_formula(x)) {
-    .as_quosure_formula(x, env)
-
-  } else if (is_symbolic(x)) {
-    new_quosure(x, env)
-
-  } else {
-    new_quosure(x, empty_env())
-  }
-}
-
-#' @export
-#' @rdname quosure
-as.quosure <- as_quosure
-
-#' @export
-#' @rdname quosure
-is_quosure <- function(x)
-  x %is% 'quosure'
-
-#' @export
-#' @rdname quosure
-is.quosure <- is_quosure
-
-# Do not export this, because it mask a function of the same name in purrr
-# It is used for the same purpose, but I don't understand why its code must
-# be so complex (and slow!). So, I stick to my own version here
-is_formula <- function(x)
-  x %is% 'formula'
-
-#' @export
-#' @rdname quosure
-is.formula <- is_formula
-
-#' @export
-#' @rdname quosure
-is_bare_formula <- function(x)
-  is_true(class(x) == 'formula')
-
-#' @export
-#' @rdname quosure
-is.bare_formula <- is_bare_formula
-
-#' @export
-#' @rdname quosure
+#' x <- 1:10
+#' # Create a quosure (same as quo(x))
+#' x_quo <- -~x
+#' x_quo
+#' # Unquote it (same as !!x, but useable everywhere)
+#' +x_quo
+#' # Unquote and evaluate the quosure
+#' ++x_quo
+#' # Syntax precedence issues (^ has higher precedence than unary +)
+#' # is solved by redefining ^ for unquoted objects:
+#' ++x_quo^2
+#' # acts like if ++ had higher precedence than ^, thus like if it was
+#' (++x_quo)^2
+#'
+#' # Assign the unquoted expression
+#' x_unquo <- +x_quo
+#' # ... and use x_unquo in a different context
+#' foo <- function(x) +x
+#' foo(x_unquo)
 `-.formula` <- function(e1, e2) {
   # Same as as.quosure(), but allows for a more compact notation -~expr
   # Warning: if the formula was subclassed, it is still converted. This is
@@ -148,42 +135,51 @@ print.unquoted <- function(x, ...) {
   invisible(x)
 }
 
-# Convert names_ to quosures ----------------------------------------------
-
-#' Convert names ending with _ into quosures automatically
-#'
-#' All names that end with _ are automatically converted into quosures, and also
-#' assigned to the name without training `_`. The other arguments are evaluated.
-#'
-#' @param ... The named arguments provided to be either converted into quosures
-#' or evaluated.
-#'
 #' @export
-#' @seealso [as_quosure()], \code{\link{\%>_\%}}
-#' @keywords utilities
-#' @concept automatic quosures creation for non-standard evaluation
-#' @examples
-#' # TODO...
-quos_underscore <- function(...) {
-  # Transform into closures only those items whose name ends with _
-  # (and also assign them to names without the _)
-  #
-  # rlang does not export dots_capture() that we could use here, and list(...)
-  # does evaluate all arguments in ... So, one (suboptimal) solution is to
-  # convert all ... arguments into quosures using rlang::quos(), and then, to
-  # evaluate those in the list whose name does not end with '_'. The penalty is
-  # negligible and allows to reuse rlang::quos(), which is a larger benefit than
-  # reimplementing (and maintaining!) a slightly different version here.
-  dots <- quos(...)
-  dots_names <- names(dots)
-  l_names <- nchar(dots_names)
-  last_char <- substr(dots_names, l_names, l_names)
-  env <- caller_env(2)
-  for (name in dots_names[last_char != "_"])
-    dots[[name]] <- eval_tidy(dots[[name]], env = env)
-  for (name in dots_names[last_char == "_"]) {
-    dots[[substring(name, 1, nchar(name) - 1)]] <- dots[[name]]
-    dots[[name]] <- NULL
+#' @rdname quosure
+as_quosure <- function(x, env = caller_env()) {
+  if (is_quosure(x)) {
+    x
+
+  } else if (is_bare_formula(x)) {
+    .as_quosure_formula(x, env)
+
+  } else if (is_symbolic(x)) {
+    new_quosure(x, env)
+
+  } else {
+    new_quosure(x, empty_env())
   }
-  dots
 }
+
+#' @export
+#' @rdname quosure
+as.quosure <- as_quosure
+
+#' @export
+#' @rdname quosure
+is_quosure <- function(x)
+  x %is% 'quosure'
+
+#' @export
+#' @rdname quosure
+is.quosure <- is_quosure
+
+# Do not export this, because it mask a function of the same name in purrr
+# It is used for the same purpose, but I don't understand why its code must
+# be so complex (and slow!). So, I stick to my own version here
+is_formula <- function(x)
+  x %is% 'formula'
+
+#' @export
+#' @rdname quosure
+is.formula <- is_formula
+
+#' @export
+#' @rdname quosure
+is_bare_formula <- function(x)
+  is_true(class(x) == 'formula')
+
+#' @export
+#' @rdname quosure
+is.bare_formula <- is_bare_formula

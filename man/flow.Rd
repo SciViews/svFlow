@@ -54,10 +54,10 @@ object in \code{is_flow()}).}
 
 \item{name}{The name of the item to get from a \strong{Flow} object. If \code{name}
 starts with two dots (\code{..}), the item is searched in the \strong{Flow} object
-itself without inheritance (like for \strong{proto} objects), but \emph{the name is
-stripped from its leading two dots first}! If the content is a \strong{quosure},
-it is automatically unquoted, and for the assignation version, if name ends
-with \code{_}, the expression is automatically converted into a \strong{quosure}.}
+itself without inheritance, but the name is stripped of its leading two dots
+first! If the content is a \strong{quosure}, it is automatically unquoted, and for
+the assignation version, if name ends with \code{_}, the expression is
+automatically converted into a \strong{quosure}.}
 
 \item{value}{The value or expression to assign to \code{name} inside the \strong{Flow}
 object.}
@@ -65,40 +65,45 @@ object.}
 \description{
 \strong{Flow} objects, as explicitly created by \code{flow()}, or implicitly by the
 \code{\link{\%>_\%}} pipe operator are \strong{proto} objects (class-less objects
-with possible inheritance) that can be compbined nicely with pipelines using
+with possible inheritance) that can be combined nicely with pipelines using
 the specialized flow pipe operator \code{\link{\%>_\%}} (or by using \code{$}).
-They allow to encapsulate satellite objects/variables related to the
-pipeline, and they automate the encapsulation of non-standard evaluations
-automatically with minimal changes required by the user (in comparison to
-the regular \strong{rlang} tidy evaluation mechanism).
+They allow for encapsulating satellite objects/variables related to the
+pipeline, and they deal with non-standard evaluations using the tidyeval
+mechanism automatically with minimal changes required by the user.
 }
 \details{
+\code{enflow()} creates a \strong{Flow} object in the head of a "flow pipeline" in the
+context of a functional sequence, that is a function that converts an
+\emph{ad hoc}, single use pipeline into a function reuseable in a different
+context. Satellite data become arguments of the function.
+
 When a \strong{Flow} object is created from scratch, it always inherits
 from \code{.GlobalEnv}, no mather where the expression was executed (in fact, it
-inherits from a root \strong{proto} object itself inheriting from \code{.GlobalEnv}).
-This is a deliberate design choice to overcome some difficulties and
-limitations of \strong{proto} objects, see \code{\link[=proto]{proto()}}.
-\code{enflow()} is used to create a \strong{flow} object and populate it automatically
-with all the abjects that are present in the calling environment. It is
-primarily intended to be used inside a function, as first instruction of the
-pipeline. Hence, it collects all function arguments inside that pipeline.
+inherits from an empty root \strong{Flow} object itself inheriting from
+\code{.GlobalEnv}). This is a deliberate design choice to overcome some
+difficulties and limitations of \strong{proto} objects, see \code{\link[=proto]{proto()}}.
+\code{enflow()} creates a \strong{Flow} object and populates it automatically with all
+the objects that are present in \code{env=} (by default, the calling environment).
+It is primarily intended to be used inside a function, as first instruction
+of a "flow pipeline". Hence, it collects all function arguments inside that
+pipeline in a most convenient way.
 }
 \examples{
 library(flow)
 library(dplyr)
-data("urchin_bio", package = "data")
+data(iris)
 
-foo <- function(., x_ = skeleton, y_ = log_skel, na_rm = TRUE)
-  enflow(.) \%>_\%
+foo <- function(data, x_ = Sepal.Length, y_ = log_SL, na_rm = TRUE)
+  enflow(data) \%>_\%
   mutate(., y_ = log(x_)) \%>_\%
   summarise(., mean = mean(y_,
     na.rm = na_rm_)) \%>_\% .
 
-foo(urchin_bio)
+foo(iris)
 
-foo(urchin_bio, x_ = weight)
+foo(iris, x_ = Petal.Width)
 
-foo2 <- function(., x_ = skeleton, y_ = log_skel, na_rm = TRUE)
+foo2 <- function(., x_ = Sepal.Length, y_ = log_SL, na_rm = TRUE)
   enflow(.)
 
 foo2
@@ -106,7 +111,7 @@ foo2(1:10) -> foo_obj
 ls(foo_obj)
 }
 \seealso{
-\code{\link[=str.Flow]{str.Flow()}}, \code{\link[=quos_underscore]{quos_underscore()}}, \code{\link{\%>_\%}}
+\link{str.Flow}, \link{quos_underscore}, \code{\link{\%>_\%}}
 }
 \concept{
 class-less objects for better R pipelines

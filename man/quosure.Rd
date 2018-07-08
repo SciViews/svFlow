@@ -2,6 +2,12 @@
 % Please edit documentation in R/quosure.R
 \name{quosure}
 \alias{quosure}
+\alias{-.formula}
+\alias{+.formula}
+\alias{^.quosure}
+\alias{+.quosure}
+\alias{+.unquoted}
+\alias{print.unquoted}
 \alias{as_quosure}
 \alias{as.quosure}
 \alias{is_quosure}
@@ -9,14 +15,20 @@
 \alias{is.formula}
 \alias{is_bare_formula}
 \alias{is.bare_formula}
-\alias{-.formula}
-\alias{+.formula}
-\alias{^.quosure}
-\alias{+.quosure}
-\alias{+.unquoted}
-\alias{print.unquoted}
 \title{Create and manipulate quosures easily}
 \usage{
+\method{-}{formula}(e1, e2)
+
+\method{+}{formula}(e1, e2)
+
+\method{^}{quosure}(e1, e2)
+
+\method{+}{quosure}(e1, e2)
+
+\method{+}{unquoted}(e1, e2)
+
+\method{print}{unquoted}(x, ...)
+
 as_quosure(x, env = caller_env())
 
 as.quosure(x, env = caller_env())
@@ -30,60 +42,85 @@ is.formula(x)
 is_bare_formula(x)
 
 is.bare_formula(x)
-
-\method{-}{formula}(e1, e2)
-
-\method{+}{formula}(e1, e2)
-
-\method{^}{quosure}(e1, e2)
-
-\method{+}{quosure}(e1, e2)
-
-\method{+}{unquoted}(e1, e2)
-
-\method{print}{unquoted}(x, ...)
 }
 \arguments{
-\item{x}{An expression}
-
-\item{env}{An environment specified for scoping of the quosure.}
-
 \item{e1}{Unary operator member, or first member of a binary operator.}
 
 \item{e2}{Second member of a binary operator (not used here, except for \code{^}).}
 
+\item{x}{An expression}
+
 \item{...}{Further arguments passed to the \code{print()} method (not used yet).}
+
+\item{env}{An environment specified for scoping of the quosure.}
+}
+\value{
+These functions build or manipulated \strong{quosure}s and return such
+objects. \code{+quosure} creates an \strong{unquoted} object. The \code{+} unary operator
+applied to \strong{unquoted} objects evaluate the expression contained in the
+\strong{quosure} in the right environment.
 }
 \description{
-Quosures are defined in \strong{rlang} package as part of the tidy evaluation of
-non-standard evaluations (see \code{\link[=quo]{quo()}}). Here, we provide an alternate
-mechanism using \code{-~expr} as a synonym of \code{quo(expr)}. Also, \code{UQ(quo_obj)} or
-\code{!!quo_obj} in \strong{rlang} is just here \code{+quo_obj}. \strong{Quosures} are both basic
-and central abjects in the tidy evaluation mechanism. So, we think they
-deserve a special concise syntax to create and manipulate them.
+Quosures are defined in \strong{rlang} package as part of the tidy
+evaluation of non-standard expressions (see \code{\link[=quo]{quo()}}). Here, we provide an
+alternate mechanism using \code{-~expr} as a synonym of \code{quo(expr)}. Also,
+\code{+quo_obj} is equivalent to \code{!!quo_obj} in \strong{rlang}, and ++quo_obj both
+unquotes and evaluates it in the right environment. Quosures are keystone
+objects in the tidy evaluation mechanism. So, they deserve a special, clean
+and concise syntax to create and manipulate them.
+
+The \code{as_xxx()} and \code{is_xxx()} further ease the manipulation of \strong{quosure}s
+or related objects.
 }
 \details{
 \code{-} is defined as an unary minus operator for \strong{formula} objects
 (which is \emph{not} defined in base R, hence, not supposed to be used otherwise).
 Thus, \code{-~expr} just converts a formula build using the base \code{~expr}
-instruction into a quosure. \code{as_quosure()} does the same, when expression is
-provided directly.
+instruction into a \strong{quosure}. \code{as_quosure()} does the same, when the
+expression is provided directly, and allows also to define the enclosing
+environment (by default, it is the environment where the code is evaluated,
+and it is also the case when using \code{-~expr}).
 
 Similarly, the unary \code{+} operator is defined for \strong{quosure} in order to
 easily "reverse" the mechanism of quoting an expression with a logical
 complementary operator. It does something similar to \code{!!} in \strong{rlang}, but
-it can be used outside of tidy eval expressions. Since it has higher syntax
-precedence than \code{!}, it is less susceptible to require parentheses (only \code{^}
-for exponentiation, indexing/subsetting operators like \code{$} or \code{[}, and
-namespace operators \code{::} and \code{:::} have higher precedence). A specific \code{^}
-operator for quosures solves the precedence issue. \code{::} or \code{:::} are very
-unlikely used in the context.
+it can be used outside of tidy eval expressions. Since unary \code{+} has higher
+syntax precedence than \code{!} in R, it is less susceptible to require
+parentheses (only \code{^} for exponentiation, indexing/subsetting operators like
+\code{$} or \code{[}, and namespace operators \code{::} and \code{:::} have higher precedence). A
+specific \code{^} operator for quosures solves the precedence issue. \code{::} or \code{:::}
+are very unlikely used in the context.
+
+\code{++quosure} is indeed a two-steps operation (\code{+(+quosure)}). It first
+unquotes the quosure, returning an \strong{unquoted} object. Then, the second \code{+}
+evaluates the \strong{unquoted} object. This allows for fine-graded manipulation
+of \strong{quosure}s: you can unquote at one place, and evaluate the \strong{unquoted}
+object elsewhere (and, of course, the contained expression is always
+evaluated in the \emph{right} environment, despite all these manipulations).
 }
 \examples{
-# TODO...
+x <- 1:10
+# Create a quosure (same as quo(x))
+x_quo <- -~x
+x_quo
+# Unquote it (same as !!x, but useable everywhere)
++x_quo
+# Unquote and evaluate the quosure
+++x_quo
+# Syntax precedence issues (^ has higher precedence than unary +)
+# is solved by redefining ^ for unquoted objects:
+++x_quo^2
+# acts like if ++ had higher precedence than ^, thus like if it was
+(++x_quo)^2
+
+# Assign the unquoted expression
+x_unquo <- +x_quo
+# ... and use x_unquo in a different context
+foo <- function(x) +x
+foo(x_unquo)
 }
 \seealso{
-\code{\link[=quos_underscore]{quos_underscore()}}, \code{\link{\%>_\%}}
+\link{quos_underscore}, \code{\link{\%>_\%}}
 }
 \concept{
 expression encapsulation for non-standard evaluation

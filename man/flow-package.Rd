@@ -6,19 +6,61 @@
 \title{Data analysis workflow and alternate pipeline operator}
 \description{
 Data (work)flow analysis using proto objects and pipe operator that
-integrates non-standard evaluation and the lazyeval mechanism.
+integrates non-standard evaluation and the tidyeval mechanism in a most
+transparent way.
 }
 \section{Important functions}{
 
 \itemize{
-\item \code{\link[=flow]{flow()}} constructs a \code{Flow} object.
-\item \code{\link[=as_quosure]{as_quosure()}}, and unary \code{+} and \code{-} operators combined with \strong{formula}
-objects provide an alternate way to create \strong{quosure}s.
-\item \code{\link[=quos_underscore]{quos_underscore()}} automatically convert arguments whose name ends with
-\code{_} into \strong{quosure}s, and this mechanism is used by our pipe operators.
+\item \code{\link{\%>.\%}} and \code{\link{\%>_\%}} are two alternate pipe
+operators designed to supplement magrittr's \%>\% operator in the
+tidyverse and elsewhere. They are provided for good reasons.
+\code{\link{\%>.\%}} requires explicit indication of the position of \code{.}
+in the pipeline expression \strong{all the time}. The expression is not
+modified. As a consequence, it can never surprise you with an unexpected
+behaviour, and all valid R expressions are useable in the pipeline. Another
+consequence: it is very fast. \code{\link{\%>_\%}} works with \strong{FLow}
+objects that allow for encapsulation of satellite objects (data or
+functions) within the pipeline. It is self-contained. The pileine can be
+interrupted and restarted at any time. It also allows for a class-less
+object-oriented approach with single inheritance (could be useful to test
+easily differents scenarios on the same pipeline and to prototype objects
+that are "pipe-aware"). It also manages the tidyeval mechanism for
+non-standard expressions in the most transparent way: the only "rule" to
+remember is to suffix the name of variables that needs special treatment
+with an undercore (\code{_}) and the pipe operator manages the rest for you.
 \item \code{\link[=debug_flow]{debug_flow()}} provides a convenient way to debug problematic pipelines
 build with our own pipe operators \code{\link{\%>.\%}} and
-\code{\link{\%>_\%}}.
+\code{\link{\%>_\%}} in a comfortable way. Everything from the step that
+raised a error is available: the piped data, the expression to be
+evaluated, and possibly, the last state of the \strong{Flow} object. Everything
+can be inspected, modified, and the expression can be rerun as if you were
+still right in the middle of the pipeline evaluation.
+\item \code{\link[=flow]{flow()}} constructs a \code{Flow} object that is pipe-aware and tidyeval-aware.
+This opens new horizons in your analysis workflow. You start building a
+simple \emph{ad hoc} pipeline, then you can include satellite data or functions
+right inside it, perhaps also test different scenarios by using the object
+inheritance features of \strong{Flow} (common parts are shared among the diferent
+scenarios, thus reducing the memory foortprint). While your pipeline matures
+you gradually and naturally move towards either a functional sequence or a
+dedicated object. The functional sequence pathway consists in building a
+reuseable function to recycle you pipeline in a different context. The
+object pathway is not fully developped yet in the present version. But in
+the future, the object-oriented nature of \strong{Flow} will also be leveraged,
+so that you could automatically translate your "flow pipeline" into an S3 or
+R6 object with satellite data becoming object attributes, and satellite
+functions becoming methods. The pipeline itself would then become the
+default method for that object. Of course, both functions and objects
+derived from a "flow pipeline" will be directly compatible with the tidyeval
+mechanism, as they will be most tidyverse-friendly as possible per
+construction.
+\item \code{\link[=str.Flow]{str.Flow()}} compactly displays the content of a \strong{Flow} object.
+\item \code{\link[=as_quosure]{as_quosure()}}, and unary \code{+} and \code{-} operators combined with \strong{formula}
+objects provide an alternate way to create \strong{quosure}s.
+\item \code{\link[=quos_underscore]{quos_underscore()}} automatically converts arguments whose name ends with
+\code{_} into \strong{quosure}s, and this mechanism is used by our flow pipe
+operator to implement the tidyeval mechanism most transparently inside
+"flow pipelines".
 }
 }
 

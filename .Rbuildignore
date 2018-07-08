@@ -13,4 +13,3 @@ Makefile
 ^\.travis\.yml$
 ^appveyor\.yml$
 ^.*\.Rproj$
-LICENSE

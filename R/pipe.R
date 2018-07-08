@@ -1,15 +1,16 @@
 #' Flow pipeline operators and debugging function
 #'
-#' Pipe operators. The simple one with no forcing to **Flow** objects is
-#' \code{\link{\%>.\%}}. \code{\link{\%>_\%}} forces convertion to **Flow** and
-#' automatically manage non-standard evaluation through creation and unquoting
-#' of **quosure**s for named arguments whose name ends with `_`.
+#' Pipe operators. \code{\link{\%>.\%}} is a very simple and efficient pipe
+#' operator. \code{\link{\%>_\%}} is more complex. It forces convertion to
+#' a **Flow** object inside a pipeline and automatically manage non-standard
+#' evaluation through creation and unquoting of **quosure**s for named arguments
+#' whose name ends with `_`.
 #'
 #' @param x Value or **Flow** object to pass to the pipeline.
 #' @param expr Expression to evaluation in the pipeline.
 #'
 #' @export
-#' @name pipe
+#' @name pipe_operator
 #' @details With \code{\%>.\%}, the value must be explicitly indicated with a
 #' `.` inside the expression. The expression is **not** modified, but the value
 #' is first assigned into the calling environment as `.` (warning! possibly
@@ -37,15 +38,95 @@
 #' Finally, for \code{\%>_\%}, if `expr` is `.`, then, the last value from the
 #' pipe is extracted from the **Flow** object and returned. It is equivalent,
 #' thus, to `flow_obj$.value`.
-#' @seealso [flow()], [quos_underscore()]
+#'
+#' You can mix \code{\%>.\%} and \code{\%>_\%} within the same pipeline. In case
+#' you use \code{\%>.\%} with a flow pipeline, it "unflows" it, extracting
+#' `.value` from the **Flow** object and further feeding it to the pipeline.
+#' @seealso [flow], [quos_underscore]
 #' @keywords utilities
 #' @concept pipeline operators and debugging
 #' @examples
-#' # TODO...
+#' # A simple pipeline with %>.% (explicit position of '.' required)
+#' library(flow)
+#' library(dplyr)
+#' data(iris)
+#' iris2 <- iris %>.%
+#'   mutate(., log_SL = log(Sepal.Length)) %>.%
+#'   filter(., Species == "setosa")
+#'
+#' # The %>.% operator is much faster than magrittr's %>%
+#' # (although this has no noticeable impact in most situations when the
+#' # pipeline in used in an ad hoc way, outside of loops or other constructs
+#' # that call it a larger number of times)
+`%>.%` <- function(x, expr) {
+  # A simple pipe operator, which requires explicit indication of .
+  # It is compatible with wrapr %.>% alias %>.%, except for Flow objects
+  # where it extracts x$.value into . first.
+  env <- caller_env()
+  if (is_flow(x)) {
+    env[["."]] <- x$.value
+  } else {
+    env[["."]] <- x
+  }
+  env[[".call"]] <- substitute(expr)
+  expr
+}
+
+# Rework a (nse) expression to operate properly with the tidyeval mechanism in
+# the context of a flow pipeline using %>_%
+.tidy_flow_expr <- function(expr) {
+  # TODO: rework expressions on the parsed tree directly!
+  # For now, we stick with regular expressions substitution on the deparsed
+  # expression: easier to implement for now. Work on the parsed tree left for
+  # when that function will be fully field-tested!
+  expr <- deparse(expr)
+  # Whenever `var_ =` appears, replace with `!!..$var :=`
+  expr <- gsub(
+    "(?<![._a-zA-Z0-9])([._a-zA-Z0-9]+)_([ \t]*)=(?!=)", "!!..$\\1\\2:=",
+    expr, perl = TRUE)
+  # Whenever var_ appears, replace by !!..$var
+  expr <- gsub(
+    "(?<![._a-zA-Z0-9])([._a-zA-Z0-9]+)_(?![._a-zA-Z0-9])", "!!..$\\1",
+    expr, perl = TRUE)
+  parse(text = expr)
+}
+
+#' @export
+#' @rdname pipe_operator
+`%>_%` <- function(x, expr) {
+  # A more sophisticated pipe operator that can deal nicely with flow objects
+  # and tidyverse non-standard evaluation as in rlang (tidyeval)
+  if (!is_flow(x))
+    x <- flow(x)
+
+  # Special case to return the value out of the Flow object
+  expr <- substitute(expr)
+  if (expr == ".")
+    return(x[[".value"]])
+
+  env <- caller_env()
+  env[["."]] <- x[[".value"]]
+  env[[".."]] <- x
+  on.exit(env[[".call_raw"]] <- expr)
+
+  # Rework the expression to be tidyeval-compatible in the most transparent way
+  expr2 <- .tidy_flow_expr(expr)
+
+  on.exit({
+    env[[".call"]] <- expr2
+    x[[".call"]] <- expr2
+  }, add = TRUE)
+  x[[".value"]] <- eval(expr2, envir = env)
+
+  x
+}
+
+#' @export
+#' @rdname pipe_operator
 debug_flow <- function() {
   # TODO: cleanup of the calling stack on error!
   # TODO: take into account flow() environment and call reworking and report
-  # these clearly to better understand what is done with the %>_% operator!
+  # these clearly to help understand what is done with the %>_% operator!
   env <- caller_env()
   pipe_data <- env[["."]]
   pipe_call <- env[[".call"]]
@@ -61,62 +142,4 @@ debug_flow <- function() {
 
   cat("\nproducing:\n")
   eval(pipe_call, env)
-}
-
-#' @export
-#' @rdname pipe
-`%>.%` <- function(x, expr) {
-  # Our own pipe operator, which requires explicit indication of .
-  # It is compatible with wrapr %.>% alias %>.%, except for Flow objects
-  # where it extracts x$.value into . first.
-  env <- caller_env()
-  if (is_flow(x)) {
-    env[["."]] <- x$.value
-  } else {
-    env[["."]] <- x
-  }
-  env[[".call"]] <- substitute(expr)
-  expr
-}
-
-#' @export
-#' @rdname pipe
-`%>_%` <- function(x, expr) {
-  # A more sophisticated pipe operator that can deal nicely with flow objects
-  # and tidyverse non-standard evaluation as in rlang and tidyeval
-  if (!is_flow(x))
-    x <- flow(x)
-
-  # Special case to return the value out of the Flow object
-  expr2 <- substitute(expr)
-  if (expr2 == ".")
-    return(x[[".value"]])
-
-  env <- caller_env()
-  env[["."]] <- x[[".value"]]
-  env[[".."]] <- x
-  on.exit(env[[".call_raw"]] <- expr2)
-
-  # TODO: rework expressions on the parsed tree directly!
-  # For now, we stick with regular expressions substitution on the deparsed
-  # expression: easier to implement for now. Work on the parsed tree left for
-  # when that function will be fully field-tested!
-  expr2 <- deparse(expr2)
-  # Whenever `var_ =` appears, replace with `!!..$var :=`
-  expr2 <- gsub(
-    "(?<![._a-zA-Z0-9])([._a-zA-Z0-9]+)_([ \t]*)=(?!=)", "!!..$\\1\\2:=",
-    expr2, perl = TRUE)
-  # Whenever var_ appears, replace by !!..$var
-  expr2 <- gsub(
-    "(?<![._a-zA-Z0-9])([._a-zA-Z0-9]+)_(?![._a-zA-Z0-9])", "!!..$\\1",
-    expr2, perl = TRUE)
-  expr2 <- parse(text = expr2)
-
-  on.exit({
-    env[[".call"]] <- expr2
-    x[[".call"]] <- expr2
-  }, add = TRUE)
-  x[[".value"]] <- eval(expr2, envir = env)
-
-  x
 }
