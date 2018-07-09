@@ -82,12 +82,17 @@
   expr <- deparse(expr)
   # Whenever `var_ =` appears, replace with `!!..$var :=`
   expr <- gsub(
-    "(?<![._a-zA-Z0-9])([._a-zA-Z0-9]+)_([ \t]*)=(?!=)", "!!..$\\1\\2:=",
-    expr, perl = TRUE)
+    "(?<![._a-zA-Z0-9])([._a-zA-Z0-9]+)_([ \t]*)=(?!=)",
+    "!!..$\\1\\2:=", expr, perl = TRUE)
+  # Whenever `var_(` appears (special case for functions), replace with
+  # `rlang::eval_tidy(var)(`
+  expr <- gsub(
+    "(?<![._a-zA-Z0-9])([._a-zA-Z0-9]+)_([ \t]*)\\(",
+    "rlang::eval_tidy(..$\\1)\\2(", expr, perl = TRUE)
   # Whenever var_ appears, replace by !!..$var
   expr <- gsub(
-    "(?<![._a-zA-Z0-9])([._a-zA-Z0-9]+)_(?![._a-zA-Z0-9])", "!!..$\\1",
-    expr, perl = TRUE)
+    "(?<![._a-zA-Z0-9])([._a-zA-Z0-9]+)_(?![._a-zA-Z0-9])",
+    "!!..$\\1", expr, perl = TRUE)
   parse(text = expr)
 }
 

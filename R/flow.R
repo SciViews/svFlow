@@ -55,15 +55,20 @@
 #' library(dplyr)
 #' data(iris)
 #'
-#' foo <- function(data, x_ = Sepal.Length, y_ = log_SL, na_rm = TRUE)
+#' foo <- function(data, x_ = Sepal.Length, y_ = log_SL,
+#' fun_ = mean, na_rm = TRUE)
 #'   enflow(data) %>_%
 #'   mutate(., y_ = log(x_)) %>_%
-#'   summarise(., mean = mean(y_,
+#'   summarise(., fun_ = fun_(y_,
 #'     na.rm = na_rm_)) %>_% .
 #'
 #' foo(iris)
 #'
 #' foo(iris, x_ = Petal.Width)
+#'
+#' foo(iris, x_ = Petal.Width, fun_ = median)
+#' # Unfortunately, this does not work, due to limitations of tidyeval's :=
+#' #foo(iris, x_ = Petal.Width, fun_ = stats::median)
 #'
 #' foo2 <- function(., x_ = Sepal.Length, y_ = log_SL, na_rm = TRUE)
 #'   enflow(.)
@@ -113,23 +118,21 @@ flow <- function(. = NULL, .value = NULL, ...) {
 #' converted into `quosures`. The object provided to `.value=` becomes the
 #' default value of the `Flow` object, that is, the data transferred to the
 #' pipeline.
-#' @param ignore A character string with the name of the objects that should not
-#' be imported from the environment
-enflow <- function(.value, env = caller_env(), ignore = character(0)) {
-  objects <- ls(env, all.names = FALSE)
-
+#' @param objects A character string with the name of the objects from `env`
+#' to import into the **Flow** object. If `env` is the calling environment (by
+#' default), `.value` is the name of an object, and that name appears in
+#' `objects` too, it is excluded from it to avoid importing it twice.
+#' from that
+enflow <- function(.value, env = caller_env(), objects = ls(env)) {
   # If env is the calling environment and .value is a name, then, the default
   # value of the Flow object is one of the objects in the imported environment.
-  # So, do not import it twice and add it to the list of ignored items.
-  value_expr <- substitute(x)
+  # So, do not import it twice and exclude it from objects.
+  value_expr <- substitute(.value)
   if (identical(env, caller_env()) && is_name(value_expr) &&
     exists(as_chr(value_expr), envir = env, inherits = FALSE)) {
-    ignore <- c(ignore, as_chr(value_expr))
+    keep <- objects != as_chr(value_expr)
+    objects <- objects[keep]
   }
-
-  # Eliminate ignored objects from the list
-  ignored_items <- objects %in% ignore
-  objects <- objects[!ignored_items]
 
   # Create and populate the Flow object
   fl <- flow(.value)

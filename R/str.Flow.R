@@ -22,7 +22,8 @@
 #' fl # Shows the .value contained into fl
 #' str(fl) # Provides compact information about satellite data contained in fl
 str.Flow <- function(object, max.level = 1, nest.lev = 0,
-  indent.str = paste(rep.int(" ", max(0, nest.lev + 1)), collapse = ".."), ...) {
+indent.str = paste(rep.int(" ", max(0, nest.lev + 1)),
+collapse = ".."), ...) {
   # Similair to str.proto(), but indicate it is a Flow object
   cat("Flow", .name_flow(object), "\n")
 

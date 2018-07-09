@@ -12,7 +12,7 @@
 \usage{
 flow(. = NULL, .value = NULL, ...)
 
-enflow(.value, env = caller_env(), ignore = character(0))
+enflow(.value, env = caller_env(), objects = ls(env))
 
 is_flow(x)
 
@@ -46,8 +46,11 @@ converted into \code{quosures}. The object provided to \code{.value=} becomes th
 default value of the \code{Flow} object, that is, the data transferred to the
 pipeline.}
 
-\item{ignore}{A character string with the name of the objects that should not
-be imported from the environment}
+\item{objects}{A character string with the name of the objects from \code{env}
+to import into the \strong{Flow} object. If \code{env} is the calling environment (by
+default), \code{.value} is the name of an object, and that name appears in
+\code{objects} too, it is excluded from it to avoid importing it twice.
+from that}
 
 \item{x}{An object (a \strong{Flow} object, or anyting to test if it is a \strong{Flow}
 object in \code{is_flow()}).}
@@ -93,15 +96,20 @@ library(flow)
 library(dplyr)
 data(iris)
 
-foo <- function(data, x_ = Sepal.Length, y_ = log_SL, na_rm = TRUE)
+foo <- function(data, x_ = Sepal.Length, y_ = log_SL,
+fun_ = mean, na_rm = TRUE)
   enflow(data) \%>_\%
   mutate(., y_ = log(x_)) \%>_\%
-  summarise(., mean = mean(y_,
+  summarise(., fun_ = fun_(y_,
     na.rm = na_rm_)) \%>_\% .
 
 foo(iris)
 
 foo(iris, x_ = Petal.Width)
+
+foo(iris, x_ = Petal.Width, fun_ = median)
+# Unfortunately, this does not work, due to limitations of tidyeval's :=
+#foo(iris, x_ = Petal.Width, fun_ = stats::median)
 
 foo2 <- function(., x_ = Sepal.Length, y_ = log_SL, na_rm = TRUE)
   enflow(.)
