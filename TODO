@@ -4,6 +4,12 @@
 
 * More tests.
 
+* enflow() => ignore or add?
+
+* pipe_debug() => true debugging, possibly with arg
+
+* pipe_show() or pipe_stepin(), or ...?
+
 * "branches", + rebase, etc.
 
 * Graph to show the hierarchy of Flow objects, as `graph.proto()` did in old

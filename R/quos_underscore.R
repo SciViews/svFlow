@@ -33,12 +33,17 @@ quos_underscore <- function(...) {
   dots_names <- names(dots)
   l_names <- nchar(dots_names)
   last_char <- substr(dots_names, l_names, l_names)
+  ends_with_underscore <- last_char == "_"
+
   env <- caller_env(2)
-  for (name in dots_names[last_char != "_"])
-    dots[[name]] <- eval_tidy(dots[[name]], env = env)
-  for (name in dots_names[last_char == "_"]) {
+
+  for (name in dots_names[ends_with_underscore]) {
     dots[[substr(name, 1, nchar(name) - 1)]] <- dots[[name]]
     dots[[name]] <- NULL
   }
+
+  for (name in dots_names[!ends_with_underscore])
+    dots[[name]] <- eval_tidy(dots[[name]], env = env)
+
   dots
 }

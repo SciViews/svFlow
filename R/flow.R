@@ -135,12 +135,12 @@ enflow <- function(.value, env = caller_env(), ignore = character(0)) {
   fl <- flow(.value)
   for (object in objects) {
     l <- nchar(object)
-    if (substring(object, l, l) == "_") {
+    if (substr(object, l, l) == "_") {
       # Usually not good to parse and evaluate this way, ... but object is
       # already a string, and it appears to be a robust and safe approach here
       expr <- parse(text = paste0("rlang::enquo(", object, ")"))
       env2 <- eval(caller_env(), envir = env)
-      fl[[substring(object, 1, l - 1)]] <- eval(expr, envir = env2)
+      fl[[substr(object, 1, l - 1)]] <- eval(expr, envir = env2)
     } else {
       fl[[object]] <- get(object, envir = env, inherits = FALSE)
     }
@@ -196,8 +196,8 @@ is.flow <- is_flow
   name <- as_chr(substitute(name))
   l <- nchar(name)
 
-  if (substring(name, l, l) == "_") {
-    x[[substring(name, 1, l - 1)]] <- as_quosure(value, env = caller_env())
+  if (substr(name, l, l) == "_") {
+    x[[substr(name, 1, l - 1)]] <- as_quosure(value, env = caller_env())
   } else {
     x[[name]] <- value
   }

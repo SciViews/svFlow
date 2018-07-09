@@ -73,6 +73,7 @@ NULL
 
 # Non-exported functions --------------------------------------------------
 
+#' @noRd
 `%is%` <- function(x, what) # This is more expressive!
   inherits(x, what)
 
