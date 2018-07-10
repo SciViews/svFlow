@@ -165,9 +165,14 @@ is.flow <- is_flow
 `$.Flow` <- function(x, name) {
   # This is essentially the same as `$.proto()`, but it unquotes name. Also,
   # if you specify obj$..name, it looks at 'name' in obj WITHOUT inheritance
-  # The proto object look for '..name' with inheritance. So, you have to
-  # specify if the name will be looked for with or without inheritance when the
-  # name is defined, not when the object is used, which is something odd!
+  # The proto object looks for '..name'. So, you have to specify if the name
+  # will be looked for with or without inheritance when the name is defined, not
+  # when the object is used, which is something odd!
+  #
+  # Also, '.' is used a synonym to '.value' to extract the "default" value
+  if (name == ".")
+    name <- ".value"
+
   n <- nchar(name)
   if (n > 2 && substr(name, 1, 2) == "..") {
     inherits <- FALSE
@@ -189,7 +194,7 @@ is.flow <- is_flow
 #' @rdname flow
 `$<-.Flow` <- function(x, name, value) {
   # The difference with `$<-.proto` is that the flow version assigns a quosure
-  # automatically if name ends with '_'
+  # automatically if name ends with '_' (and . is synonym of .value)
   if (name == '.super')
     parent.env(x) <- value
 
@@ -197,8 +202,11 @@ is.flow <- is_flow
     environment(value) <- x
 
   name <- as_chr(substitute(name))
-  l <- nchar(name)
 
+  if (name == ".")
+    name <- ".value"
+
+  l <- nchar(name)
   if (substr(name, l, l) == "_") {
     x[[substr(name, 1, l - 1)]] <- as_quosure(value, env = caller_env())
   } else {

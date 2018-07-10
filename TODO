@@ -6,8 +6,6 @@
 
 * Transparent lazyeval mechanism for ... (equivalent of quos(...))
 
-* enflow() => ignore or add?
-
 * pipe_debug() => true debugging, possibly with arg
 
 * pipe_show() or pipe_stepin(), or ...?

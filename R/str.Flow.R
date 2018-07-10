@@ -24,7 +24,7 @@
 str.Flow <- function(object, max.level = 1, nest.lev = 0,
 indent.str = paste(rep.int(" ", max(0, nest.lev + 1)),
 collapse = ".."), ...) {
-  # Similair to str.proto(), but indicate it is a Flow object
+  # Similar to str.proto(), but indicate it is a Flow object
   cat("Flow", .name_flow(object), "\n")
 
   lines <- capture_output(
