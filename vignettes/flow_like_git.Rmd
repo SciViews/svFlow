@@ -1,0 +1,68 @@
+---
+title: "Git-like (Work)flow management"
+author: "Philippe Grosjean"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{(Git-like (Work)flow management}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  \usepackage[utf8]{inputenc}
+---
+
+As your work flow becomes more complex, you will feel the need to test different scenarios, to save intermediate results, etc. This requires an additional set of tools to learn. In a way, there are similarities between this work flow, and the history of a Git repository. So, in order to leverage what you have already learn in Git, similar action are proposed in flow (or the other way)!
+
+Here is a some experimental wrok in that direction.
+
+
+## Equivalence of Git command in Flow
+
+- repository => local = a root Flow object and all subclassed objects, remote = what is saved on disk, or on a public server... Or the local repository would be the local disk, and the objects would be the stage, or working directory? Need to experiment with both analogies first to decide which one is best.
+- Local repository would be the disk. So, committing would be to save an intermediate version of your analysis?
+- Remote repository would be a central place to exchange data and analyses?
+- Would `%>_%` be staging, or a commit?
+- `plot_pipe()`, or `debug_pipe()` or whaterver => shiny miniapp to depict the flow the same way a repo is depicted in Git
+- `fl2 <- fl1$flow()` => `fl2 <- fl1$branch()`
+- If branches are inheriting from master, there is a difference from Git: a change in master also automatically reflect in the branch. However, if both master and new_feature subclass fl1, them, any change in one is not reflected in the other, like in Git, and you have to merge like for Git! => the right way to go!
+
+
+## Git commands to think of
+
+- git init
+- git clone /path/to/repo or git clone username@host:/path/to/repo
+- git add <filename> or git add * => staged
+- git commit -m "Commit message" => on local HEAD but not in remote
+- git push origin <master>
+- git remote add origin <server> => conect to remote
+
+```
+            new_feature
+         -------------------
+        /                    \ merge
+branch /        master        \ 
+----------------------------------------
+```
+
+- git checkout -b new_feature
+- git checkout master => back to master branh
+- git branch -d new_feature => delete branch
+- git push origin <branch> => make branch available to others
+- git pull => update from remote
+- git merge <branch> => merge a branch into current branch. If conflicts, you have to resolve manually
+- then, once conflicts are resolved: git add <filename>
+- git diff <source_branch> <target_branch> => visualize differences before merge
+- git tag 1.0.0 <sha> => create tag to cmmit with given <sha>
+- git log
+- git log --author=bob
+- git log --pretty=online
+- git log --graph --oneline --decorate --all => Graphical history of the repo
+- git log --name-status
+
+
+## More ideas to elaborate
+
+- **git hooks**
+ 
+- **fork a repo and pull request**
+ 
+- Also see **drake** for a way to organize and visualize workflow in R
