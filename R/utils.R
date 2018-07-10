@@ -48,7 +48,11 @@
 #' fl2 <- flow(1:10, .name = "My Flow object")
 #' flow:::.name_flow("fl2")
 .name_flow <- function(x, env = caller_env()) {
-  stop_if_not(is_env(x) || (is_chr(x) && is_env(x <- get(x, env))))
+  if (is_chr(x))
+    x <- get(x, env)
+
+  if (!is_env(x))
+    abort("'x' must be an environment, or a string with its name")
 
   if (exists('.name', x, inherits = FALSE)) {
     x[['.name']]
@@ -98,7 +102,6 @@ do_call <- function(what, ...)
 # For help, see respective functions
 is_chr <- is.character
 is_env <- is.environment
-stop_if_not <- stopifnot
 capture_output <- capture.output
 is_name <- is.name
 is_null <- is.null # rlang::is_null is much slower. So, until it is optimized...

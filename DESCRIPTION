@@ -14,7 +14,7 @@ Authors@R: c(
     comment = "Author of 'proto' package, whose 'flow' is derived"))
 Maintainer: Philippe Grosjean <phgrosjean@sciviews.org>
 Depends: R (>= 3.3.0)
-Imports: proto, rlang (>= 0.2.0), utils
+Imports: proto, rlang (>= 0.2.0), utils, graphics, igraph
 Suggests: covr, knitr, testthat, dplyr, datasets, microbenchmark
 Encoding: UTF-8
 ByteCompile: yes

@@ -1,8 +1,5 @@
 # flow To Do list
 
-* Add expr as argument to Flow object. May be add possibility to redefine
-  environment for methods?
-
 * Complete examples for ?flow and ?pipe_operator.
 
 * More tests.
@@ -13,13 +10,13 @@
 
 * pipe_show() or pipe_stepin(), or ...?
 
-* import more selectively from proto
+* as_s3() to convert a Flow object into S3?
 
-* "branches", + rebase, etc.
+* "branches", + merge, etc.
 
 * A specific function to get parent. Now, we use fl$parent.env().
 
-* Graph to show the hierarchy of Flow objects, as `graph.proto()` did in old
-  versions of the proto package.
+* Add expr as argument to Flow object. May be add possibility to redefine
+  environment for methods?
 
 * Complete the tutorial vignettes.

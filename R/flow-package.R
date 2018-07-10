@@ -68,4 +68,6 @@
 #'   f_lhs f_rhs is_function is_symbolic is_true new_quosure quos enquo !!
 #'   eval_tidy get_expr quo_get_env quo_get_expr
 #' @importFrom utils capture.output str
+#' @importFrom igraph graph_from_edgelist
+#' @importFrom graphics plot
 NULL

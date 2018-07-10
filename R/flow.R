@@ -87,7 +87,7 @@ flow <- function(. = NULL, .value = NULL, ...) {
     root <- structure(
       proto(
         .GlobalEnv, envir = child_env2(.GlobalEnv),
-        .value = NULL, .call = NULL),
+        .value = NULL, .call = NULL, .name = "root"),
       class = flow_class)
 
     if (!missing(.value)) . <- .value

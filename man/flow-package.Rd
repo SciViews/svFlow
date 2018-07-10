@@ -5,9 +5,9 @@
 \alias{flow-package}
 \title{Data analysis workflow and alternate pipeline operator}
 \description{
-Data (work)flow analysis using proto objects and pipe operator that
-integrates non-standard evaluation and the tidyeval mechanism in a most
-transparent way.
+Data (work)flow analysis using proto objects (see \code{\link[=proto]{proto()}}) and a pipe
+operator that integrates non-standard evaluation and the tidyeval mechanism
+in a most transparent way.
 }
 \section{Important functions}{
 
