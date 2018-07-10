@@ -3,26 +3,29 @@
 \name{flow}
 \alias{flow}
 \alias{enflow}
-\alias{is_flow}
 \alias{is.flow}
+\alias{is_flow}
+\alias{as.flow}
+\alias{as_flow}
 \alias{$.Flow}
 \alias{$<-.Flow}
-\alias{print.Flow}
 \title{Create Flow objects to better organize pipelines in R}
 \usage{
 flow(. = NULL, .value = NULL, ...)
 
 enflow(.value, env = caller_env(), objects = ls(env))
 
+is.flow(x)
+
 is_flow(x)
 
-is.flow(x)
+as.flow(x, ...)
+
+as_flow(x, ...)
 
 \method{$}{Flow}(x, name)
 
 \method{$}{Flow}(x, name) <- value
-
-\method{print}{Flow}(x, ...)
 }
 \arguments{
 \item{.}{If a \strong{Flow} object is provided, heritate from it, otherwise,

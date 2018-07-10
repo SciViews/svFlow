@@ -34,7 +34,7 @@ collapse = ".."), ...) {
     cat(line, "\n")
 
   p_env <- env_parent((object))
-  if (is_proto(p_env)) {
+  if (p_env %is% "proto") {
     cat(indent.str, "parent: ", sep = "")
     str(p_env, nest.lev = nest.lev + 1, ...)
   }

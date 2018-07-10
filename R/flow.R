@@ -153,12 +153,58 @@ enflow <- function(.value, env = caller_env(), objects = ls(env)) {
 
 #' @export
 #' @rdname flow
-is_flow <- function(x)
+is.flow <- function(x)
   x %is% 'Flow'
 
 #' @export
 #' @rdname flow
-is.flow <- is_flow
+is_flow <- is.flow
+
+#' @export
+#' @rdname flow
+as.flow <- function(x, ...)
+  UseMethod("as.flow")
+
+#' @export
+#' @rdname flow
+as_flow <- as.flow
+
+#' @export
+as.flow.Flow <- function(x, ...)
+  x
+
+#' @export
+as.flow.default <- function(x, ...) {
+  # TODO: a proto object is not necessarily 'rooted' into .GlobalEnv, while
+  # a Flow object is => impossible to solve this! Any idea?
+  # A Flow object is really a special king of proto object.
+  # So, first convert into proto
+  x <- as.proto(x)
+  class(x) <- c('Flow', 'proto', 'environment')
+
+  # ..Name (proto) -> .name (Flow)
+  if (exists("..Name", envir = x, inherits = FALSE)) {
+    x[[".name"]] <- x[["..Name"]]
+    x[["..Name"]] <- NULL
+  }
+
+  x
+}
+
+#' @export
+as.proto.Flow <- function(x, ...) {
+  # A Flow object really is the same as a proto object. So, only minor changes
+  if (!x %is% "proto")
+    abort("'x' must inherits from 'proto' class")
+  # In Flow, name is in '.name', but it is in '..Name' for proto objects
+  if (exists(".name", envir = x, inherits = FALSE)) {
+    x[["..Name"]] <- x[[".name"]]
+    x[[".name"]] <- NULL
+  }
+
+  class(x) <- c('proto', 'environment')
+  x
+}
 
 #' @export
 #' @rdname flow
@@ -185,8 +231,8 @@ is.flow <- is_flow
   if (!is_function(res) || deparse(substitute(x)) %in% c('.that', '.super')) {
     res
   } else {
-    # Construct a protoMethod compatible with proto package
-    structure(function(...) res(x, ...), class = 'protoMethod', method = res)
+    # Construct a FlowMethod compatible with protoMethods in package proto
+    structure(function(...) res(x, ...), class = "FlowMethod", method = res)
   }
 }
 
@@ -217,7 +263,6 @@ is.flow <- is_flow
 }
 
 #' @export
-#' @rdname flow
 print.Flow <- function(x, ...) {
   # Similar to print.proto(), but indicate it is a Flow object
   if (exists('object_print', envir = x, inherits = TRUE)) {
@@ -227,4 +272,11 @@ print.Flow <- function(x, ...) {
     print(x$.value, ...)
     invisible(x)
   }
+}
+
+#' @export
+print.FlowMethod <- function(x, ...) {
+  # Similar to proto:::print.protoMethod(), but for Flow objects
+  cat("<FlowMethod>\n")
+  print(attr(x, "method"), ...)
 }
