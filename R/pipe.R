@@ -1,7 +1,7 @@
 #' Flow pipeline operators and debugging function
 #'
 #' Pipe operators. \code{\link{\%>.\%}} is a very simple and efficient pipe
-#' operator. \code{\link{\%>_\%}} is more complex. It forces convertion to
+#' operator. \code{\link{\%>_\%}} is more complex. It forces conversion to
 #' a **Flow** object inside a pipeline and automatically manage non-standard
 #' evaluation through creation and unquoting of **quosure**s for named arguments
 #' whose name ends with `_`.
@@ -89,10 +89,10 @@
   expr <- gsub(
     "(?<![._a-zA-Z0-9])([._a-zA-Z0-9]+)_([ \t]*)\\(",
     "rlang::eval_tidy(..$\\1)\\2(", expr, perl = TRUE)
-  # Whenever var_ appears, replace by !!..$var
+  # Whenever var_ appears, replace by `!!`(..$var)
   expr <- gsub(
     "(?<![._a-zA-Z0-9])([._a-zA-Z0-9]+)_(?![._a-zA-Z0-9])",
-    "!!..$\\1", expr, perl = TRUE)
+    "`!!`(..$\\1)", expr, perl = TRUE)
   parse(text = expr)
 }
 

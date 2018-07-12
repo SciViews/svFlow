@@ -20,7 +20,7 @@ debug_flow()
 }
 \description{
 Pipe operators. \code{\link{\%>.\%}} is a very simple and efficient pipe
-operator. \code{\link{\%>_\%}} is more complex. It forces convertion to
+operator. \code{\link{\%>_\%}} is more complex. It forces conversion to
 a \strong{Flow} object inside a pipeline and automatically manage non-standard
 evaluation through creation and unquoting of \strong{quosure}s for named arguments
 whose name ends with \code{_}.

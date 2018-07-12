@@ -23,7 +23,7 @@ probably don't want to change default value).}
 }
 \description{
 Print short informative strings about the \strong{Flow} object and all it
-containts, plus possibly, inheritance information.
+contains, plus possibly, inheritance information.
 }
 \examples{
 # A Flow object

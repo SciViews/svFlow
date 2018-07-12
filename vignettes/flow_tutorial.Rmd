@@ -40,7 +40,7 @@ flow(iris, var_ = Petal.Length, threshold = 1.5) %>_%
   head(.) %>_% .
 ```
 
-Convert this into a reuseable function by replacing `flow()` by `function()` and starting the pipeline with `enflow()`:
+Convert this into a reusable function by replacing `flow()` by `function()` and starting the pipeline with `enflow()`:
 
 ```{r}
 my_process <- function(data, var_ = Petal.Length, threshold = 1.5)
@@ -51,7 +51,7 @@ my_process <- function(data, var_ = Petal.Length, threshold = 1.5)
 
 ```
 
-Then, you use it just as a plain function. The arguùents ending with `_` are also a good way to immediately spot those who are treated specially by the tidyeval mechanism! Here, we redo the analysis:
+Then, you use it just as a plain function. The arguments ending with `_` are also a good way to immediately spot those who are treated specially by the tidyeval mechanism! Here, we redo the analysis:
 
 ```{r}
 my_process(iris)
@@ -64,11 +64,11 @@ my_process(iris, var_ = Sepal.Width, threshold = 0.5)
 ```
 
 
-## Flow objects to test alternate scenarii
+## Flow objects to test alternate scenarios
 
-The **Flow** objects can be subclassed. This is a little bit similar to branches of git repositories (although with automatic updates from master branch). It could be nice to keep this comparison as close as possible and to make both logics similar, so that one can work similarly with `flow()` and with git?! We need tools to create, delete, switch to, merge (into master only?), and rebase + diff.
+The **Flow** objects can be subclassed. This is a little bit similar to branches of git repositories (although with automatic updates from master branch). It could be nice to keep this comparison as close as possible and to make both approaches conceptually similar, so that one can work similarly with `flow()` and with git?! We need tools to create, delete, switch to, merge (into master only?), and rebase + diff.
 
-The biggest difference is that branches in git terms do not dynamically heritate objects from parents but **proto**/**Flow** objects do (in this case, **master** branch is indeed the ancestor). So, we could create a function `branch()` that does something like this:
+The biggest difference is that branches in git terms do not dynamically inherit objects from parents but **proto**/**Flow** objects do (in this case, **master** branch is indeed the ancestor). So, we could create a function `branch()` that does something like this:
 
 ```{r}
 # Create a new branch called lda

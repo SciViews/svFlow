@@ -1,7 +1,7 @@
 #' Compactly display the content of a Flow object
 #'
 #' Print short informative strings about the **Flow** object and all it
-#' containts, plus possibly, inheritance information.
+#' contains, plus possibly, inheritance information.
 #'
 #' @param object A **Flow** object.
 #' @param max.level The maximum nesting level to use for displaying nested

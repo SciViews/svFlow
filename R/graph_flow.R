@@ -1,4 +1,4 @@
-#' Create a geaph with Flow objects hierarchy
+#' Create a graph with Flow objects hierarchy
 #'
 #' A graph showing all **Flow** objects heritage is calculated, and displayed.
 #'

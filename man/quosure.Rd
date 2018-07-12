@@ -103,7 +103,7 @@ x <- 1:10
 # Create a quosure (same as quo(x))
 x_quo <- -~x
 x_quo
-# Unquote it (same as !!x, but useable everywhere)
+# Unquote it (same as !!x, but usable everywhere)
 +x_quo
 # Unquote and evaluate the quosure
 ++x_quo

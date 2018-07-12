@@ -2,7 +2,7 @@
 % Please edit documentation in R/graph_flow.R
 \name{graph_flow}
 \alias{graph_flow}
-\title{Create a geaph with Flow objects hierarchy}
+\title{Create a graph with Flow objects hierarchy}
 \usage{
 graph_flow(env = .GlobalEnv, child_to_parent = TRUE, plotit = TRUE, ...)
 }

@@ -15,7 +15,8 @@ Authors@R: c(
 Maintainer: Philippe Grosjean <phgrosjean@sciviews.org>
 Depends: R (>= 3.3.0)
 Imports: proto, rlang (>= 0.2.0), utils, graphics, igraph
-Suggests: covr, knitr, testthat, dplyr, datasets, microbenchmark
+Suggests:
+    spelling, covr, knitr, testthat, dplyr, datasets, microbenchmark
 Encoding: UTF-8
 ByteCompile: yes
 LazyData: true
@@ -25,3 +26,4 @@ BugReports: https://github.com/SciViews/flow/issues
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
+Language: en-US

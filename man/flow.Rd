@@ -28,8 +28,8 @@ as_flow(x, ...)
 \method{$}{Flow}(x, name) <- value
 }
 \arguments{
-\item{.}{If a \strong{Flow} object is provided, heritate from it, otherwise,
-create a new \strong{Flow} object heritating from \code{.GlobalEnv} with \code{.} as pipe
+\item{.}{If a \strong{Flow} object is provided, inherit from it, otherwise,
+create a new \strong{Flow} object inheriting from \code{.GlobalEnv} with \code{.} as pipe
 value.}
 
 \item{.value}{The pipe value to pass to the object (used instead of \code{.},
@@ -55,8 +55,8 @@ default), \code{.value} is the name of an object, and that name appears in
 \code{objects} too, it is excluded from it to avoid importing it twice.
 from that}
 
-\item{x}{An object (a \strong{Flow} object, or anyting to test if it is a \strong{Flow}
-object in \code{is_flow()}).}
+\item{x}{An object (a \strong{Flow} object, or anything to test if it is a
+\strong{Flow} object in \code{is_flow()}).}
 
 \item{name}{The name of the item to get from a \strong{Flow} object. If \code{name}
 starts with two dots (\code{..}), the item is searched in the \strong{Flow} object
@@ -80,11 +80,11 @@ mechanism automatically with minimal changes required by the user.
 \details{
 \code{enflow()} creates a \strong{Flow} object in the head of a "flow pipeline" in the
 context of a functional sequence, that is a function that converts an
-\emph{ad hoc}, single use pipeline into a function reuseable in a different
+\emph{ad hoc}, single use pipeline into a function reusable in a different
 context. Satellite data become arguments of the function.
 
 When a \strong{Flow} object is created from scratch, it always inherits
-from \code{.GlobalEnv}, no mather where the expression was executed (in fact, it
+from \code{.GlobalEnv}, no matter where the expression was executed (in fact, it
 inherits from an empty root \strong{Flow} object itself inheriting from
 \code{.GlobalEnv}). This is a deliberate design choice to overcome some
 difficulties and limitations of \strong{proto} objects, see \code{\link[=proto]{proto()}}.

@@ -5,7 +5,7 @@
 [![Coverage Status](https://img.shields.io/codecov/c/github/SciViews/flow/master.svg)
 ](https://codecov.io/github/SciViews/flow?branch=master)
 [![CRAN Status](http://www.r-pkg.org/badges/version/flow)](http://cran.r-project.org/package=flow)
-[![License](https://img.shields.io/badge/license-GPL-blue.svg)](http://www.gnu.org/licenses/gpl-2.0.html)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 
 ## Installation

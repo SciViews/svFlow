@@ -10,11 +10,11 @@
 #'
 #' `enflow()` creates a **Flow** object in the head of a "flow pipeline" in the
 #' context of a functional sequence, that is a function that converts an
-#' _ad hoc_, single use pipeline into a function reuseable in a different
+#' _ad hoc_, single use pipeline into a function reusable in a different
 #' context. Satellite data become arguments of the function.
 #'
-#' @param . If a **Flow** object is provided, heritate from it, otherwise,
-#' create a new **Flow** object heritating from `.GlobalEnv` with `.` as pipe
+#' @param . If a **Flow** object is provided, inherit from it, otherwise,
+#' create a new **Flow** object inheriting from `.GlobalEnv` with `.` as pipe
 #' value.
 #' @param .value The pipe value to pass to the object (used instead of `.`,
 #' in case both are provided).
@@ -24,8 +24,8 @@
 #' For `print()`, further arguments passed to the delegated `object_print()`
 #' function (if it exists inside the **Flow** object), or to the `print()`
 #' method of the object inside `.value`.
-#' @param x An object (a **Flow** object, or anyting to test if it is a **Flow**
-#' object in `is_flow()`).
+#' @param x An object (a **Flow** object, or anything to test if it is a
+#' **Flow** object in `is_flow()`).
 #' @param name The name of the item to get from a **Flow** object. If `name`
 #' starts with two dots (`..`), the item is searched in the **Flow** object
 #' itself without inheritance, but the name is stripped of its leading two dots
@@ -36,7 +36,7 @@
 #' object.
 #'
 #' @details When a **Flow** object is created from scratch, it always inherits
-#' from `.GlobalEnv`, no mather where the expression was executed (in fact, it
+#' from `.GlobalEnv`, no matter where the expression was executed (in fact, it
 #' inherits from an empty root **Flow** object itself inheriting from
 #' `.GlobalEnv`). This is a deliberate design choice to overcome some
 #' difficulties and limitations of **proto** objects, see [proto()].
@@ -77,10 +77,10 @@
 #' foo2(1:10) -> foo_obj
 #' ls(foo_obj)
 flow <- function(. = NULL, .value = NULL, ...) {
-  # If . is a flow object, heritate from it, otherwise, create a new flow
+  # If . is a flow object, inherit from it, otherwise, create a new flow
   # object with this value as a starting point
   # Note that all our flow/proto objects are systematically rooted in .GlobalEnv
-  # no mather from where they are created (for consistency, and to make them
+  # no matter from where they are created (for consistency, and to make them
   # more easy to save and reload).
   flow_class <- c('Flow', 'proto', 'environment')
   if (!is_flow(.)) {

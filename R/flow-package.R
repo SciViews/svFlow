@@ -12,17 +12,17 @@
 #'   \code{\link{\%>.\%}} requires explicit indication of the position of `.`
 #'   in the pipeline expression **all the time**. The expression is not
 #'   modified. As a consequence, it can never surprise you with an unexpected
-#'   behaviour, and all valid R expressions are useable in the pipeline. Another
-#'   consequence: it is very fast. \code{\link{\%>_\%}} works with **FLow**
+#'   behavior, and all valid R expressions are usable in the pipeline. Another
+#'   consequence: it is very fast. \code{\link{\%>_\%}} works with **Flow**
 #'   objects that allow for encapsulation of satellite objects (data or
-#'   functions) within the pipeline. It is self-contained. The pileine can be
+#'   functions) within the pipeline. It is self-contained. The pipeline can be
 #'   interrupted and restarted at any time. It also allows for a class-less
 #'   object-oriented approach with single inheritance (could be useful to test
-#'   easily differents scenarios on the same pipeline and to prototype objects
+#'   easily different scenarios on the same pipeline and to prototype objects
 #'   that are "pipe-aware"). It also manages the tidyeval mechanism for
 #'   non-standard expressions in the most transparent way: the only "rule" to
 #'   remember is to suffix the name of variables that needs special treatment
-#'   with an undercore (`_`) and the pipe operator manages the rest for you.
+#'   with an underscore (`_`) and the pipe operator manages the rest for you.
 #'
 #' - [debug_flow()] provides a convenient way to debug problematic pipelines
 #'   build with our own pipe operators \code{\link{\%>.\%}} and
@@ -36,20 +36,20 @@
 #'  This opens new horizons in your analysis workflow. You start building a
 #'  simple _ad hoc_ pipeline, then you can include satellite data or functions
 #'  right inside it, perhaps also test different scenarios by using the object
-#'  inheritance features of **Flow** (common parts are shared among the diferent
-#'  scenarios, thus reducing the memory foortprint). While your pipeline matures
-#'  you gradually and naturally move towards either a functional sequence or a
-#'  dedicated object. The functional sequence pathway consists in building a
-#'  reuseable function to recycle you pipeline in a different context. The
-#'  object pathway is not fully developped yet in the present version. But in
-#'  the future, the object-oriented nature of **Flow** will also be leveraged,
-#'  so that you could automatically translate your "flow pipeline" into an S3 or
-#'  R6 object with satellite data becoming object attributes, and satellite
-#'  functions becoming methods. The pipeline itself would then become the
-#'  default method for that object. Of course, both functions and objects
-#'  derived from a "flow pipeline" will be directly compatible with the tidyeval
-#'  mechanism, as they will be most tidyverse-friendly as possible per
-#'  construction.
+#'  inheritance features of **Flow** (common parts are shared among the
+#'  different scenarios, thus reducing the memory footprint). While your
+#'  pipeline matures you gradually and naturally move towards either a
+#'  functional sequence or a dedicated object. The functional sequence pathway
+#'  consists in building a reusable function to recycle you pipeline in a
+#'  different context. The object pathway is not fully developed yet in the
+#'  present version. But in the future, the object-oriented nature of **Flow**
+#'  will also be leveraged, so that you could automatically translate your "flow
+#'  pipeline" into an S3 or R6 object with satellite data becoming object
+#'  attributes, and satellite functions becoming methods. The pipeline itself
+#'  would then become the default method for that object. Of course, both
+#'  functions and objects derived from a "flow pipeline" will be directly
+#'  compatible with the tidyeval mechanism, as they will be most
+#'  tidyverse-friendly as possible per construction.
 #'
 #' - [str.Flow()] compactly displays the content of a **Flow** object.
 #'
