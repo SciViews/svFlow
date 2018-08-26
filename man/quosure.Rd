@@ -15,6 +15,7 @@
 \alias{is.formula}
 \alias{is_bare_formula}
 \alias{is.bare_formula}
+\alias{!!}
 \title{Create and manipulate quosures easily}
 \usage{
 \method{-}{formula}(e1, e2)
@@ -42,6 +43,8 @@ is.formula(x)
 is_bare_formula(x)
 
 is.bare_formula(x)
+
+"!!"(x)
 }
 \arguments{
 \item{e1}{Unary operator member, or first member of a binary operator.}
@@ -97,6 +100,9 @@ evaluates the \strong{unquoted} object. This allows for fine-graded manipulation
 of \strong{quosure}s: you can unquote at one place, and evaluate the \strong{unquoted}
 object elsewhere (and, of course, the contained expression is always
 evaluated in the \emph{right} environment, despite all these manipulations).
+
+\code{!!} and just evaluates its argument and passes the result. It is only useful
+inside a quasi-quoted argument, see \code{\link[rlang]{quasiquotation}}.
 }
 \examples{
 x <- 1:10

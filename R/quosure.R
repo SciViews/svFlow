@@ -46,6 +46,9 @@
 #' of **quosure**s: you can unquote at one place, and evaluate the **unquoted**
 #' object elsewhere (and, of course, the contained expression is always
 #' evaluated in the _right_ environment, despite all these manipulations).
+#'
+#' `!!` and just evaluates its argument and passes the result. It is only useful
+#' inside a quasi-quoted argument, see \code{\link[rlang]{quasiquotation}}.
 #' @export
 #' @name quosure
 #' @seealso [quos_underscore], \code{\link{\%>_\%}}
@@ -183,3 +186,14 @@ is_bare_formula <- function(x)
 #' @export
 #' @rdname quosure
 is.bare_formula <- is_bare_formula
+
+#' @export
+#' @rdname quosure
+`!!` <- function(x) get_expr(x)
+
+# This works for code, but Roxygen2 generates !!(x) <- value instead of
+# `!!`(x) <- value, and then this is incorrectly analyzed by R CMD check!
+# @export
+# @rdname quosure
+# @param value A value to assign to `x`.
+#`!!<-` <- function(x, value) value

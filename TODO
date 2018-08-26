@@ -11,7 +11,7 @@
   outside of lazyeval + name_ = also outside, or with something else than a name
 
 * Ambiguity of name_ in assignation (name__ for both "assign to flow and make
-  closure"?)
+  quosure"?)
 
 * Use same root for all Flow objects.
 
