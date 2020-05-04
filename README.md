@@ -1,10 +1,10 @@
 # flow - Workflow management and alternate pipe operator
 
-[![Linux & OSX Build Status](https://travis-ci.org/SciViews/flow.svg )](https://travis-ci.org/SciViews/flow)
-[![Win Build Status](https://ci.appveyor.com/api/projects/status/github/SciViews/flow?branch=master&svg=true)](http://ci.appveyor.com/project/phgrosjean/flow)
+[![Linux & OSX Build Status](https://travis-ci.com/SciViews/flow.svg )](https://travis-ci.com/SciViews/flow)
+[![Win Build Status](https://ci.appveyor.com/api/projects/status/github/SciViews/flow?branch=master&svg=true)](https://ci.appveyor.com/project/phgrosjean/flow)
 [![Coverage Status](https://img.shields.io/codecov/c/github/SciViews/flow/master.svg)
 ](https://codecov.io/github/SciViews/flow?branch=master)
-[![CRAN Status](http://www.r-pkg.org/badges/version/flow)](http://cran.r-project.org/package=flow)
+[![CRAN Status](https://www.r-pkg.org/badges/version/flow)](https://cran.r-project.org/package=flow)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 
