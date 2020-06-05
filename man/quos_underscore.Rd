@@ -15,9 +15,9 @@ An object of class \strong{quosures} is returned. It can be used directly
 in tidyeval-aware contexts.
 }
 \description{
-The expressions provided for all arguments whose names end with \code{_} are
+The expressions provided for all arguments whose names end with \verb{_} are
 automatically converted into \strong{quosure}s, and also assigned to a name
-without the training \code{_}. The other arguments are evaluated in an usual way.
+without the training \verb{_}. The other arguments are evaluated in an usual way.
 }
 \examples{
 foo <- function(...)
@@ -29,7 +29,5 @@ foo(x  = 1:10, # "Normal" argument
 \seealso{
 \link{as_quosure}, \code{\link{\%>_\%}}
 }
-\concept{
-automatic quosures creation for non-standard evaluation
-}
+\concept{automatic quosures creation for non-standard evaluation}
 \keyword{utilities}

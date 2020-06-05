@@ -36,7 +36,7 @@ value.}
 in case both are provided).}
 
 \item{...}{For \code{flow()}, named arguments of other objects to create inside
-the \strong{Flow} object. If the name ends with \code{_}, then, the expression is
+the \strong{Flow} object. If the name ends with \verb{_}, then, the expression is
 automatically captured inside a \emph{quosure}* (see \code{\link[=quos_underscore]{quos_underscore()}}).
 For \code{print()}, further arguments passed to the delegated \code{object_print()}
 function (if it exists inside the \strong{Flow} object), or to the \code{print()}
@@ -44,8 +44,8 @@ method of the object inside \code{.value}.}
 
 \item{env}{The environment to use for populating the \strong{Flow} object. All
 objects from this environment are injected into it, with the objects not
-starting with a dot and ending with an underscore (\code{_}) automatically
-converted into \code{quosures}. The object provided to \code{.value=} becomes the
+starting with a dot and ending with an underscore (\verb{_}) automatically
+converted into \code{quosures}. The object provided to \verb{.value=} becomes the
 default value of the \code{Flow} object, that is, the data transferred to the
 pipeline.}
 
@@ -62,7 +62,7 @@ from that}
 starts with two dots (\code{..}), the item is searched in the \strong{Flow} object
 itself without inheritance, but the name is stripped of its leading two dots
 first! If the content is a \strong{quosure}, it is automatically unquoted, and for
-the assignation version, if name ends with \code{_}, the expression is
+the assignation version, if name ends with \verb{_}, the expression is
 automatically converted into a \strong{quosure}.}
 
 \item{value}{The value or expression to assign to \code{name} inside the \strong{Flow}
@@ -89,7 +89,7 @@ inherits from an empty root \strong{Flow} object itself inheriting from
 \code{.GlobalEnv}). This is a deliberate design choice to overcome some
 difficulties and limitations of \strong{proto} objects, see \code{\link[=proto]{proto()}}.
 \code{enflow()} creates a \strong{Flow} object and populates it automatically with all
-the objects that are present in \code{env=} (by default, the calling environment).
+the objects that are present in \verb{env=} (by default, the calling environment).
 It is primarily intended to be used inside a function, as first instruction
 of a "flow pipeline". Hence, it collects all function arguments inside that
 pipeline in a most convenient way.
@@ -124,7 +124,5 @@ ls(foo_obj)
 \seealso{
 \link{str.Flow}, \link{quos_underscore}, \code{\link{\%>_\%}}
 }
-\concept{
-class-less objects for better R pipelines
-}
+\concept{class-less objects for better R pipelines}
 \keyword{utilities}

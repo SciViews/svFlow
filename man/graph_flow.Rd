@@ -42,7 +42,5 @@ plot(g)
 \seealso{
 \link{flow}
 }
-\concept{
-display objects hierarchy
-}
+\concept{display objects hierarchy}
 \keyword{utilities}

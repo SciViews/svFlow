@@ -21,7 +21,7 @@
   # A quosure does not have lhs, so, drop it if present (second term)
   lhs <- f_lhs(x)
   if (!is_null(lhs))
-    x <- x[-2]
+    x <- x[-2L]
 
   # A quosure always has an environment, so, fix it if not there
   if (!is_null(env) && is_null(f_env(x)))
@@ -59,12 +59,12 @@
   } else {
     l <- unlist(eapply(env, identical, x))
     if (any(l)) {
-      names(l[l])[1]
+      names(l[l])[1L]
     } else {
       gsub("^.* |>$", "",
         capture_output(
           print.default(x)
-        )[[1]]
+        )[[1L]]
       )
     }
   }

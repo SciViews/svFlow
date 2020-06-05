@@ -44,7 +44,7 @@ is_bare_formula(x)
 
 is.bare_formula(x)
 
-"!!"(x)
+`!!`(x)
 }
 \arguments{
 \item{e1}{Unary operator member, or first member of a binary operator.}
@@ -86,7 +86,7 @@ and it is also the case when using \code{-~expr}).
 
 Similarly, the unary \code{+} operator is defined for \strong{quosure} in order to
 easily "reverse" the mechanism of quoting an expression with a logical
-complementary operator. It does something similar to \code{!!} in \strong{rlang}, but
+complementary operator. It does something similar to \verb{!!} in \strong{rlang}, but
 it can be used outside of tidy eval expressions. Since unary \code{+} has higher
 syntax precedence than \code{!} in R, it is less susceptible to require
 parentheses (only \code{^} for exponentiation, indexing/subsetting operators like
@@ -101,7 +101,7 @@ of \strong{quosure}s: you can unquote at one place, and evaluate the \strong{unq
 object elsewhere (and, of course, the contained expression is always
 evaluated in the \emph{right} environment, despite all these manipulations).
 
-\code{!!} and just evaluates its argument and passes the result. It is only useful
+\verb{!!} and just evaluates its argument and passes the result. It is only useful
 inside a quasi-quoted argument, see \code{\link[rlang]{quasiquotation}}.
 }
 \examples{
@@ -128,7 +128,5 @@ foo(x_unquo)
 \seealso{
 \link{quos_underscore}, \code{\link{\%>_\%}}
 }
-\concept{
-expression encapsulation for non-standard evaluation
-}
+\concept{expression encapsulation for non-standard evaluation}
 \keyword{utilities}

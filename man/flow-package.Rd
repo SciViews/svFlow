@@ -13,7 +13,7 @@ in a most transparent way.
 
 \itemize{
 \item \code{\link{\%>.\%}} and \code{\link{\%>_\%}} are two alternate pipe
-operators designed to supplement magrittr's \%>\% operator in the
+operators designed to supplement magrittr's \\%>\\% operator in the
 tidyverse and elsewhere. They are provided for good reasons.
 \code{\link{\%>.\%}} requires explicit indication of the position of \code{.}
 in the pipeline expression \strong{all the time}. The expression is not
@@ -28,7 +28,7 @@ easily different scenarios on the same pipeline and to prototype objects
 that are "pipe-aware"). It also manages the tidyeval mechanism for
 non-standard expressions in the most transparent way: the only "rule" to
 remember is to suffix the name of variables that needs special treatment
-with an underscore (\code{_}) and the pipe operator manages the rest for you.
+with an underscore (\verb{_}) and the pipe operator manages the rest for you.
 \item \code{\link[=debug_flow]{debug_flow()}} provides a convenient way to debug problematic pipelines
 build with our own pipe operators \code{\link{\%>.\%}} and
 \code{\link{\%>_\%}} in a comfortable way. Everything from the step that
@@ -58,7 +58,7 @@ tidyverse-friendly as possible per construction.
 \item \code{\link[=as_quosure]{as_quosure()}}, and unary \code{+} and \code{-} operators combined with \strong{formula}
 objects provide an alternate way to create \strong{quosure}s.
 \item \code{\link[=quos_underscore]{quos_underscore()}} automatically converts arguments whose name ends with
-\code{_} into \strong{quosure}s, and this mechanism is used by our flow pipe
+\verb{_} into \strong{quosure}s, and this mechanism is used by our flow pipe
 operator to implement the tidyeval mechanism most transparently inside
 "flow pipelines".
 }

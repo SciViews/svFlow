@@ -23,7 +23,7 @@ Pipe operators. \code{\link{\%>.\%}} is a very simple and efficient pipe
 operator. \code{\link{\%>_\%}} is more complex. It forces conversion to
 a \strong{Flow} object inside a pipeline and automatically manage non-standard
 evaluation through creation and unquoting of \strong{quosure}s for named arguments
-whose name ends with \code{_}.
+whose name ends with \verb{_}.
 }
 \details{
 With \code{\%>.\%}, the value must be explicitly indicated with a
@@ -32,19 +32,19 @@ is first assigned into the calling environment as \code{.} (warning! possibly
 replacing any existing value... do \strong{not} use \code{.} to name other objects).
 Also the expression is saved as \code{.call} in the calling environment so that
 \code{debug_flow()} can retrieve are rerun it easily. If a \strong{Flow} object is used
-with \code{\%>.\%}, the \code{.value} is extracted from it into \code{.} first (and thus
-the \strong{Flow} object is lost).
+with \code{\%>.\%}, the \code{.value} is extracted from it into \code{.} first (and
+thus the \strong{Flow} object is lost).
 
 In the case of \code{\%>_\%} the \strong{Flow} object is passed or created, it is
 also assigned in the calling environment as \code{..}. This can be used to refer
 to \strong{Flow} object content within the pipeline expressions (e.g., \code{..$var}).
 
 For \code{\%>_\%}, the expression is reworked in such a way that a suitable
-lazyeval syntax is constructed for each variable whose name ends with \code{_},
+lazyeval syntax is constructed for each variable whose name ends with \verb{_},
 and that variable is explicitly searched starting from \code{..}. Thus, \code{x_} is
 replaced by \code{!!..$x}. For such variables appearing at left of an \code{=} sign, it
-is also replaced by \code{:=} to keep correct \R syntax (\code{var_ =} =>
-\code{!!..$var :=}). This way, you just need to follow special variables by \code{_},
+is also replaced by \verb{:=} to keep correct \R syntax (\verb{var_ =} =>
+\verb{!!..$var :=}). This way, you just need to follow special variables by \verb{_},
 both in the \code{flow()} function arguments (to create quosures), and to the
 NSE expressions used inside the pipeline to get the job done! The raw
 expression is saved as \code{.call_raw}, while the reworked call is saved as
@@ -75,7 +75,5 @@ iris2 <- iris \%>.\%
 \seealso{
 \link{flow}, \link{quos_underscore}
 }
-\concept{
-pipeline operators and debugging
-}
+\concept{pipeline operators and debugging}
 \keyword{utilities}

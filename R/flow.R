@@ -143,7 +143,7 @@ enflow <- function(.value, env = caller_env(), objects = ls(env)) {
       # already a string, and it appears to be a robust and safe approach here
       expr <- parse(text = paste0("rlang::enquo(", object, ")"))
       env2 <- eval(caller_env(), envir = env)
-      fl[[substr(object, 1, l - 1)]] <- eval(expr, envir = env2)
+      fl[[substr(object, 1L, l - 1L)]] <- eval(expr, envir = env2)
     } else {
       fl[[object]] <- get(object, envir = env, inherits = FALSE)
     }
@@ -220,9 +220,9 @@ as.proto.Flow <- function(x, ...) {
     name <- ".value"
 
   n <- nchar(name)
-  if (n > 2 && substr(name, 1, 2) == "..") {
+  if (n > 2L && substr(name, 1L, 2L) == "..") {
     inherits <- FALSE
-    name <- substr(name, 3, n)
+    name <- substr(name, 3L, n)
   } else inherits <- TRUE
 
   res <- get(name, envir = x, inherits = inherits)
@@ -254,7 +254,7 @@ as.proto.Flow <- function(x, ...) {
 
   l <- nchar(name)
   if (substr(name, l, l) == "_") {
-    x[[substr(name, 1, l - 1)]] <- as_quosure(value, env = caller_env())
+    x[[substr(name, 1L, l - 1L)]] <- as_quosure(value, env = caller_env())
   } else {
     x[[name]] <- value
   }

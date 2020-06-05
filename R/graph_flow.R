@@ -31,7 +31,7 @@
 #' plot(g)
 graph_flow <- function(env = .GlobalEnv, child_to_parent = TRUE,
 plotit = TRUE, ...) {
-  edges <- character(0)
+  edges <- character(0L)
 
   add_edge <- function(edges, from, to)
     c(edges, from, to)
@@ -51,7 +51,7 @@ plotit = TRUE, ...) {
   }
 
   if (length(edges)) {
-    g <- graph_from_edgelist(matrix(edges, ncol = 2, byrow = TRUE))
+    g <- graph_from_edgelist(matrix(edges, ncol = 2L, byrow = TRUE))
   } else abort("No Flow objects found")
 
   if (isTRUE(plotit)) {

@@ -4,9 +4,13 @@
 \alias{str.Flow}
 \title{Compactly display the content of a Flow object}
 \usage{
-\method{str}{Flow}(object, max.level = 1, nest.lev = 0,
-  indent.str = paste(rep.int(" ", max(0, nest.lev + 1)), collapse = ".."),
-  ...)
+\method{str}{Flow}(
+  object,
+  max.level = 1L,
+  nest.lev = 0L,
+  indent.str = paste(rep.int(" ", max(0L, nest.lev + 1L)), collapse = ".."),
+  ...
+)
 }
 \arguments{
 \item{object}{A \strong{Flow} object.}
@@ -35,7 +39,5 @@ str(fl) # Provides compact information about satellite data contained in fl
 \seealso{
 \link{flow}
 }
-\concept{
-compactly inform about an object
-}
+\concept{compactly inform about an object}
 \keyword{utilities}

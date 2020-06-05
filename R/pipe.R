@@ -17,8 +17,8 @@
 #' replacing any existing value... do **not** use `.` to name other objects).
 #' Also the expression is saved as `.call` in the calling environment so that
 #' `debug_flow()` can retrieve are rerun it easily. If a **Flow** object is used
-#' with \code{\%>.\%}, the `.value` is extracted from it into `.` first (and thus
-#' the **Flow** object is lost).
+#' with \code{\%>.\%}, the `.value` is extracted from it into `.` first (and
+#' thus the **Flow** object is lost).
 #'
 #' In the case of \code{\%>_\%} the **Flow** object is passed or created, it is
 #' also assigned in the calling environment as `..`. This can be used to refer
@@ -92,7 +92,7 @@
   # Whenever var_ appears, replace by `!!`(..$var)
   expr <- gsub(
     "(?<![._a-zA-Z0-9])([._a-zA-Z0-9]+)_(?![._a-zA-Z0-9])",
-    "`!!`(..$\\1)", expr, perl = TRUE)
+    "`!!`(..$\\1)", expr, perl = TRUE) # nolint
   parse(text = expr)
 }
 
