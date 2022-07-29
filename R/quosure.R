@@ -1,9 +1,9 @@
 #' Create and manipulate quosures easily
 #'
-#' @description  Quosures are defined in **rlang** package as part of the tidy
+#' @description  Quosures are defined in {rlang} package as part of the tidy
 #' evaluation of non-standard expressions (see [quo()]). Here, we provide an
 #' alternate mechanism using `-~expr` as a synonym of `quo(expr)`. Also,
-#' `+quo_obj` is equivalent to `!!quo_obj` in **rlang**, and ++quo_obj both
+#' `+quo_obj` is equivalent to `!!quo_obj` in {rlang}, and ++quo_obj both
 #' unquotes and evaluates it in the right environment. Quosures are keystone
 #' objects in the tidy evaluation mechanism. So, they deserve a special, clean
 #' and concise syntax to create and manipulate them.
@@ -32,7 +32,7 @@
 #'
 #' Similarly, the unary `+` operator is defined for **quosure** in order to
 #' easily "reverse" the mechanism of quoting an expression with a logical
-#' complementary operator. It does something similar to `!!` in **rlang**, but
+#' complementary operator. It does something similar to `!!` in {rlang}, but
 #' it can be used outside of tidy eval expressions. Since unary `+` has higher
 #' syntax precedence than `!` in R, it is less susceptible to require
 #' parentheses (only `^` for exponentiation, indexing/subsetting operators like

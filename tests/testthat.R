@@ -1,3 +1,3 @@
 library("testthat") # nolint
 
-test_check("flow")
+test_check("svFlow")

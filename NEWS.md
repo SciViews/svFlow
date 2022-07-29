@@ -1,4 +1,8 @@
-# flow News
+# svFlow News
+
+## svFlow version 1.2.0
+
+The package is renamed svFlow because there is another flow package on CRAN.
 
 ## flow version 1.1.0
 

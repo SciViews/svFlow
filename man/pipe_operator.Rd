@@ -60,7 +60,7 @@ you use \code{\%>.\%} with a flow pipeline, it "unflows" it, extracting
 }
 \examples{
 # A simple pipeline with \%>.\% (explicit position of '.' required)
-library(flow)
+library(svFlow)
 library(dplyr)
 data(iris)
 iris2 <- iris \%>.\%

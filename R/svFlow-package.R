@@ -61,7 +61,7 @@
 #'   operator to implement the tidyeval mechanism most transparently inside
 #'   "flow pipelines".
 #' @docType package
-#' @name flow-package
+#' @name svFlow-package
 #'
 #' @importFrom proto proto as.proto
 #' @importFrom rlang abort warn caller_env empty_env env_parent f_env f_env<-

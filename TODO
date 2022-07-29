@@ -1,4 +1,4 @@
-# flow To Do list
+# svFlow To Do list
 
 * Complete examples for ?flow and ?pipe_operator.
 
@@ -25,11 +25,11 @@
 
 * "branches", + merge, etc.
 
-* Integrate with drake?
+* Integrate with targets?
 
 * A specific function to get parent. Now, we use fl$parent.env().
 
 * Add expr as argument to Flow object. May be add possibility to redefine
-  environment for methods? flow(.) vs flow(.value) when passing a flow object.
+  environment for methods? flow(.) vs flow(.value) when passing a Flow object.
 
 * Complete the tutorial vignettes.

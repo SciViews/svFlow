@@ -51,7 +51,7 @@
 #' @keywords utilities
 #' @concept class-less objects for better R pipelines
 #' @examples
-#' library(flow)
+#' library(svFlow)
 #' library(dplyr)
 #' data(iris)
 #'
@@ -77,9 +77,9 @@
 #' foo2(1:10) -> foo_obj
 #' ls(foo_obj)
 flow <- function(. = NULL, .value = NULL, ...) {
-  # If . is a flow object, inherit from it, otherwise, create a new flow
+  # If . is a flow object, inherit from it, otherwise, create a new Flow
   # object with this value as a starting point
-  # Note that all our flow/proto objects are systematically rooted in .GlobalEnv
+  # Note that all our Flow/proto objects are systematically rooted in .GlobalEnv
   # no matter from where they are created (for consistency, and to make them
   # more easy to save and reload).
   flow_class <- c('Flow', 'proto', 'environment')

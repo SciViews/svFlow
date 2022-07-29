@@ -95,7 +95,7 @@ of a "flow pipeline". Hence, it collects all function arguments inside that
 pipeline in a most convenient way.
 }
 \examples{
-library(flow)
+library(svFlow)
 library(dplyr)
 data(iris)
 

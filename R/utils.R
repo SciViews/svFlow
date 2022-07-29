@@ -1,10 +1,10 @@
 #' Transform a formula into a quosure
 #'
 #' Current implementation of **quosure**s is done by subclassing **formula**s in
-#' **rlang** 0.2. However, this may change in the future. The
+#' {rlang} 0.2. However, this may change in the future. The
 #' `.as_quosure.formula()` method is the workhorse function that does the
 #' conversion in `-~expr`, and could be adapted in future versions of **rlang**,
-#' if they use something else than **formua**s to implement **quosure**s.
+#' if they use something else than **formula**s to implement **quosure**s.
 #'
 #' @param x A one-sided formula.
 #' @param env The environment to associate with the expression inside the

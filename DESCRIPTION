@@ -1,6 +1,6 @@
-Package: flow
+Package: svFlow
 Type: Package
-Version: 1.1.0
+Version: 1.2.0
 Title: Data Analysis Work Flow and Alternate Pipeline Operator
 Description: Data work flow analysis using 'proto' objects and pipe operator
   that integrates non-standard evaluation and the 'lazyeval' mechanism.
@@ -9,21 +9,21 @@ Authors@R: c(
     email = "phgrosjean@sciviews.org",
     comment = c(ORCID = "0000-0002-2694-9471")),
   person("Louis", "Kates", role = "ctb",
-    comment = "Author of 'proto' package, whose 'flow' is derived"),
+    comment = "Author of 'proto' package, whose 'svFlow' is derived"),
   person("Thomas", "Petzoldt", role = "ctb",
-    comment = "Author of 'proto' package, whose 'flow' is derived"))
+    comment = "Author of 'proto' package, whose 'svFlow' is derived"))
 Maintainer: Philippe Grosjean <phgrosjean@sciviews.org>
 Depends: R (>= 3.3.0)
 Imports: proto, rlang (>= 0.2.0), utils, graphics, igraph
 Suggests:
-    spelling, covr, knitr, testthat, dplyr, datasets, microbenchmark, lintr
+    spelling, rmarkdown, covr, knitr, testthat, dplyr, datasets, microbenchmark, lintr
 Encoding: UTF-8
 ByteCompile: yes
 LazyData: true
 License: MIT + file LICENSE
-URL: https://github.com/SciViews/flow, https://www.sciviews.org/SciViews-R/
-BugReports: https://github.com/SciViews/flow/issues
+URL: https://github.com/SciViews/svFlow, https://www.sciviews.org/SciViews-R/
+BugReports: https://github.com/SciViews/svFlow/issues
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.2
 VignetteBuilder: knitr
 Language: en-US

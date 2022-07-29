@@ -47,7 +47,7 @@
 #' @concept pipeline operators and debugging
 #' @examples
 #' # A simple pipeline with %>.% (explicit position of '.' required)
-#' library(flow)
+#' library(svFlow)
 #' library(dplyr)
 #' data(iris)
 #' iris2 <- iris %>.%
