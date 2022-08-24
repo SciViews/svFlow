@@ -1,13 +1,13 @@
-# svFlow News
+# svFlow 1.2.0
 
-## svFlow version 1.2.0
+-   The package is renamed svFlow because there is another flow package on CRAN.
 
-The package is renamed svFlow because there is another flow package on CRAN.
+-   The function `._()` is moved from {svMisc} 1.3.1 into here. Now, it creates or overwrites `.` and `.call` objects in the calling environment to match the behavior of `%>.%`.
 
-## flow version 1.1.0
+# flow 1.1.0
 
-Internal reworking, no change in R code.
+-   Internal reworking, no change in R code.
 
-## flow version 1.0-0
+# flow 1.0-0
 
-First version of the package.
+-   First version of the package.

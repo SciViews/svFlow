@@ -13,6 +13,7 @@ Kun
 lazyeval
 magrittr
 magrittr's
+natively
 NSE
 performanceEstimation
 pipeable
@@ -35,6 +36,7 @@ subclassed
 svFlow
 tidyeval
 tidyverse
+unevaluated
 unflows
 usepackage
 utf
