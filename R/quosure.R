@@ -25,7 +25,7 @@
 #' @details `-` is defined as an unary minus operator for **formula** objects
 #' (which is *not* defined in base R, hence, not supposed to be used otherwise).
 #' Thus, `-~expr` just converts a formula build using the base `~expr`
-#' instruction into a **quosure**. `as_quosure()` does the same, when the
+#' instruction into a **quosure**. `as.quosure()` does the same, when the
 #' expression is provided directly, and allows also to define the enclosing
 #' environment (by default, it is the environment where the code is evaluated,
 #' and it is also the case when using `-~expr`).
@@ -140,11 +140,11 @@ print.unquoted <- function(x, ...) {
 
 #' @export
 #' @rdname quosure
-as_quosure <- function(x, env = caller_env()) {
-  if (is_quosure(x)) {
+as.quosure <- function(x, env = caller_env()) {
+  if (is.quosure(x)) {
     x
 
-  } else if (is_bare_formula(x)) {
+  } else if (is.bare_formula(x)) {
     .as_quosure_formula(x, env)
 
   } else if (is_symbolic(x)) {
@@ -157,35 +157,18 @@ as_quosure <- function(x, env = caller_env()) {
 
 #' @export
 #' @rdname quosure
-as.quosure <- as_quosure
-
-#' @export
-#' @rdname quosure
-is_quosure <- function(x)
+is.quosure <- function(x)
   x %is% 'quosure'
 
 #' @export
 #' @rdname quosure
-is.quosure <- is_quosure
-
-# Do not export this, because it mask a function of the same name in purrr
-# It is used for the same purpose, but I don't understand why its code must
-# be so complex (and slow!). So, I stick to my own version here
-is_formula <- function(x)
+is.formula <- function(x)
   x %is% 'formula'
 
 #' @export
 #' @rdname quosure
-is.formula <- is_formula
-
-#' @export
-#' @rdname quosure
-is_bare_formula <- function(x)
+is.bare_formula <- function(x)
   is_true(class(x) == 'formula')
-
-#' @export
-#' @rdname quosure
-is.bare_formula <- is_bare_formula
 
 #' @export
 #' @rdname quosure

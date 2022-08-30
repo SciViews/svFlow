@@ -254,7 +254,7 @@ as.proto.Flow <- function(x, ...) {
 
   l <- nchar(name)
   if (substr(name, l, l) == "_") {
-    x[[substr(name, 1L, l - 1L)]] <- as_quosure(value, env = caller_env())
+    x[[substr(name, 1L, l - 1L)]] <- as.quosure(value, env = caller_env())
   } else {
     x[[name]] <- value
   }

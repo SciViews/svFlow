@@ -53,7 +53,7 @@
 #'
 #' - [str.Flow()] compactly displays the content of a **Flow** object.
 #'
-#' - [as_quosure()], and unary `+` and `-` operators combined with **formula**
+#' - [as.quosure()], and unary `+` and `-` operators combined with **formula**
 #'   objects provide an alternate way to create **quosure**s.
 #'
 #' - [quos_underscore()] automatically converts arguments whose name ends with

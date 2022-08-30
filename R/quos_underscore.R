@@ -10,7 +10,7 @@
 #' @return An object of class **quosures** is returned. It can be used directly
 #' in tidyeval-aware contexts.
 #' @export
-#' @seealso [as_quosure], \code{\link{\%>_\%}}
+#' @seealso [as.quosure], \code{\link{\%>_\%}}
 #' @keywords utilities
 #' @concept automatic quosures creation for non-standard evaluation
 #' @examples

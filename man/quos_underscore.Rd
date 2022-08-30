@@ -27,7 +27,7 @@ foo(x  = 1:10, # "Normal" argument
     z_ = non_existing_name) # Expressions in quosures are not evaluated
 }
 \seealso{
-\link{as_quosure}, \code{\link{\%>_\%}}
+\link{as.quosure}, \code{\link{\%>_\%}}
 }
 \concept{automatic quosures creation for non-standard evaluation}
 \keyword{utilities}

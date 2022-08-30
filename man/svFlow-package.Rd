@@ -55,7 +55,7 @@ functions and objects derived from a "flow pipeline" will be directly
 compatible with the tidyeval mechanism, as they will be most
 tidyverse-friendly as possible per construction.
 \item \code{\link[=str.Flow]{str.Flow()}} compactly displays the content of a \strong{Flow} object.
-\item \code{\link[=as_quosure]{as_quosure()}}, and unary \code{+} and \code{-} operators combined with \strong{formula}
+\item \code{\link[=as.quosure]{as.quosure()}}, and unary \code{+} and \code{-} operators combined with \strong{formula}
 objects provide an alternate way to create \strong{quosure}s.
 \item \code{\link[=quos_underscore]{quos_underscore()}} automatically converts arguments whose name ends with
 \verb{_} into \strong{quosure}s, and this mechanism is used by our flow pipe

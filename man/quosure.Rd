@@ -8,12 +8,9 @@
 \alias{+.quosure}
 \alias{+.unquoted}
 \alias{print.unquoted}
-\alias{as_quosure}
 \alias{as.quosure}
-\alias{is_quosure}
 \alias{is.quosure}
 \alias{is.formula}
-\alias{is_bare_formula}
 \alias{is.bare_formula}
 \alias{!!}
 \title{Create and manipulate quosures easily}
@@ -30,17 +27,11 @@
 
 \method{print}{unquoted}(x, ...)
 
-as_quosure(x, env = caller_env())
-
 as.quosure(x, env = caller_env())
-
-is_quosure(x)
 
 is.quosure(x)
 
 is.formula(x)
-
-is_bare_formula(x)
 
 is.bare_formula(x)
 
@@ -79,7 +70,7 @@ or related objects.
 \code{-} is defined as an unary minus operator for \strong{formula} objects
 (which is \emph{not} defined in base R, hence, not supposed to be used otherwise).
 Thus, \code{-~expr} just converts a formula build using the base \code{~expr}
-instruction into a \strong{quosure}. \code{as_quosure()} does the same, when the
+instruction into a \strong{quosure}. \code{as.quosure()} does the same, when the
 expression is provided directly, and allows also to define the enclosing
 environment (by default, it is the environment where the code is evaluated,
 and it is also the case when using \code{-~expr}).

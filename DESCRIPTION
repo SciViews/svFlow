@@ -1,6 +1,6 @@
 Package: svFlow
 Type: Package
-Version: 1.2.0
+Version: 1.2.1
 Title: Data Analysis Work Flow and Alternate Pipeline Operator
 Description: Data work flow analysis using 'proto' objects and pipe operator
   that integrates non-standard evaluation and the 'lazyeval' mechanism.
