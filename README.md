@@ -1,6 +1,10 @@
 # svFlow - Workflow management and alternate pipe operator
 
-[![Linux & OSX Build Status](https://travis-ci.com/SciViews/svFlow.svg)](https://travis-ci.com/SciViews/svFlow) [![Win Build Status](https://ci.appveyor.com/api/projects/status/github/SciViews/svFlow?branch=master&svg=true)](https://ci.appveyor.com/project/phgrosjean/svFlow) [![Coverage Status](https://img.shields.io/codecov/c/github/SciViews/svFlow/master.svg)](https://codecov.io/github/SciViews/svFlow?branch=master) [![CRAN Status](https://www.r-pkg.org/badges/version/svFlow)](https://cran.r-project.org/package=svFlow) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+<!-- badges: start -->
+
+[![R-CMD-check](https://github.com/SciViews/svFlow/workflows/R-CMD-check/badge.svg)](https://github.com/SciViews/svFlow/actions) [![Win Build Status](https://ci.appveyor.com/api/projects/status/github/SciViews/svFlow?branch=master&svg=true)](https://ci.appveyor.com/project/phgrosjean/svFlow) [![Coverage Status](https://img.shields.io/codecov/c/github/SciViews/svFlow/master.svg)](https://codecov.io/github/SciViews/svFlow?branch=master) [![CRAN Status](https://www.r-pkg.org/badges/version/svFlow)](https://cran.r-project.org/package=svFlow) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+<!-- badges: end -->
 
 ## Installation
 
@@ -14,7 +18,7 @@ install.packages('svFlow')
 
 ### Development version
 
-Make sure you have the **remotes** R package installed:
+Make sure you have the {remotes} R package installed:
 
 ``` r
 install.packages('remotes')
@@ -50,3 +54,4 @@ For further instructions, please, refer to these help pages.
 ## Note to developers
 
 Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
+

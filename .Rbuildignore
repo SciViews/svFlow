@@ -13,3 +13,4 @@ Makefile
 ^\.travis\.yml$
 ^appveyor\.yml$
 ^.*\.Rproj$
+^\.github$
