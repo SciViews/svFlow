@@ -13,13 +13,25 @@ Authors@R: c(
   person("Thomas", "Petzoldt", role = "ctb",
     comment = "Author of 'proto' package, whose 'svFlow' is derived"))
 Maintainer: Philippe Grosjean <phgrosjean@sciviews.org>
-Depends: R (>= 3.3.0)
-Imports: proto, rlang (>= 0.2.0), utils, graphics, igraph
+Depends: R (>= 4.1.0)
+Imports:
+    graphics,
+    igraph,
+    proto,
+    rlang (>= 0.2.0),
+    utils
 Suggests:
-    spelling, rmarkdown, covr, knitr, testthat, dplyr, datasets, microbenchmark, lintr
+    datasets,
+    dplyr,
+    lintr,
+    microbenchmark,
+    covr,
+    knitr,
+    rmarkdown,
+    spelling,
+    testthat
 Encoding: UTF-8
 ByteCompile: yes
-LazyData: true
 License: MIT + file LICENSE
 URL: https://github.com/SciViews/svFlow, https://www.sciviews.org/SciViews-R/
 BugReports: https://github.com/SciViews/svFlow/issues

@@ -1,8 +1,8 @@
-# svFlow - Workflow management and alternate pipe operator
+# svFlow - Workflow management and alternate pipe operator <a href='https://www.sciviews.org/svFlow'><img src="man/figures/logo.png" align="right" height="139"/></a>
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/SciViews/svFlow/workflows/R-CMD-check/badge.svg)](https://github.com/SciViews/svFlow/actions) [![Win Build Status](https://ci.appveyor.com/api/projects/status/github/SciViews/svFlow?branch=master&svg=true)](https://ci.appveyor.com/project/phgrosjean/svFlow) [![Coverage Status](https://img.shields.io/codecov/c/github/SciViews/svFlow/master.svg)](https://codecov.io/github/SciViews/svFlow?branch=master) [![CRAN Status](https://www.r-pkg.org/badges/version/svFlow)](https://cran.r-project.org/package=svFlow) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![R-CMD-check](https://github.com/SciViews/svFlow/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/SciViews/svFlow/actions/workflows/R-CMD-check.yaml) [![Coverage Status](https://img.shields.io/codecov/c/github/SciViews/svFlow/master.svg)](https://codecov.io/github/SciViews/svFlow?branch=master) [![CRAN Status](https://www.r-pkg.org/badges/version/svFlow)](https://cran.r-project.org/package=svFlow) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 <!-- badges: end -->
 
@@ -31,8 +31,6 @@ remotes::install_github("SciViews/svFlow", build_vignettes = TRUE)
 ```
 
 R should install all required dependencies automatically, and then it should compile and install {svFlow}.
-
-Latest devel version of {svFlow} (source + Windows binaries for the latest stable version of R at the time of compilation) is also available from [appveyor](https://ci.appveyor.com/project/phgrosjean/svFlow/build/artifacts).
 
 ## Usage
 
