@@ -6,6 +6,10 @@
 
 <!-- badges: end -->
 
+{svFlow} manages pipeline workflow through a simple pipe operator `%>.%` that, on the contrary to base R pipe operator `|>` and {magrittr} operator `%>%` imposes to *always* specify where left-hand side of the operator should be injected in the right-hand side expression with a `.`. This conveys more clearly the intentions of the programmer and it is less error-prone.
+
+Another pipe operator `%>_%` is more complex. It uses {proto} objects to embed several variables in the pipeline in a way that trhe non-standard evaluation (tidyverse's "lazyeval") is done in an easy and natural way.
+
 ## Installation
 
 ### Latest stable version
@@ -52,4 +56,3 @@ For further instructions, please, refer to these help pages.
 ## Note to developers
 
 Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
-
