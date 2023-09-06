@@ -117,10 +117,12 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>(Work)flow and alternate pipe operator, rationate</h1>
-                        <h4 data-toc-skip class="author">Philippe Grosjean</h4>
+      <h1 data-toc-skip>(Work)flow and alternate pipe operator,
+rationate</h1>
+                        <h4 data-toc-skip class="author">Philippe
+Grosjean</h4>
             
-            <h4 data-toc-skip class="date">2022-09-15</h4>
+            <h4 data-toc-skip class="date">2023-09-06</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/SciViews/svFlow/blob/HEAD/vignettes/svFlow_rationate.Rmd" class="external-link"><code>vignettes/svFlow_rationate.Rmd</code></a></small>
       <div class="hidden name"><code>svFlow_rationate.Rmd</code></div>
@@ -132,33 +134,84 @@
 <div class="section level2">
 <h2 id="pure-predictable-pipeable-and-data-aware">Pure, predictable, pipeable, … and data-aware<a class="anchor" aria-label="anchor" href="#pure-predictable-pipeable-and-data-aware"></a>
 </h2>
-<p>Hadley Wickham advocates for pure, predictable and pipeable functions in the tidyverse. Although non-standard evaluation (NSE) makes many of the functions in tidyverse not referentially transparent (which makes them more difficult in reusable contexts like a function) this also contributes to a cleaner language, at least for beginneRs. With {svFlow} we want both to make tidyverse-style NSE more easily reusable, and the data analysis workflow based on pipelines and the pipe operator ({magrittr}’s pipe operator in tidyverse) even more data-aware.</p>
+<p>Hadley Wickham advocates for pure, predictable and pipeable functions
+in the tidyverse. Although non-standard evaluation (NSE) makes many of
+the functions in tidyverse not referentially transparent (which makes
+them more difficult in reusable contexts like a function) this also
+contributes to a cleaner language, at least for beginneRs. With {svFlow}
+we want both to make tidyverse-style NSE more easily reusable, and the
+data analysis workflow based on pipelines and the pipe operator
+({magrittr}’s pipe operator in tidyverse) even more data-aware.</p>
 </div>
 <div class="section level2">
 <h2 id="choice-of-the-name">Choice of the name<a class="anchor" aria-label="anchor" href="#choice-of-the-name"></a>
 </h2>
-<p>The initial name was {flow}, because it is short. However, it is now used by an,other package on CRAN. Other names as {workflow} and {workplan} are also already used. So, {svFlow} for SciViews’ flow.</p>
-<p>The {performanceEstimation} package has {Workflow} object and a <code>Workflow()</code> function. Also, the {zoon} package has a <code>workflow()</code> function, but it creates a {zoonWorkflow} object, so no clash here. In the {drake} package, now superseded by {targets}, there is also a <code>workflow()</code> function, but deprecated in favor of <code>workplan()</code>. {targets} is used to organize different analyses in <strong>data.frame</strong>s. Hence, as we see here, {workflow} or {workplan} names are already pretty much used in the R ecosystem.</p>
-<p>There is the {flowr} package which uses (internal) <code><a href="../reference/flow.html">flow()</a></code>, and <code><a href="../reference/flow.html">is.flow()</a></code> functions, and a <strong>flow</strong> S3 object. This is for complex, bioinformatics (work)flows, but of course, the source of potential problems when both {flowr} and {svFlow} packages are used simultaneously, if both objects bear the same class name. That is why in {svFlow}, objects are named <strong>Flow</strong> with an uppercase <strong>F</strong>, to avoid such a conflict.</p>
+<p>The initial name was {flow}, because it is short. However, it is now
+used by an,other package on CRAN. Other names as {workflow} and
+{workplan} are also already used. So, {svFlow} for SciViews’ flow.</p>
+<p>The {performanceEstimation} package has {Workflow} object and a
+<code>Workflow()</code> function. Also, the {zoon} package has a
+<code>workflow()</code> function, but it creates a {zoonWorkflow}
+object, so no clash here. In the {drake} package, now superseded by
+{targets}, there is also a <code>workflow()</code> function, but
+deprecated in favor of <code>workplan()</code>. {targets} is used to
+organize different analyses in <strong>data.frame</strong>s. Hence, as
+we see here, {workflow} or {workplan} names are already pretty much used
+in the R ecosystem.</p>
+<p>There is the {flowr} package which uses (internal)
+<code><a href="../reference/flow.html">flow()</a></code>, and <code><a href="../reference/flow.html">is.flow()</a></code> functions, and a
+<strong>flow</strong> S3 object. This is for complex, bioinformatics
+(work)flows, but of course, the source of potential problems when both
+{flowr} and {svFlow} packages are used simultaneously, if both objects
+bear the same class name. That is why in {svFlow}, objects are named
+<strong>Flow</strong> with an uppercase <strong>F</strong>, to avoid
+such a conflict.</p>
 </div>
 <div class="section level2">
 <h2 id="a-simpler-and-more-efficient-pipe-operator">A simpler and more efficient pipe operator?<a class="anchor" aria-label="anchor" href="#a-simpler-and-more-efficient-pipe-operator"></a>
 </h2>
-<p>The {wrapr} package provides an alternate pipe operator: <code>%.&gt;%</code>, the “dot arrow pipe”. It is very simple:</p>
+<p>The {wrapr} package provides an alternate pipe operator:
+<code>%.&gt;%</code>, the “dot arrow pipe”. It is very simple:</p>
 <blockquote>
-<p>“a %.&gt;% b” is to be treated as if the user had written “{ . &lt;- a; b };” with “%.&gt;%” being treated as left-associative.</p>
+<p>“a %.&gt;% b” is to be treated as if the user had written “{ . &lt;-
+a; b };” with “%.&gt;%” being treated as left-associative.</p>
 </blockquote>
 <p>There are three interesting points with this pipe operator:</p>
 <ol style="list-style-type: decimal">
-<li>It does not alter the expression evaluated, and the dot can be placed everywhere in the expression. It means that <em>any</em> expression is suitable and is “pipe-aware” with this operator.</li>
-<li>It is <em>explicit</em>, that is, you don’t have to guess what will happen, the location of the dot replacement(s) in the expression is explicitly indicated. It should makes it also easier to understand from a beginneR’s point of view, providing he is not used to {magrittr} style, of course.</li>
-<li>Since the expression is not reworked, it is very fast in comparison to the complex-rules that must be computed each time you call {magrittr}’s <code>%&gt;%</code>.</li>
-<li>On the contrary to the base R pipe operator <code>|&gt;</code> introduced in R 4.1.0, it is not just a syntactic flavor that transforms the code into imbricated functions calls internally. The base R pipe operator has many advantages, but also many limitations that <code>%&gt;.%</code> tries to eliminate.</li>
+<li>It does not alter the expression evaluated, and the dot can be
+placed everywhere in the expression. It means that <em>any</em>
+expression is suitable and is “pipe-aware” with this operator.</li>
+<li>It is <em>explicit</em>, that is, you don’t have to guess what will
+happen, the location of the dot replacement(s) in the expression is
+explicitly indicated. It should makes it also easier to understand from
+a beginneR’s point of view, providing he is not used to {magrittr}
+style, of course.</li>
+<li>Since the expression is not reworked, it is very fast in comparison
+to the complex-rules that must be computed each time you call
+{magrittr}’s <code>%&gt;%</code>.</li>
+<li>On the contrary to the base R pipe operator <code>|&gt;</code>
+introduced in R 4.1.0, it is not just a syntactic flavor that transforms
+the code into imbricated functions calls internally. The base R pipe
+operator has many advantages, but also many limitations that
+<code>%&gt;.%</code> tries to eliminate.</li>
 </ol>
-<p>The only drawback with this pipe operator is that it is not pure, since it modifies the calling environment (it assigns <code>.</code> in it before evaluation of the right-hand side expression). However, if you never use <code>.</code> as a name for other objects, this is not much a problem. In {wrapr}, there is a synonym: <code>%&gt;.%</code>, but that its author never uses in the examples, vignettes or on its blog. So, we decide to reuse <code>%&gt;.%</code> as our pipe operator in {svFlow}. We add two things in it:</p>
+<p>The only drawback with this pipe operator is that it is not pure,
+since it modifies the calling environment (it assigns <code>.</code> in
+it before evaluation of the right-hand side expression). However, if you
+never use <code>.</code> as a name for other objects, this is not much a
+problem. In {wrapr}, there is a synonym: <code>%&gt;.%</code>, but that
+its author never uses in the examples, vignettes or on its blog. So, we
+decide to reuse <code>%&gt;.%</code> as our pipe operator in {svFlow}.
+We add two things in it:</p>
 <ol style="list-style-type: decimal">
-<li><p>It is also aware of <strong>Flow</strong> objects (see here under) and behaves accordingly,</p></li>
-<li><p>The expression to be evaluated is also recorded in the calling environment as <code>.call</code>. This way, it becomes easy to debug the last expression that failed during the pipeline execution (since <code>.</code> is also available, one can inspect it, or rerun <code>eval(.call)</code>, … or use <code><a href="../reference/pipe_operator.html">debug_flow()</a></code> to get extra information):</p></li>
+<li><p>It is also aware of <strong>Flow</strong> objects (see here
+under) and behaves accordingly,</p></li>
+<li><p>The expression to be evaluated is also recorded in the calling
+environment as <code>.call</code>. This way, it becomes easy to debug
+the last expression that failed during the pipeline execution (since
+<code>.</code> is also available, one can inspect it, or rerun
+<code>eval(.call)</code>, … or use <code><a href="../reference/pipe_operator.html">debug_flow()</a></code> to get
+extra information):</p></li>
 </ol>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/SciViews/svFlow" class="external-link">svFlow</a></span><span class="op">)</span></span>
@@ -178,7 +231,7 @@
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">.</span>, <span class="va">Species</span><span class="op">)</span> <span class="op"><a href="../reference/pipe_operator.html">%&gt;.%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span><span class="va">.</span>, mean_logS <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">logS</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `mutate()`:</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Problem while computing `logS = log(Species)`.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> In argument: `logS = log(Species)`.</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Caused by error in `Math.factor()`:</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> 'log' not meaningful for factors</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -195,7 +248,7 @@
 <span><span class="co">#&gt; mutate(., logS = log(Species))</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">.call</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `mutate()`:</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Problem while computing `logS = log(Species)`.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> In argument: `logS = log(Species)`.</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Caused by error in `Math.factor()`:</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> 'log' not meaningful for factors</span></span></code></pre></div>
 <p>… or even more easily:</p>
@@ -214,17 +267,57 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; producing:</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `mutate()`:</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Problem while computing `logS = log(Species)`.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> In argument: `logS = log(Species)`.</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Caused by error in `Math.factor()`:</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> 'log' not meaningful for factors</span></span></code></pre></div>
-<p>From there, you can manipulate <code>.</code>, <code>.call</code>, or both, and rerun <code><a href="../reference/pipe_operator.html">debug_flow()</a></code> to fix the pipeline.</p>
+<p>From there, you can manipulate <code>.</code>, <code>.call</code>, or
+both, and rerun <code><a href="../reference/pipe_operator.html">debug_flow()</a></code> to fix the pipeline.</p>
 </div>
 <div class="section level2">
 <h2 id="mixing-pipe-and-proto-the-flow-object">Mixing Pipe() and proto(): the Flow object<a class="anchor" aria-label="anchor" href="#mixing-pipe-and-proto-the-flow-object"></a>
 </h2>
-<p>In {pipeR}, Kun Ren proposes several alternative pipe operators to the now traditional {magrittr}’s one (<code>%&gt;%</code>). <code>Pipe()</code> is interesting since it encapsulates essentially the pipeline steps inside an object. The pipe operator is then simply replaced by <code>$</code>. It is striking to note the similitude of the <code>$</code> operator for <strong>Pipe</strong> and <strong>proto</strong> objects (from the {proto} package), although they are designed for different purposes in mind. The <strong>proto</strong> objects are class-less prototype-based objects that support simple inheritance. They are convenient to manipulate sets of objects in a common place, and internally, they use an environment to store these objects. <strong>Pipe</strong> objects also use internally an environment to store everything related to the pipeline operations. However, there is no mean to add custom objects, nor to define inheritance between <strong>Pipe</strong> objects. Satellite variables may be used in pipelines. They are currently placed in the calling environment (usually <code>.GlobalEnv</code>), and they “pollute” it. There is no mean to define “local” variables like, say in function, with the pipe. Yet, if we could combine <strong>Pipe</strong> behavior for pipeline operation, with <strong>proto</strong> objects to store locally various items and allow inheritance, this would be a wonderful way to drive analyses workflows. The <strong>Flow</strong> object just does that.</p>
-<p><strong>Flow</strong> objects are indeed <strong>proto</strong> with a <code>.value</code> item that contains the result obtained from the last pipeline operation. The pipe operator <code>%&gt;.%</code> is behaving differently when a <strong>Flow</strong> object (constructed using <code><a href="../reference/flow.html">flow()</a></code>) is passed to it: (1) <code>.</code> is taken from <code>flow_obj$.value</code>, and result updates it. Also, a <code>..</code> object is created in the calling environment that is the <strong>Flow</strong> object. That way, one can access items stored in the <strong>Flow</strong> object by <code>..$item</code> within pipeline expressions. This allows to embed pipeline temporary variables directly in the <strong>Flow</strong> object.</p>
-<p>The second pipe operator in the {.flow} package, <code>%&gt;_%</code>, does the opposite to <code>%&gt;.%</code>: it <strong>constructs</strong> a <code>Flow</code> object if it does not receives one, and returns a <strong>Flow</strong> object containing the results in <code>flow_obj$.value</code>. Finally, to get the value out of a <strong>Flow</strong> object, on can also end the pipeline by <code>%&gt;_% .</code>, which extracts <code>flow_obj$.value</code> and returns it. Here is an example of use:</p>
+<p>In {pipeR}, Kun Ren proposes several alternative pipe operators to
+the now traditional {magrittr}’s one (<code>%&gt;%</code>).
+<code>Pipe()</code> is interesting since it encapsulates essentially the
+pipeline steps inside an object. The pipe operator is then simply
+replaced by <code>$</code>. It is striking to note the similitude of the
+<code>$</code> operator for <strong>Pipe</strong> and
+<strong>proto</strong> objects (from the {proto} package), although they
+are designed for different purposes in mind. The <strong>proto</strong>
+objects are class-less prototype-based objects that support simple
+inheritance. They are convenient to manipulate sets of objects in a
+common place, and internally, they use an environment to store these
+objects. <strong>Pipe</strong> objects also use internally an
+environment to store everything related to the pipeline operations.
+However, there is no mean to add custom objects, nor to define
+inheritance between <strong>Pipe</strong> objects. Satellite variables
+may be used in pipelines. They are currently placed in the calling
+environment (usually <code>.GlobalEnv</code>), and they “pollute” it.
+There is no mean to define “local” variables like, say in function, with
+the pipe. Yet, if we could combine <strong>Pipe</strong> behavior for
+pipeline operation, with <strong>proto</strong> objects to store locally
+various items and allow inheritance, this would be a wonderful way to
+drive analyses workflows. The <strong>Flow</strong> object just does
+that.</p>
+<p><strong>Flow</strong> objects are indeed <strong>proto</strong> with
+a <code>.value</code> item that contains the result obtained from the
+last pipeline operation. The pipe operator <code>%&gt;.%</code> is
+behaving differently when a <strong>Flow</strong> object (constructed
+using <code><a href="../reference/flow.html">flow()</a></code>) is passed to it: (1) <code>.</code> is taken
+from <code>flow_obj$.value</code>, and result updates it. Also, a
+<code>..</code> object is created in the calling environment that is the
+<strong>Flow</strong> object. That way, one can access items stored in
+the <strong>Flow</strong> object by <code>..$item</code> within pipeline
+expressions. This allows to embed pipeline temporary variables directly
+in the <strong>Flow</strong> object.</p>
+<p>The second pipe operator in the {.flow} package,
+<code>%&gt;_%</code>, does the opposite to <code>%&gt;.%</code>: it
+<strong>constructs</strong> a <code>Flow</code> object if it does not
+receives one, and returns a <strong>Flow</strong> object containing the
+results in <code>flow_obj$.value</code>. Finally, to get the value out
+of a <strong>Flow</strong> object, on can also end the pipeline by
+<code>%&gt;_% .</code>, which extracts <code>flow_obj$.value</code> and
+returns it. Here is an example of use:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">iris</span><span class="op">)</span></span>
 <span><span class="va">fl</span> <span class="op">&lt;-</span> <span class="va">iris</span> <span class="op"><a href="../reference/pipe_operator.html">%&gt;_%</a></span> <span class="co"># Create a Flow object</span></span>
@@ -246,7 +339,9 @@
 <span><span class="co">#&gt; 10          5.0         2.0          3.5         1.0 versicolor 1.609438</span></span>
 <span><span class="co">#&gt; 11          5.0         2.3          3.3         1.0 versicolor 1.609438</span></span>
 <span><span class="co">#&gt; 12          4.9         2.5          4.5         1.7  virginica 1.589235</span></span></code></pre></div>
-<p>With the <strong>Flow</strong> object, you can continue the pipeline where you left it, because all the required variables are recorded inside it.</p>
+<p>With the <strong>Flow</strong> object, you can continue the pipeline
+where you left it, because all the required variables are recorded
+inside it.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fl</span> <span class="op"><a href="../reference/pipe_operator.html">%&gt;_%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">.</span>, <span class="va">Species</span><span class="op">)</span> <span class="op"><a href="../reference/pipe_operator.html">%&gt;_%</a></span></span>
@@ -257,20 +352,32 @@
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> setosa           1.53</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> versicolor       1.60</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> virginica        1.59</span></span></code></pre></div>
-<p>With the <code><a href="../reference/flow.html">flow()</a></code> function, you can explicitly create the <strong>Flow</strong> object and easily add variables to it, including those you want to keep as <strong>quosure</strong>s (by ending their names with <code>_</code>):</p>
+<p>With the <code><a href="../reference/flow.html">flow()</a></code> function, you can explicitly create the
+<strong>Flow</strong> object and easily add variables to it, including
+those you want to keep as <strong>quosure</strong>s (by ending their
+names with <code>_</code>):</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/flow.html">flow</a></span><span class="op">(</span><span class="va">iris</span>, var1_ <span class="op">=</span> <span class="va">Sepal.Length</span>, thresh1 <span class="op">=</span> <span class="fl">5.1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Assigning non-quosure objects to quosure lists is deprecated as of rlang 0.3.0.</span></span>
 <span><span class="co">#&gt; Please coerce to a bare list beforehand with `as.list()`</span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once per session.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once every 8 hours.</span></span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">fl</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Flow object </span></span>
 <span><span class="co">#&gt;  $ var1   : language ~Sepal.Length </span></span>
 <span><span class="co">#&gt;   ..- attr(*, ".Environment")=&lt;environment: R_GlobalEnv&gt;  </span></span>
 <span><span class="co">#&gt;  $ thresh1: num 5.1 </span></span>
 <span><span class="co">#&gt;  parent: Flow root</span></span></code></pre></div>
-<p>Note that a <strong>quosure</strong> is recorded as <code>var</code>, not <code>var_</code>! Indeed, everything works as if the trailing underscore was an unary suffixed operator applied to <code>var</code>, which converts it into a <strong>quosure</strong>.</p>
-<p>You could use <code>var</code> in the pipeline expression to manipulate the quosure directly, but you would most probably use <code>var_</code> which will also treat <code>var</code> as a tidyeval expression and will unquote it transparently in non-standard expressions. Here is the same pipeline as above, but with all the possible variables stored either as <strong>quosure</strong>, or as usual R objects inside the <strong>Flow</strong> object:</p>
+<p>Note that a <strong>quosure</strong> is recorded as <code>var</code>,
+not <code>var_</code>! Indeed, everything works as if the trailing
+underscore was an unary suffixed operator applied to <code>var</code>,
+which converts it into a <strong>quosure</strong>.</p>
+<p>You could use <code>var</code> in the pipeline expression to
+manipulate the quosure directly, but you would most probably use
+<code>var_</code> which will also treat <code>var</code> as a tidyeval
+expression and will unquote it transparently in non-standard
+expressions. Here is the same pipeline as above, but with all the
+possible variables stored either as <strong>quosure</strong>, or as
+usual R objects inside the <strong>Flow</strong> object:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/flow.html">flow</a></span><span class="op">(</span><span class="va">iris</span>,</span>
 <span>    var1_      <span class="op">=</span> <span class="va">Sepal.Length</span>,</span>
@@ -321,7 +428,13 @@
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> setosa           1.53</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> versicolor       1.60</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> virginica        1.59</span></span></code></pre></div>
-<p>Notice that, even standard variables, like <code>thresh1</code> or <code>thresh2</code> must be called <code>thresh1_</code> and <code>thresh2_</code> to look for them <strong>inside</strong> the <strong>Flow</strong> object. Otherwise, they will be looked for in the calling environment as usual. Also, the <code>Flow</code> object can be accessed and manipulated directly through <code>..</code> if you need to.</p>
+<p>Notice that, even standard variables, like <code>thresh1</code> or
+<code>thresh2</code> must be called <code>thresh1_</code> and
+<code>thresh2_</code> to look for them <strong>inside</strong> the
+<strong>Flow</strong> object. Otherwise, they will be looked for in the
+calling environment as usual. Also, the <code>Flow</code> object can be
+accessed and manipulated directly through <code>..</code> if you need
+to.</p>
 </div>
   </div>
 
