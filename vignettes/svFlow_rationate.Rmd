@@ -2,19 +2,20 @@
 title: "(Work)flow and alternate pipe operator, rationate"
 author: "Philippe Grosjean"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+    fig_caption: yes
 vignette: >
   %\VignetteIndexEntry{(Work)flow and alternate pipe operator, rationate}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-  \usepackage[utf8]{inputenc}
 ---
 
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(svFlow)
 ```
 
 ## Pure, predictable, pipeable, ... and data-aware

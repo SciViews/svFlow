@@ -1,10 +1,5 @@
-context("flow")
-
-describe("flow", {
+test_that("flow() produces a Flow object", {
   fl <- flow()
-
-  it("produces a Flow object", {
-    expect_is(fl, 'Flow')
-  })
+  expect_s3_class(fl, 'Flow')
   rm(fl)
 })

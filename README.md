@@ -1,8 +1,8 @@
-# svFlow - Workflow management and alternate pipe operator <a href='https://www.sciviews.org/svFlow'><img src="man/figures/logo.png" align="right" height="139"/></a>
+# Data Analysis Work Flow and Pipeline Operator for 'SciViews::R' <a href='https://www.sciviews.org/svFlow'><img src='man/figures/logo.png' align='right' height='139'/></a>
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/SciViews/svFlow/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/SciViews/svFlow/actions/workflows/R-CMD-check.yaml) [![Coverage Status](https://img.shields.io/codecov/c/github/SciViews/svFlow/master.svg)](https://codecov.io/github/SciViews/svFlow?branch=master) [![CRAN Status](https://www.r-pkg.org/badges/version/svFlow)](https://cran.r-project.org/package=svFlow) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![R-CMD-check](https://github.com/SciViews/svFlow/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/SciViews/svFlow/actions/workflows/R-CMD-check.yaml) [![Codecov test coverage](https://codecov.io/gh/SciViews/svFlow/branch/main/graph/badge.svg)](https://codecov.io/gh/SciViews/svFlow?branch=main) [![CRAN Status](https://www.r-pkg.org/badges/version/svFlow)](https://cran.r-project.org/package=svFlow) [![r-universe status](https://sciviews.r-universe.dev/badges/svFlow)](https://sciviews.r-universe.dev/svFlow) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 
 <!-- badges: end -->
 
@@ -28,7 +28,7 @@ Make sure you have the {remotes} R package installed:
 install.packages('remotes')
 ```
 
-Use `install_github()` to install the {svFlow} package from Github (source from **master** branch will be recompiled on your machine):
+Use `install_github()` to install the {svFlow} package from Github (source from **main** branch will be recompiled on your machine):
 
 ``` r
 remotes::install_github("SciViews/svFlow", build_vignettes = TRUE)
@@ -41,18 +41,19 @@ R should install all required dependencies automatically, and then it should com
 Make the {svFlow} package available in your R session:
 
 ``` r
-library('svFlow')
+library("svFlow")
 ```
 
 Get help about this package:
 
 ``` r
-library(help = 'svFlow')
-help("flow-package")
+library(help = "svFlow")
+help("svFlow-package")
+vignette("svFlow") # None is installed with install_github()
 ```
 
-For further instructions, please, refer to these help pages.
+For further instructions, please, refer to these help pages at <https://www.sciviews.org/svFlow/>.
 
-## Note to developers
+## Code of Conduct
 
-Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
+Please note that the {svFlow} package is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.

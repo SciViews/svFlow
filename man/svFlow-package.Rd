@@ -3,7 +3,7 @@
 \docType{package}
 \name{svFlow-package}
 \alias{svFlow-package}
-\title{Data analysis workflow and alternate pipeline operator}
+\title{Data Analysis Work Flow and Pipeline Operator for 'SciViews::R'}
 \description{
 Data (work)flow analysis using proto objects (see \code{\link[=proto]{proto()}}) and a pipe
 operator that integrates non-standard evaluation and the tidyeval mechanism

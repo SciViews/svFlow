@@ -1,7 +1,7 @@
 Package: svFlow
 Type: Package
 Version: 1.2.1
-Title: Data Analysis Work Flow and Alternate Pipeline Operator
+Title: Data Analysis Work Flow and Pipeline Operator for 'SciViews::R'
 Description: Data work flow analysis using 'proto' objects and pipe operator
   that integrates non-standard evaluation and the 'lazyeval' mechanism.
 Authors@R: c(
@@ -13,29 +13,29 @@ Authors@R: c(
   person("Thomas", "Petzoldt", role = "ctb",
     comment = "Author of 'proto' package, whose 'svFlow' is derived"))
 Maintainer: Philippe Grosjean <phgrosjean@sciviews.org>
-Depends: R (>= 4.1.0)
+Depends: R (>= 4.2.0)
 Imports:
-    graphics,
-    igraph,
-    proto,
+    graphics (>= 4.2.0),
+    igraph (>= 1.4.2),
+    proto (>= 1.0.0),
     rlang (>= 0.2.0),
-    utils
+    utils (>= 4.2.0)
 Suggests:
-    datasets,
-    dplyr,
-    lintr,
-    microbenchmark,
-    covr,
-    knitr,
-    rmarkdown,
-    spelling,
-    testthat
-Encoding: UTF-8
-ByteCompile: yes
+    datasets (>= 4.2.0),
+    dplyr (>= 1.1.4),
+    microbenchmark (>= 1.4.9),
+    knitr (>= 1.42),
+    rmarkdown (>= 2.21),
+    spelling (>= 2.2.1),
+    testthat (>= 3.0.0),
+    lintr (>= 3.0.2)
 License: MIT + file LICENSE
 URL: https://github.com/SciViews/svFlow, https://www.sciviews.org/SciViews-R/
 BugReports: https://github.com/SciViews/svFlow/issues
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
 VignetteBuilder: knitr
+Encoding: UTF-8
 Language: en-US
+ByteCompile: yes
+Config/testthat/edition: 3

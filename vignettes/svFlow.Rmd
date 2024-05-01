@@ -1,20 +1,22 @@
 ---
-title: "(Work)flow and alternate pipe operator, tutorial"
+title: "Data Analysis Work Flow and Pipeline Operator for 'SciViews::R'"
 author: "Philippe Grosjean"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+    fig_caption: yes
 vignette: >
-  %\VignetteIndexEntry{(Work)flow and alternate pipe operator, tutorial}
+  %\VignetteIndexEntry{(Data Analysis Work Flow and Pipeline Operator for 'SciViews::R'}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-  \usepackage[utf8]{inputenc}
 ---
 
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(dplyr)
+library(svFlow)
 ```
 
 **This document still need substantial editing! It is left here because it may still be useful in its current state.**

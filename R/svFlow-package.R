@@ -1,4 +1,4 @@
-#' Data analysis workflow and alternate pipeline operator
+#' Data Analysis Work Flow and Pipeline Operator for 'SciViews::R'
 #'
 #' Data (work)flow analysis using proto objects (see [proto()]) and a pipe
 #' operator that integrates non-standard evaluation and the tidyeval mechanism
@@ -60,9 +60,11 @@
 #'   `_` into **quosure**s, and this mechanism is used by our flow pipe
 #'   operator to implement the tidyeval mechanism most transparently inside
 #'   "flow pipelines".
+#'
 #' @docType package
 #' @name svFlow-package
-#'
+
+## usethis namespace: start
 #' @importFrom proto proto as.proto
 #' @importFrom rlang abort warn caller_env empty_env env_parent f_env f_env<-
 #'   f_lhs f_rhs is_function is_symbolic is_true new_quosure quos enquo
@@ -70,4 +72,5 @@
 #' @importFrom utils capture.output str
 #' @importFrom igraph graph_from_edgelist
 #' @importFrom graphics plot
+## usethis namespace: end
 NULL
