@@ -55,10 +55,10 @@ applied to \strong{unquoted} objects evaluate the expression contained in the
 \strong{quosure} in the right environment.
 }
 \description{
-Quosures are defined in {rlang} package as part of the tidy
+Quosures are defined in \{rlang\} package as part of the tidy
 evaluation of non-standard expressions (see \code{\link[=quo]{quo()}}). Here, we provide an
 alternate mechanism using \code{-~expr} as a synonym of \code{quo(expr)}. Also,
-\code{+quo_obj} is equivalent to \code{!!quo_obj} in {rlang}, and ++quo_obj both
+\code{+quo_obj} is equivalent to \code{!!quo_obj} in \{rlang\}, and ++quo_obj both
 unquotes and evaluates it in the right environment. Quosures are keystone
 objects in the tidy evaluation mechanism. So, they deserve a special, clean
 and concise syntax to create and manipulate them.
@@ -77,7 +77,7 @@ and it is also the case when using \code{-~expr}).
 
 Similarly, the unary \code{+} operator is defined for \strong{quosure} in order to
 easily "reverse" the mechanism of quoting an expression with a logical
-complementary operator. It does something similar to \verb{!!} in {rlang}, but
+complementary operator. It does something similar to \verb{!!} in \{rlang\}, but
 it can be used outside of tidy eval expressions. Since unary \code{+} has higher
 syntax precedence than \code{!} in R, it is less susceptible to require
 parentheses (only \code{^} for exponentiation, indexing/subsetting operators like
