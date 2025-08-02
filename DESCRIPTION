@@ -1,7 +1,7 @@
 Package: svFlow
 Type: Package
 Version: 1.2.1
-Title: Data Analysis Work Flow and Pipeline Operator for 'SciViews::R'
+Title: 'SciViews::R' - Data Analysis Work Flow and Pipeline Operator
 Description: Data work flow analysis using 'proto' objects and pipe operator
   that integrates non-standard evaluation and the 'lazyeval' mechanism.
 Authors@R: c(
@@ -21,19 +21,21 @@ Imports:
     rlang (>= 0.2.0),
     utils (>= 4.2.0)
 Suggests:
+    cyclocomp (>= 1.1.1),
     datasets (>= 4.2.0),
     dplyr (>= 1.1.4),
+    lintr (>= 3.0.2),
     microbenchmark (>= 1.4.9),
+    covr (>= 3.5.0),
     knitr (>= 1.42),
     rmarkdown (>= 2.21),
     spelling (>= 2.2.1),
-    testthat (>= 3.0.0),
-    lintr (>= 3.0.2)
+    testthat (>= 3.0.0)
 License: MIT + file LICENSE
-URL: https://github.com/SciViews/svFlow, https://www.sciviews.org/SciViews-R/
+URL: https://github.com/SciViews/svFlow, https://www.sciviews.org/SciViews-R/, https://sciviews.r-universe.dev/svFlow
 BugReports: https://github.com/SciViews/svFlow/issues
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 VignetteBuilder: knitr
 Encoding: UTF-8
 Language: en-US

@@ -2,6 +2,7 @@
 % Please edit documentation in R/svFlow-package.R
 \docType{package}
 \name{svFlow-package}
+\alias{svFlow}
 \alias{svFlow-package}
 \title{Data Analysis Work Flow and Pipeline Operator for 'SciViews::R'}
 \description{
@@ -64,3 +65,23 @@ operator to implement the tidyeval mechanism most transparently inside
 }
 }
 
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/SciViews/svFlow}
+  \item \url{https://www.sciviews.org/SciViews-R/}
+  \item \url{https://sciviews.r-universe.dev/svFlow}
+  \item Report bugs at \url{https://github.com/SciViews/svFlow/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Philippe Grosjean \email{phgrosjean@sciviews.org} (\href{https://orcid.org/0000-0002-2694-9471}{ORCID})
+
+Other contributors:
+\itemize{
+  \item Louis Kates (Author of 'proto' package, whose 'svFlow' is derived) [contributor]
+  \item Thomas Petzoldt (Author of 'proto' package, whose 'svFlow' is derived) [contributor]
+}
+
+}

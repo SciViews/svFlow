@@ -1,20 +1,39 @@
-# Data Analysis Work Flow and Pipeline Operator for 'SciViews::R' <a href='https://www.sciviews.org/svFlow'><img src='man/figures/logo.png' align='right' height='139'/></a>
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# ‘SciViews::R’ - Data Analysis Work Flow and Pipeline Operator <a href="https://www.sciviews.org/svFlow"><img src="man/figures/logo.png" align="right" height="138" /></a>
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/SciViews/svFlow/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/SciViews/svFlow/actions/workflows/R-CMD-check.yaml) [![Codecov test coverage](https://codecov.io/gh/SciViews/svFlow/branch/main/graph/badge.svg)](https://codecov.io/gh/SciViews/svFlow?branch=main) [![CRAN Status](https://www.r-pkg.org/badges/version/svFlow)](https://cran.r-project.org/package=svFlow) [![r-universe status](https://sciviews.r-universe.dev/badges/svFlow)](https://sciviews.r-universe.dev/svFlow) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
-
+[![R-CMD-check](https://github.com/SciViews/svFlow/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/SciViews/svFlow/actions/workflows/R-CMD-check.yaml)
+[![codecov](https://codecov.io/gh/SciViews/svFlow/graph/badge.svg?token=SbbTNAc5Bv)](https://codecov.io/gh/SciViews/svFlow)
+[![CRAN
+Status](https://www.r-pkg.org/badges/version/svFlow)](https://cran.r-project.org/package=svFlow)
+[![r-universe
+status](https://sciviews.r-universe.dev/badges/svFlow)](https://sciviews.r-universe.dev/svFlow)
+[![License:
+MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Lifecycle:
+stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 <!-- badges: end -->
 
-{svFlow} manages pipeline workflow through a simple pipe operator `%>.%` that, on the contrary to base R pipe operator `|>` and {magrittr} operator `%>%` imposes to *always* specify where left-hand side of the operator should be injected in the right-hand side expression with a `.`. This conveys more clearly the intentions of the programmer and it is less error-prone.
+{svFlow} manages pipeline workflow through a simple pipe operator `%>.%`
+that, on the contrary to base R pipe operator `|>` and {magrittr}
+operator `%>%` imposes to *always* specify where left-hand side of the
+operator should be injected in the right-hand side expression with a
+`.`. This conveys more clearly the intentions of the programmer and it
+is less error-prone.
 
-Another pipe operator `%>_%` is more complex. It uses {proto} objects to embed several variables in the pipeline in a way that trhe non-standard evaluation (tidyverse's "lazyeval") is done in an easy and natural way.
+Another pipe operator `%>_%` is more complex. It uses {proto} objects to
+embed several variables in the pipeline in a way that trhe non-standard
+evaluation (tidyverse’s “lazyeval”) is done in an easy and natural way.
 
 ## Installation
 
 ### Latest stable version
 
-The latest stable version of {svFlow} can simply be installed from [CRAN](http://cran.r-project.org):
+The latest stable version of {svFlow} can simply be installed from
+[CRAN](http://cran.r-project.org):
 
 ``` r
 install.packages('svFlow')
@@ -28,13 +47,15 @@ Make sure you have the {remotes} R package installed:
 install.packages('remotes')
 ```
 
-Use `install_github()` to install the {svFlow} package from Github (source from **main** branch will be recompiled on your machine):
+Use `install_github()` to install the {svFlow} package from Github
+(source from **main** branch will be recompiled on your machine):
 
 ``` r
 remotes::install_github("SciViews/svFlow", build_vignettes = TRUE)
 ```
 
-R should install all required dependencies automatically, and then it should compile and install {svFlow}.
+R should install all required dependencies automatically, and then it
+should compile and install {svFlow}.
 
 ## Usage
 
@@ -52,8 +73,12 @@ help("svFlow-package")
 vignette("svFlow") # None is installed with install_github()
 ```
 
-For further instructions, please, refer to these help pages at <https://www.sciviews.org/svFlow/>.
+For further instructions, please, refer to these help pages at
+<https://www.sciviews.org/svFlow/>.
 
 ## Code of Conduct
 
-Please note that the {svFlow} package is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
+Please note that the {svFlow} package is released with a [Contributor
+Code of
+Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html).
+By contributing to this project, you agree to abide by its terms.

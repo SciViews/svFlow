@@ -1,5 +1,5 @@
 ---
-title: "Data Analysis Work Flow and Pipeline Operator for 'SciViews::R'"
+title: "'SciViews::R' - Data Analysis Work Flow and Pipeline Operator"
 author: "Philippe Grosjean"
 date: "`r Sys.Date()`"
 output:
@@ -8,7 +8,7 @@ output:
     toc_depth: 3
     fig_caption: yes
 vignette: >
-  %\VignetteIndexEntry{(Data Analysis Work Flow and Pipeline Operator for 'SciViews::R'}
+  %\VignetteIndexEntry{'SciViews::R' - Data Analysis Work Flow and Pipeline Operator}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
