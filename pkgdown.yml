@@ -1,11 +1,10 @@
 pandoc: 3.1.11
-pkgdown: 2.0.9
+pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   svFlow_rationate: svFlow_rationate.html
   svFlow: svFlow.html
-last_built: 2024-05-01T14:19Z
+last_built: 2025-08-02T18:07Z
 urls:
   reference: https://www.sciviews.org/svFlow/reference
   article: https://www.sciviews.org/svFlow/articles
-
